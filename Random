@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Random YouTube (5 ans, sans Shorts)</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #random-video-btn { padding: 10px 14px; cursor: pointer; }
+    #status { margin-top: 12px; font-size: 14px; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <button id="random-video-btn">Random (≤ 5 ans, sans Shorts)</button>
+  <div id="status"></div>
+
+  <script>
+    const apiKey = "TA_CLE_API_ICI";
+    const handleOrChannel = "@FuzeIII";
+
+    // Fenêtre & filtre
+    const YEARS_BACK = 5;
+    const MIN_SECONDS = 61;
+
+    // Échantillonnage (rapide + bon hasard)
+    const STRATA = 10;              // 10 tranches sur 5 ans
+    const PAGES_PER_STRATUM = 1;    // 1 page par tranche (rapide)
+    const MAX_PAGES_TO_INDEX = 120; // limite indexation
+
+    // Cache
+    const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+    const CACHE_KEY = `yt_pool_${handleOrChannel}_${YEARS_BACK}y_${MIN_SECONDS}s`;
+
+    const btn = document.getElementById("random-video-btn");
+    const statusEl = document.getElementById("status");
+    const setStatus = (m) => statusEl.textContent = m;
+
+    function isoDurationToSeconds(iso) {
+      const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+      const h = parseInt(match?.[1] || "0", 10);
+      const m = parseInt(match?.[2] || "0", 10);
+      const s = parseInt(match?.[3] || "0", 10);
+      return h * 3600 + m * 60 + s;
+    }
+
+    async function fetchJson(url) {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!res.ok) throw new Error(`HTTP ${res.status} : ${data?.error?.message || "Erreur réseau"}`);
+      if (data?.error?.message) throw new Error(data.error.message);
+      return data;
+    }
+
+    function cutoffMs(years) {
+      const d = new Date();
+      d.setFullYear(d.getFullYear() - years);
+      return d.getTime();
+    }
+
+    function loadCache() {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        if (!obj?.ts || !Array.isArray(obj.pool)) return null;
+        if (Date.now() - obj.ts > CACHE_TTL_MS) return null;
+        return obj.pool;
+      } catch { return null; }
+    }
+
+    function saveCache(pool) {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), pool }));
+      } catch {}
+    }
+
+    async function resolveChannelId(input) {
+      if (/^UC[a-zA-Z0-9_-]{20,}$/.test(input)) return input;
+      const handle = input.replace(/^@/, "");
+
+      // forHandle (si dispo)
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${apiKey}`;
+        const data = await fetchJson(url);
+        const id = data?.items?.[0]?.id;
+        if (id) return id;
+      } catch (_) {}
+
+      // fallback search
+      const url2 = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q=${encodeURIComponent(handle)}&key=${apiKey}`;
+      const data2 = await fetchJson(url2);
+      const id2 = data2?.items?.[0]?.id?.channelId;
+      if (!id2) throw new Error("Chaîne introuvable.");
+      return id2;
+    }
+
+    async function getUploadsPlaylistId(channelId) {
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`;
+      const data = await fetchJson(url);
+      const uploads = data?.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+      if (!uploads) throw new Error("Uploads introuvable.");
+      return uploads;
+    }
+
+    async function indexPagesInWindow(uploadsPlaylistId) {
+      const cutoff = cutoffMs(YEARS_BACK);
+      let pageToken = "";
+      const pages = [];
+
+      for (let i = 0; i < MAX_PAGES_TO_INDEX; i++) {
+        setStatus(`Indexation… page ${i + 1}/${MAX_PAGES_TO_INDEX}\nCache: non`);
+        const url =
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails,snippet&playlistId=${uploadsPlaylistId}` +
+          `&maxResults=50` +
+          (pageToken ? `&pageToken=${pageToken}` : "") +
+          `&key=${apiKey}`;
+
+        const data = await fetchJson(url);
+        const items = data.items || [];
+        const next = data.nextPageToken || "";
+
+        if (items.length === 0) break;
+
+        const newest = items[0]?.snippet?.publishedAt ? new Date(items[0].snippet.publishedAt).getTime() : null;
+        if (newest !== null && newest < cutoff) break; // trop vieux => stop
+
+        const idsInRange = [];
+        for (const it of items) {
+          const vid = it?.contentDetails?.videoId;
+          const publishedAt = it?.snippet?.publishedAt;
+          if (!vid || !publishedAt) continue;
+          const t = new Date(publishedAt).getTime();
+          if (t >= cutoff) idsInRange.push(vid);
+        }
+
+        if (idsInRange.length > 0) pages.push({ idsInRange });
+
+        if (!next) break;
+        pageToken = next;
+      }
+
+      if (pages.length === 0) throw new Error("Aucune vidéo trouvée dans les 5 dernières années.");
+      return pages;
+    }
+
+    function samplePagesUniformly(pages) {
+      const sampled = [];
+      const n = pages.length;
+
+      for (let s = 0; s < STRATA; s++) {
+        const start = Math.floor((s / STRATA) * n);
+        const end = Math.floor(((s + 1) / STRATA) * n);
+        const slice = pages.slice(start, Math.max(end, start + 1));
+        if (slice.length === 0) continue;
+
+        const pick = slice[Math.floor(Math.random() * slice.length)];
+        sampled.push(pick);
+      }
+      return sampled;
+    }
+
+    async function filterNoShorts(videoIds) {
+      const out = [];
+      for (let i = 0; i < videoIds.length; i += 50) {
+        const chunk = videoIds.slice(i, i + 50);
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${chunk.join(",")}&key=${apiKey}`;
+        const data = await fetchJson(url);
+        const items = data.items || [];
+        for (const v of items) {
+          const iso = v?.contentDetails?.duration;
+          if (!iso) continue;
+          if (isoDurationToSeconds(iso) >= MIN_SECONDS) out.push(v.id);
+        }
+      }
+      return out;
+    }
+
+    async function buildPoolIfNeeded() {
+      const cached = loadCache();
+      if (cached && cached.length > 0) {
+        setStatus(`Cache OK (${cached.length} vidéos).\nChoix aléatoire…`);
+        return cached;
+      }
+
+      setStatus("Cache absent → construction du pool (1ère fois = plus long)…");
+
+      const channelId = await resolveChannelId(handleOrChannel);
+      const uploadsId = await getUploadsPlaylistId(channelId);
+
+      const pages = await indexPagesInWindow(uploadsId);
+      setStatus(`Pages indexées: ${pages.length}\nÉchantillonnage uniforme…`);
+
+      const sampled = samplePagesUniformly(pages);
+      const candidates = [];
+      for (const p of sampled) candidates.push(...p.idsInRange);
+
+      setStatus(`Candidats: ${candidates.length}\nFiltre anti-Shorts…`);
+      const longOnes = await filterNoShorts(candidates);
+
+      if (longOnes.length === 0) throw new Error("Aucune vidéo longue trouvée dans l’échantillon.");
+
+      saveCache(longOnes);
+      setStatus(`Pool construit & mis en cache (${longOnes.length}).\nChoix aléatoire…`);
+      return longOnes;
+    }
+
+    btn.addEventListener("click", async () => {
+      // Ouvre l’onglet immédiatement (anti popup-block)
+      const newTab = window.open("about:blank", "_blank");
+
+      btn.disabled = true;
+      try {
+        if (!apiKey || apiKey === "TA_CLE_API_ICI") throw new Error("Mets ta clé API dans apiKey.");
+
+        const pool = await buildPoolIfNeeded();
+        const chosen = pool[Math.floor(Math.random() * pool.length)];
+        const url = `https://www.youtube.com/watch?v=${chosen}`;
+
+        setStatus("OK. Redirection vers la vidéo…");
+        if (newTab) newTab.location.href = url;
+        else window.location.href = url;
+      } catch (e) {
+        console.error(e);
+        setStatus("Erreur : " + (e?.message || e));
+        if (newTab) newTab.document.write(`<h2>Erreur</h2><pre>${String(e?.message || e)}</pre>`);
+        else alert("Erreur : " + (e?.message || e));
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
