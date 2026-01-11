@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>YouTube Random (5 ans, sans Shorts)</title>
+  <title>YouTube Random (6 ans, sans Shorts)</title>
 
   <style>
-    /* ===== BASE PAGE ===== */
     body {
       margin: 0;
       min-height: 100vh;
@@ -15,14 +13,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-
-      background: radial-gradient(
-        circle at top,
-        #3a0f12 0%,
-        #1b0709 45%,
-        #0e0405 100%
-      );
-
+      background: radial-gradient(circle at top,#3a0f12 0%,#1b0709 45%,#0e0405 100%);
       font-family: Arial, sans-serif;
       overflow: hidden;
     }
@@ -36,7 +27,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-
       font-family: "Arial Black", Impact, sans-serif;
       font-size: 32px;
       letter-spacing: 1.2px;
@@ -44,11 +34,9 @@
       z-index: 10;
       animation: logoProIn 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
-
     .logo-yt { color: #ffffff; text-shadow: 0 0 6px rgba(255,255,255,0.15); }
     .logo-accent {
-      width: 6px;
-      height: 26px;
+      width: 6px; height: 26px;
       background: linear-gradient(#ff3b3b, #b31217);
       border-radius: 3px;
     }
@@ -58,12 +46,9 @@
       from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
       to   { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
+    @media (prefers-reduced-motion: reduce) { .logo-app { animation: none; } }
 
-    @media (prefers-reduced-motion: reduce) {
-      .logo-app { animation: none; }
-    }
-
-    /* ===== BOUTON ===== */
+    /* ===== BOUTON PRINCIPAL ===== */
     .cartoon-btn {
       font-family: "Arial Black", Impact, sans-serif;
       font-size: 30px;
@@ -83,6 +68,29 @@
       box-shadow: 0 2px 0 #7a0e12, 0 6px 10px rgba(0,0,0,0.4);
     }
 
+    /* ===== PETITS BOUTONS ===== */
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .small-btn {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.25);
+      color: #fff;
+      cursor: pointer;
+      transition: filter .12s ease, transform .12s ease;
+    }
+    .small-btn:hover { filter: brightness(1.08); }
+    .small-btn:active { transform: translateY(1px); }
+
     /* ===== STATUS ===== */
     #status {
       margin-top: 16px;
@@ -91,20 +99,105 @@
       white-space: pre-line;
       text-align: center;
       padding: 0 16px;
+      max-width: 720px;
     }
 
-    /* ===== MOBILE ===== */
+    /* ===== MODAL HISTORIQUE ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .hidden { display: none; }
+
+    .modal-card {
+      width: min(820px, 94vw);
+      max-height: 78vh;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.12);
+      background: rgba(15,5,6,0.92);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+      backdrop-filter: blur(6px);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 14px 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+    .modal-title {
+      font-family: "Arial Black", Impact, sans-serif;
+      color: #fff;
+      font-size: 20px;
+      letter-spacing: 0.6px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 12px 14px 6px 14px;
+    }
+    .modal-sub {
+      padding: 0 14px 10px 14px;
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+    }
+    .modal-list {
+      padding: 0 14px 14px 14px;
+      overflow: auto;
+      max-height: calc(78vh - 120px);
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .history-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .history-id {
+      font-family: monospace;
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+    }
+    .history-link {
+      color: #ff4d4d;
+      text-decoration: none;
+      word-break: break-all;
+      font-size: 13px;
+    }
+    .history-link:hover { text-decoration: underline; }
+
     @media (max-width: 768px) {
       .logo-app { font-size: 26px; top: 16px; }
       .logo-accent { height: 22px; }
       .cartoon-btn { font-size: 26px; padding: 20px 36px; }
       #status { font-size: 15px; }
+      .modal-card { max-height: 84vh; }
+      .modal-list { max-height: calc(84vh - 130px); }
     }
   </style>
 </head>
 
 <body>
-
   <!-- LOGO -->
   <div class="logo-app">
     <span class="logo-yt">YouTube</span>
@@ -112,31 +205,78 @@
     <span class="logo-rd">Random</span>
   </div>
 
-  <!-- BOUTON -->
+  <!-- BOUTON PRINCIPAL -->
   <button id="random-video-btn" class="cartoon-btn">Fuze III</button>
+
+  <!-- BOUTONS -->
+  <div class="row">
+    <button id="rebuild-btn" class="small-btn">Rebuild cache</button>
+    <button id="clear-cache-btn" class="small-btn">Vider cache</button>
+    <button id="reset-seen-btn" class="small-btn">Reset historique</button>
+    <button id="history-btn" class="small-btn">Historique</button>
+  </div>
 
   <!-- STATUS -->
   <div id="status">Prêt.</div>
 
-  <!-- ===== SCRIPT COMPLET ===== -->
+  <!-- MODAL HISTORIQUE -->
+  <div id="history-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="history-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div id="history-title" class="modal-title">Historique</div>
+        <button id="history-close" class="small-btn">Fermer</button>
+      </div>
+
+      <div class="modal-actions">
+        <button id="history-copy-all" class="small-btn">Copier tout</button>
+        <button id="history-clear" class="small-btn">Vider historique</button>
+      </div>
+
+      <div id="history-count" class="modal-sub"></div>
+      <div id="history-list" class="modal-list"></div>
+    </div>
+  </div>
+
   <script>
     /* ========= CONFIG ========= */
-    const apiKey = "AIzaSyBVx63xYeRm34oQIsCigJozDp9hIoRLhxo";      // 🔑 mets ta clé API
-    const handleOrChannel = "@FuzeIII";   // chaîne
-    const YEARS_BACK = 5;
-    const MIN_SECONDS = 61;
+    const apiKey = "AIzaSyBVx63xYeRm34oQIsCigJozDp9hIoRLhxo"; // <-- mets ta clé API ici
 
-    const STRATA = 10;
-    const MAX_PAGES_TO_INDEX = 120;
+    // ✅ Channel ID (UC...) - pour Fuze III :
+    const CHANNEL_ID = "UCfznY5SlSoZoXN0-kBPtCdg";
 
-    const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
-    const CACHE_KEY = `yt_pool_${handleOrChannel}_${YEARS_BACK}y_${MIN_SECONDS}s`;
+    const YEARS_BACK = 6;
+    const MIN_SECONDS = 61; // >60s => exclut Shorts
 
+    // Cache pool (48h) => moins de rebuilds
+    const CACHE_TTL_MS = 48 * 60 * 60 * 1000;
+
+    // Sécurités pagination
+    const MAX_PAGES = 200;     // max pages playlistItems
+    const MAX_VIDEOS = 6000;   // max ids collectés
+
+    // Keys cache
+    const CACHE_KEY = `yt_pool_uc_${CHANNEL_ID}_${YEARS_BACK}y_${MIN_SECONDS}s_v3`;
+    const META_KEY  = `${CACHE_KEY}_meta`;
+
+    // Historique ordonné (liste)
+    const SEEN_KEY = `${CACHE_KEY}_seen_list`;
+    const MAX_SEEN = 8000;
+
+    /* ========= UI ========= */
     const btn = document.getElementById("random-video-btn");
+    const rebuildBtn = document.getElementById("rebuild-btn");
+    const clearCacheBtn = document.getElementById("clear-cache-btn");
+    const resetSeenBtn = document.getElementById("reset-seen-btn");
     const statusEl = document.getElementById("status");
     const setStatus = (m) => statusEl.textContent = m;
 
     /* ========= UTILS ========= */
+    function cutoffMs(years) {
+      const d = new Date();
+      d.setFullYear(d.getFullYear() - years);
+      return d.getTime();
+    }
+
     function isoDurationToSeconds(iso) {
       const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
       return (+(m?.[1]||0))*3600 + (+(m?.[2]||0))*60 + (+(m?.[3]||0));
@@ -149,109 +289,326 @@
       return d;
     }
 
-    function cutoffMs(years) {
-      const d = new Date(); d.setFullYear(d.getFullYear() - years); return d.getTime();
+    function formatDate(ts) {
+      try { return new Date(ts).toLocaleString(); }
+      catch { return ""; }
     }
 
+    /* ========= CACHE POOL ========= */
     function loadCache() {
       try {
         const raw = localStorage.getItem(CACHE_KEY);
-        if (!raw) return null;
-        const o = JSON.parse(raw);
-        if (Date.now() - o.ts > CACHE_TTL_MS) return null;
-        return o.pool;
-      } catch { return null; }
-    }
+        const metaRaw = localStorage.getItem(META_KEY);
+        if (!raw || !metaRaw) return null;
 
-    function saveCache(pool) {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), pool }));
-    }
+        const pool = JSON.parse(raw);
+        const meta = JSON.parse(metaRaw);
 
-    /* ========= YOUTUBE ========= */
-    async function resolveChannelId(input) {
-      if (/^UC[a-zA-Z0-9_-]{20,}$/.test(input)) return input;
-      const q = input.replace(/^@/, "");
-      try {
-        const u = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${q}&key=${apiKey}`;
-        const d = await fetchJson(u);
-        if (d.items?.[0]?.id) return d.items[0].id;
-      } catch {}
-      const u2 = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q=${q}&key=${apiKey}`;
-      const d2 = await fetchJson(u2);
-      return d2.items[0].id.channelId;
-    }
+        if (!Array.isArray(pool) || !meta?.ts) return null;
+        if (Date.now() - meta.ts > CACHE_TTL_MS) return null;
 
-    async function getUploadsId(channelId) {
-      const u = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`;
-      const d = await fetchJson(u);
-      return d.items[0].contentDetails.relatedPlaylists.uploads;
-    }
-
-    async function buildPool() {
-      const cached = loadCache();
-      if (cached) {
-        setStatus(`Cache OK (${cached.length} vidéos)`);
-        return cached;
+        return { pool, meta };
+      } catch {
+        return null;
       }
+    }
 
-      setStatus("Construction du pool…");
-      const channelId = await resolveChannelId(handleOrChannel);
-      const uploadsId = await getUploadsId(channelId);
+    function saveCache(pool, metaExtra = {}) {
+      const meta = { ts: Date.now(), count: pool.length, ...metaExtra };
+      localStorage.setItem(CACHE_KEY, JSON.stringify(pool));
+      localStorage.setItem(META_KEY, JSON.stringify(meta));
+      return meta;
+    }
 
+    function clearPoolCache() {
+      localStorage.removeItem(CACHE_KEY);
+      localStorage.removeItem(META_KEY);
+    }
+
+    /* ========= HISTORIQUE ========= */
+    function loadSeenList() {
+      try {
+        const raw = localStorage.getItem(SEEN_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveSeenList(list) {
+      const trimmed = list.slice(Math.max(0, list.length - MAX_SEEN));
+      localStorage.setItem(SEEN_KEY, JSON.stringify(trimmed));
+    }
+
+    function resetSeen() {
+      localStorage.removeItem(SEEN_KEY);
+    }
+
+    /* ========= YOUTUBE QUOTA-MIN ========= */
+    async function getUploadsPlaylistId(channelId) {
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`;
+      const data = await fetchJson(url);
+      const uploads = data?.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+      if (!uploads) throw new Error("Impossible de récupérer la playlist Uploads.");
+      return uploads;
+    }
+
+    async function collectVideoIdsUpToCutoff(uploadsPlaylistId) {
       const cutoff = cutoffMs(YEARS_BACK);
       let pageToken = "";
-      let pages = [];
+      let all = [];
 
-      for (let i = 0; i < MAX_PAGES_TO_INDEX; i++) {
-        const u = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${uploadsId}&maxResults=50${pageToken ? "&pageToken="+pageToken : ""}&key=${apiKey}`;
-        const d = await fetchJson(u);
-        const items = d.items || [];
+      for (let page = 0; page < MAX_PAGES; page++) {
+        const url =
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails` +
+          `&playlistId=${uploadsPlaylistId}&maxResults=50` +
+          (pageToken ? `&pageToken=${pageToken}` : "") +
+          `&key=${apiKey}`;
+
+        const data = await fetchJson(url);
+        const items = data.items || [];
         if (!items.length) break;
 
-        const ids = items
-          .filter(v => new Date(v.snippet.publishedAt).getTime() >= cutoff)
-          .map(v => v.contentDetails.videoId);
+        let reachedOld = false;
 
-        if (ids.length) pages.push(ids);
-        if (!d.nextPageToken) break;
-        pageToken = d.nextPageToken;
+        for (const it of items) {
+          const publishedAt = it?.snippet?.publishedAt;
+          const ms = publishedAt ? new Date(publishedAt).getTime() : null;
+          const vid = it?.contentDetails?.videoId;
+
+          if (!vid || !ms) continue;
+
+          if (ms < cutoff) { reachedOld = true; break; }
+          all.push(vid);
+
+          if (all.length >= MAX_VIDEOS) { reachedOld = true; break; }
+        }
+
+        if (reachedOld) break;
+        if (!data.nextPageToken) break;
+        pageToken = data.nextPageToken;
       }
 
-      const sample = [];
-      for (let i = 0; i < STRATA; i++) {
-        const slice = pages[Math.floor(Math.random() * pages.length)];
-        if (slice) sample.push(...slice);
-      }
-
-      const longVideos = [];
-      for (let i = 0; i < sample.length; i += 50) {
-        const chunk = sample.slice(i, i+50);
-        const u = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${chunk.join(",")}&key=${apiKey}`;
-        const d = await fetchJson(u);
-        d.items.forEach(v => {
-          if (isoDurationToSeconds(v.contentDetails.duration) >= MIN_SECONDS)
-            longVideos.push(v.id);
-        });
-      }
-
-      saveCache(longVideos);
-      setStatus(`Pool créé (${longVideos.length} vidéos)`);
-      return longVideos;
+      return all;
     }
 
-    /* ========= CLICK ========= */
+    async function filterNoShorts(videoIds) {
+      const keep = [];
+      for (let i = 0; i < videoIds.length; i += 50) {
+        const chunk = videoIds.slice(i, i + 50);
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${chunk.join(",")}&key=${apiKey}`;
+        const data = await fetchJson(url);
+
+        for (const v of (data.items || [])) {
+          const iso = v?.contentDetails?.duration;
+          if (!iso) continue;
+          if (isoDurationToSeconds(iso) >= MIN_SECONDS) keep.push(v.id);
+        }
+      }
+      return keep;
+    }
+
+    async function buildPool(force = false) {
+      if (!force) {
+        const cached = loadCache();
+        if (cached) {
+          const { pool, meta } = cached;
+          const seenCount = loadSeenList().length;
+          setStatus(`Cache OK (${meta.count} vidéos)\nDéjà vues: ${seenCount}\nDernier rebuild : ${formatDate(meta.ts)}`);
+          return pool;
+        }
+      }
+
+      setStatus("Rebuild…\nRécupération playlist Uploads…");
+      const uploadsId = await getUploadsPlaylistId(CHANNEL_ID);
+
+      setStatus("Indexation des vidéos sur 6 ans…");
+      const ids = await collectVideoIdsUpToCutoff(uploadsId);
+
+      setStatus(`Filtrage anti-Shorts…\n${ids.length} vidéos candidates`);
+      const pool = await filterNoShorts(ids);
+
+      if (!pool.length) throw new Error("Pool vide (chaîne quasi full-shorts ?).");
+
+      const meta = saveCache(pool, { raw: ids.length });
+      const seenCount = loadSeenList().length;
+      setStatus(`Pool prêt ✅\n${meta.count} vidéos (≥ ${MIN_SECONDS}s)\nDéjà vues: ${seenCount}\nDernier rebuild : ${formatDate(meta.ts)}`);
+      return pool;
+    }
+
+    /* ========= RANDOM (ANTI-REPEAT) ========= */
+    async function pickUnseen(pool) {
+      const seenList = loadSeenList();
+      const seenSet = new Set(seenList);
+
+      const available = pool.filter(id => !seenSet.has(id));
+
+      let pickedId;
+      if (available.length > 0) {
+        pickedId = available[Math.floor(Math.random() * available.length)];
+      } else {
+        // Tout vu => reset historique
+        resetSeen();
+        pickedId = pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      // Sauver historique (ordre)
+      if (!seenSet.has(pickedId)) {
+        seenList.push(pickedId);
+        saveSeenList(seenList);
+      }
+
+      return { id: pickedId, seenCount: seenList.length, remaining: Math.max(0, pool.length - seenList.length) };
+    }
+
+    /* ========= MODAL HISTORIQUE ========= */
+    const modal = document.getElementById("history-modal");
+    const historyBtn = document.getElementById("history-btn");
+    const closeBtn = document.getElementById("history-close");
+    const historyClearBtn = document.getElementById("history-clear");
+    const copyAllBtn = document.getElementById("history-copy-all");
+    const historyListEl = document.getElementById("history-list");
+    const historyCountEl = document.getElementById("history-count");
+
+    function openHistory() {
+      const seenList = loadSeenList().slice().reverse(); // dernier vu en premier
+      historyCountEl.textContent = `Vidéos déjà sorties : ${seenList.length}`;
+      historyListEl.innerHTML = "";
+
+      if (seenList.length === 0) {
+        historyListEl.innerHTML = `<div style="color: rgba(255,255,255,0.7); padding: 10px 0;">Aucune vidéo pour l’instant.</div>`;
+        modal.classList.remove("hidden");
+        return;
+      }
+
+      for (const id of seenList) {
+        const url = `https://www.youtube.com/watch?v=${id}`;
+
+        const row = document.createElement("div");
+        row.className = "history-item";
+
+        const left = document.createElement("div");
+        left.className = "history-left";
+
+        const idEl = document.createElement("div");
+        idEl.className = "history-id";
+        idEl.textContent = id;
+
+        const link = document.createElement("a");
+        link.className = "history-link";
+        link.href = url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = url;
+
+        left.appendChild(idEl);
+        left.appendChild(link);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "small-btn";
+        copyBtn.textContent = "Copier";
+        copyBtn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(url);
+            copyBtn.textContent = "Copié ✅";
+            setTimeout(() => (copyBtn.textContent = "Copier"), 900);
+          } catch {
+            alert("Impossible de copier (autorisation navigateur).");
+          }
+        });
+
+        row.appendChild(left);
+        row.appendChild(copyBtn);
+        historyListEl.appendChild(row);
+      }
+
+      modal.classList.remove("hidden");
+    }
+
+    function closeHistory() {
+      modal.classList.add("hidden");
+    }
+
+    historyBtn?.addEventListener("click", openHistory);
+    closeBtn?.addEventListener("click", closeHistory);
+
+    // fermer en cliquant hors de la carte
+    modal?.addEventListener("click", (e) => {
+      if (e.target === modal) closeHistory();
+    });
+
+    historyClearBtn?.addEventListener("click", () => {
+      resetSeen();
+      openHistory();
+    });
+
+    copyAllBtn?.addEventListener("click", async () => {
+      const seenList = loadSeenList().slice().reverse();
+      const all = seenList.map(id => `https://www.youtube.com/watch?v=${id}`).join("\n");
+      try {
+        await navigator.clipboard.writeText(all);
+        copyAllBtn.textContent = "Tout copié ✅";
+        setTimeout(() => (copyAllBtn.textContent = "Copier tout"), 1000);
+      } catch {
+        alert("Impossible de copier (autorisation navigateur).");
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("hidden")) closeHistory();
+    });
+
+    /* ========= ACTIONS UI ========= */
     btn.addEventListener("click", async () => {
       const tab = window.open("about:blank", "_blank");
       try {
-        const pool = await buildPool();
-        const id = pool[Math.floor(Math.random() * pool.length)];
-        tab.location.href = `https://www.youtube.com/watch?v=${id}`;
+        const pool = await buildPool(false);
+
+        const pick = await pickUnseen(pool);
+        setStatus(`OK 🎲 (${pool.length} vidéos en cache)\nDéjà vues: ${pick.seenCount}\nRestantes: ${pick.remaining}\nOuverture…`);
+        tab.location.href = `https://www.youtube.com/watch?v=${pick.id}`;
       } catch (e) {
-        setStatus("Erreur : " + e.message);
         if (tab) tab.close();
+        setStatus("Erreur : " + (e.message || e));
+        console.error(e);
       }
     });
-  </script>
 
+    rebuildBtn.addEventListener("click", async () => {
+      try {
+        await buildPool(true);
+      } catch (e) {
+        setStatus("Erreur : " + (e.message || e));
+        console.error(e);
+      }
+    });
+
+    clearCacheBtn.addEventListener("click", () => {
+      clearPoolCache();
+      setStatus("Cache pool vidé. (prochain clic = rebuild)");
+    });
+
+    resetSeenBtn.addEventListener("click", () => {
+      resetSeen();
+      const cached = loadCache();
+      if (cached) {
+        setStatus(`Historique réinitialisé ✅\nCache OK (${cached.meta.count} vidéos)\nDernier rebuild : ${formatDate(cached.meta.ts)}`);
+      } else {
+        setStatus("Historique réinitialisé ✅\nPrêt. (1er clic = build + cache)");
+      }
+    });
+
+    /* ========= BOOT ========= */
+    (function boot() {
+      const cached = loadCache();
+      const seenCount = loadSeenList().length;
+      if (cached) {
+        setStatus(`Cache OK (${cached.meta.count} vidéos)\nDéjà vues: ${seenCount}\nDernier rebuild : ${formatDate(cached.meta.ts)}`);
+      } else {
+        setStatus(`Prêt.\nDéjà vues: ${seenCount}\n(1er clic = build + cache)`);
+      }
+    })();
+  </script>
 </body>
 </html>
