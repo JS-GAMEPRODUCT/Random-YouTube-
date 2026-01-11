@@ -3,227 +3,137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Random (6 ans, sans Shorts)</title>
+  <title>YouTube Random (Fuze III - 2 chaînes)</title>
 
   <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    body{
+      margin:0; min-height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
       background: radial-gradient(circle at top,#3a0f12 0%,#1b0709 45%,#0e0405 100%);
-      font-family: Arial, sans-serif;
-      overflow: hidden;
+      font-family: Arial, sans-serif; overflow:hidden;
     }
 
-    /* ===== LOGO APP ===== */
-    .logo-app {
-      position: fixed;
-      top: 22px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: "Arial Black", Impact, sans-serif;
-      font-size: 32px;
-      letter-spacing: 1.2px;
-      user-select: none;
-      z-index: 10;
-      animation: logoProIn 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    /* Logo */
+    .logo-app{
+      position:fixed; top:22px; left:50%; transform:translateX(-50%);
+      display:flex; align-items:center; gap:10px;
+      font-family:"Arial Black",Impact,sans-serif; font-size:32px; letter-spacing:1.2px;
+      user-select:none; z-index:10;
+      animation:logoProIn 380ms cubic-bezier(0.22,0.61,0.36,1) both;
     }
-    .logo-yt { color: #ffffff; text-shadow: 0 0 6px rgba(255,255,255,0.15); }
-    .logo-accent {
-      width: 6px; height: 26px;
-      background: linear-gradient(#ff3b3b, #b31217);
-      border-radius: 3px;
-    }
-    .logo-rd { color: #ff2e2e; text-shadow: 0 0 14px rgba(255,0,0,0.45); }
+    .logo-yt{ color:#fff; text-shadow:0 0 6px rgba(255,255,255,0.15); }
+    .logo-accent{ width:6px; height:26px; background:linear-gradient(#ff3b3b,#b31217); border-radius:3px; }
+    .logo-rd{ color:#ff2e2e; text-shadow:0 0 14px rgba(255,0,0,0.45); }
+    @keyframes logoProIn{ from{opacity:0; transform:translateX(-50%) translateY(-8px);} to{opacity:1; transform:translateX(-50%) translateY(0);} }
+    @media (prefers-reduced-motion: reduce){ .logo-app{ animation:none; } }
 
-    @keyframes logoProIn {
-      from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    /* Bouton principal */
+    .cartoon-btn{
+      font-family:"Arial Black",Impact,sans-serif; font-size:30px; color:#fff;
+      padding:18px 42px;
+      background:linear-gradient(#c4161c,#9e1216);
+      border:4px solid #7a0e12; border-radius:18px;
+      cursor:pointer; text-shadow:2px 2px 0 #5a0b0e;
+      box-shadow:0 6px 0 #7a0e12, 0 10px 20px rgba(0,0,0,0.45);
+      transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
     }
-    @media (prefers-reduced-motion: reduce) { .logo-app { animation: none; } }
-
-    /* ===== BOUTON PRINCIPAL ===== */
-    .cartoon-btn {
-      font-family: "Arial Black", Impact, sans-serif;
-      font-size: 30px;
-      color: #fff;
-      padding: 18px 42px;
-      background: linear-gradient(#c4161c, #9e1216);
-      border: 4px solid #7a0e12;
-      border-radius: 18px;
-      cursor: pointer;
-      text-shadow: 2px 2px 0 #5a0b0e;
-      box-shadow: 0 6px 0 #7a0e12, 0 10px 20px rgba(0,0,0,0.45);
-      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-    }
-    .cartoon-btn:hover { transform: scale(1.06); filter: brightness(1.08); }
-    .cartoon-btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #7a0e12, 0 6px 10px rgba(0,0,0,0.4);
+    .cartoon-btn:hover{ transform:scale(1.06); filter:brightness(1.08); }
+    .cartoon-btn:active{
+      transform:translateY(4px);
+      box-shadow:0 2px 0 #7a0e12, 0 6px 10px rgba(0,0,0,0.4);
     }
 
-    /* ===== PETITS BOUTONS ===== */
-    .row {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
+    /* Petits boutons */
+    .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; justify-content:center; }
+    .small-btn{
+      font-family: Arial,sans-serif; font-weight:700; font-size:14px;
+      padding:10px 14px; border-radius:12px;
+      border:2px solid rgba(255,255,255,0.18);
+      background:rgba(0,0,0,0.25); color:#fff;
+      cursor:pointer; transition:filter .12s ease, transform .12s ease;
     }
-    .small-btn {
-      font-family: Arial, sans-serif;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 2px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.25);
-      color: #fff;
-      cursor: pointer;
-      transition: filter .12s ease, transform .12s ease;
-    }
-    .small-btn:hover { filter: brightness(1.08); }
-    .small-btn:active { transform: translateY(1px); }
+    .small-btn:hover{ filter:brightness(1.08); }
+    .small-btn:active{ transform:translateY(1px); }
 
-    /* ===== STATUS ===== */
-    #status {
-      margin-top: 16px;
-      font-size: 14px;
-      color: #e0e0e0;
-      white-space: pre-line;
-      text-align: center;
-      padding: 0 16px;
-      max-width: 720px;
+    /* Status */
+    #status{
+      margin-top:16px; font-size:14px; color:#e0e0e0; white-space:pre-line;
+      text-align:center; padding:0 16px; max-width:760px;
     }
 
-    /* ===== MODAL HISTORIQUE ===== */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      z-index: 9999;
-    }
-    .hidden { display: none; }
-
-    .modal-card {
-      width: min(820px, 94vw);
-      max-height: 78vh;
-      overflow: hidden;
-      border-radius: 16px;
-      border: 2px solid rgba(255,255,255,0.12);
-      background: rgba(15,5,6,0.92);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+    /* Modal historique */
+    .modal{ position:fixed; inset:0; background:rgba(0,0,0,0.55);
+      display:flex; align-items:center; justify-content:center; padding:18px; z-index:9999; }
+    .hidden{ display:none; }
+    .modal-card{
+      width:min(900px,94vw); max-height:78vh; overflow:hidden;
+      border-radius:16px; border:2px solid rgba(255,255,255,0.12);
+      background:rgba(15,5,6,0.92); box-shadow:0 20px 50px rgba(0,0,0,0.55);
       backdrop-filter: blur(6px);
     }
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 14px 14px 10px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
+    .modal-header{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 14px 10px 14px; border-bottom:1px solid rgba(255,255,255,0.10);
     }
-    .modal-title {
-      font-family: "Arial Black", Impact, sans-serif;
-      color: #fff;
-      font-size: 20px;
-      letter-spacing: 0.6px;
-    }
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      padding: 12px 14px 6px 14px;
-    }
-    .modal-sub {
-      padding: 0 14px 10px 14px;
-      color: rgba(255,255,255,0.75);
-      font-size: 13px;
-    }
-    .modal-list {
-      padding: 0 14px 14px 14px;
-      overflow: auto;
-      max-height: calc(78vh - 120px);
-    }
+    .modal-title{ font-family:"Arial Black",Impact,sans-serif; color:#fff; font-size:20px; letter-spacing:0.6px; }
+    .modal-actions{ display:flex; gap:10px; flex-wrap:wrap; padding:12px 14px 6px 14px; }
+    .modal-sub{ padding:0 14px 10px 14px; color:rgba(255,255,255,0.75); font-size:13px; }
+    .modal-list{ padding:0 14px 14px 14px; overflow:auto; max-height:calc(78vh - 120px); }
 
-    .history-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 10px;
-      border-radius: 12px;
-      margin-bottom: 8px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
+    .history-item{
+      display:grid; grid-template-columns:120px 1fr auto;
+      gap:10px; align-items:center;
+      padding:10px; border-radius:12px; margin-bottom:8px;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);
     }
-    .history-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 0;
+    .thumb{
+      width:120px; height:90px; border-radius:10px;
+      border:1px solid rgba(255,255,255,0.12);
+      object-fit:cover; background:rgba(255,255,255,0.05);
     }
-    .history-id {
-      font-family: monospace;
-      color: rgba(255,255,255,0.85);
-      font-size: 12px;
-    }
-    .history-link {
-      color: #ff4d4d;
-      text-decoration: none;
-      word-break: break-all;
-      font-size: 13px;
-    }
-    .history-link:hover { text-decoration: underline; }
+    .history-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+    .history-title{ color:rgba(255,255,255,0.95); font-weight:800; font-size:14px; line-height:1.2; }
+    .history-id{ font-family:monospace; color:rgba(255,255,255,0.8); font-size:12px; }
+    .history-link{ color:#ff4d4d; text-decoration:none; word-break:break-all; font-size:13px; }
+    .history-link:hover{ text-decoration:underline; }
 
-    @media (max-width: 768px) {
-      .logo-app { font-size: 26px; top: 16px; }
-      .logo-accent { height: 22px; }
-      .cartoon-btn { font-size: 26px; padding: 20px 36px; }
-      #status { font-size: 15px; }
-      .modal-card { max-height: 84vh; }
-      .modal-list { max-height: calc(84vh - 130px); }
+    @media (max-width:768px){
+      .logo-app{ font-size:26px; top:16px; }
+      .logo-accent{ height:22px; }
+      .cartoon-btn{ font-size:26px; padding:20px 36px; }
+      #status{ font-size:15px; }
+      .modal-card{ max-height:84vh; }
+      .modal-list{ max-height:calc(84vh - 130px); }
+      .history-item{ grid-template-columns:96px 1fr; grid-template-rows:auto auto; }
+      .thumb{ width:96px; height:72px; }
+      .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
     }
   </style>
 </head>
 
 <body>
-  <!-- LOGO -->
   <div class="logo-app">
     <span class="logo-yt">YouTube</span>
     <span class="logo-accent"></span>
     <span class="logo-rd">Random</span>
   </div>
 
-  <!-- BOUTON PRINCIPAL -->
+  <!-- ✅ UN SEUL BOUTON, TEXTE COMME AVANT -->
   <button id="random-video-btn" class="cartoon-btn">Fuze III</button>
 
-  <!-- BOUTONS -->
   <div class="row">
-    <button id="rebuild-btn" class="small-btn">Rebuild cache</button>
-    <button id="clear-cache-btn" class="small-btn">Vider cache</button>
+    <button id="rebuild-all-btn" class="small-btn">Rebuild caches</button>
+    <button id="clear-all-cache-btn" class="small-btn">Vider caches</button>
     <button id="reset-seen-btn" class="small-btn">Reset historique</button>
     <button id="history-btn" class="small-btn">Historique</button>
   </div>
 
-  <!-- STATUS -->
   <div id="status">Prêt.</div>
 
-  <!-- MODAL HISTORIQUE -->
   <div id="history-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="history-title">
     <div class="modal-card">
       <div class="modal-header">
-        <div id="history-title" class="modal-title">Historique</div>
+        <div id="history-title" class="modal-title">Historique (2 chaînes)</div>
         <button id="history-close" class="small-btn">Fermer</button>
       </div>
 
@@ -239,230 +149,266 @@
 
   <script>
     /* ========= CONFIG ========= */
-    const apiKey = "AIzaSyBVx63xYeRm34oQIsCigJozDp9hIoRLhxo"; // <-- mets ta clé API ici
+    const apiKey = "AIzaSyBVx63xYeRm34oQIsCigJozDp9hIoRLhxo"; // <-- Mets ta clé ici
 
-    // ✅ Channel ID (UC...) - pour Fuze III :
-    const CHANNEL_ID = "UCfznY5SlSoZoXN0-kBPtCdg";
+    // Chaîne 1 : Fuze III (principal)
+    const CHANNEL_FUZE3_ID = "UCfznY5SlSoZoXN0-kBPtCdg";
 
-    const YEARS_BACK = 6;
-    const MIN_SECONDS = 61; // >60s => exclut Shorts
+    // Chaîne 2 : (ta deuxième chaîne) --> mets son UC... ici
+    const CHANNEL_FIOUSE_ID = "UCBIVKUsOGwCg8RNpucEGp_g";
 
-    // Cache pool (48h) => moins de rebuilds
+    const MIN_SECONDS = 61;                // anti-shorts
     const CACHE_TTL_MS = 48 * 60 * 60 * 1000;
 
-    // Sécurités pagination
-    const MAX_PAGES = 200;     // max pages playlistItems
-    const MAX_VIDEOS = 6000;   // max ids collectés
+    // Limites (PAR CHAÎNE)
+    const MAX_PAGES = 200;
+    const MAX_VIDEOS = 6000;
 
-    // Keys cache
-    const CACHE_KEY = `yt_pool_uc_${CHANNEL_ID}_${YEARS_BACK}y_${MIN_SECONDS}s_v3`;
-    const META_KEY  = `${CACHE_KEY}_meta`;
+    // Fenêtres de dates
+    const FUZE3_YEARS_BACK = 6;
+    const FIOUSE_SINCE_ISO = "2023-01-01T00:00:00Z";
 
-    // Historique ordonné (liste)
-    const SEEN_KEY = `${CACHE_KEY}_seen_list`;
-    const MAX_SEEN = 8000;
+    // Déclaration des 2 chaînes
+    const CHANNELS = [
+      { key: "fuze3",  name: "Fuze III", id: CHANNEL_FUZE3_ID,  cutoffType: "yearsBack", yearsBack: FUZE3_YEARS_BACK },
+      { key: "fiouse", name: "2e chaîne", id: CHANNEL_FIOUSE_ID, cutoffType: "sinceIso",  sinceIso: FIOUSE_SINCE_ISO }
+    ];
 
     /* ========= UI ========= */
     const btn = document.getElementById("random-video-btn");
-    const rebuildBtn = document.getElementById("rebuild-btn");
-    const clearCacheBtn = document.getElementById("clear-cache-btn");
+    const rebuildAllBtn = document.getElementById("rebuild-all-btn");
+    const clearAllCacheBtn = document.getElementById("clear-all-cache-btn");
     const resetSeenBtn = document.getElementById("reset-seen-btn");
     const statusEl = document.getElementById("status");
     const setStatus = (m) => statusEl.textContent = m;
 
     /* ========= UTILS ========= */
-    function cutoffMs(years) {
-      const d = new Date();
-      d.setFullYear(d.getFullYear() - years);
-      return d.getTime();
-    }
-
-    function isoDurationToSeconds(iso) {
+    function isoDurationToSeconds(iso){
       const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
       return (+(m?.[1]||0))*3600 + (+(m?.[2]||0))*60 + (+(m?.[3]||0));
     }
-
-    async function fetchJson(url) {
+    async function fetchJson(url){
       const r = await fetch(url);
       const d = await r.json();
-      if (!r.ok) throw new Error(d?.error?.message || "Erreur API");
+      if(!r.ok) throw new Error(d?.error?.message || "Erreur API");
       return d;
     }
+    function formatDate(ts){ try{return new Date(ts).toLocaleString();}catch{return"";} }
 
-    function formatDate(ts) {
-      try { return new Date(ts).toLocaleString(); }
-      catch { return ""; }
+    function cutoffMsForChannel(ch){
+      if (ch.cutoffType === "yearsBack"){
+        const d = new Date();
+        d.setFullYear(d.getFullYear() - ch.yearsBack);
+        return d.getTime();
+      }
+      return new Date(ch.sinceIso).getTime();
     }
 
-    /* ========= CACHE POOL ========= */
-    function loadCache() {
-      try {
-        const raw = localStorage.getItem(CACHE_KEY);
-        const metaRaw = localStorage.getItem(META_KEY);
-        if (!raw || !metaRaw) return null;
+    /* ========= KEYS (1 cache par chaîne) ========= */
+    function keysFor(ch){
+      const base = `yt_${ch.key}_${ch.id}_${MIN_SECONDS}s`;
+      return {
+        IDS:  `${base}_pool_ids_v1`,
+        META: `${base}_pool_meta_v1`,
+        TS:   `${base}_pool_ts_v1`,
+        SEEN: `${base}_seen_v1`
+      };
+    }
 
-        const pool = JSON.parse(raw);
-        const meta = JSON.parse(metaRaw);
+    /* ========= CACHE (par chaîne) ========= */
+    function loadCache(ch){
+      const k = keysFor(ch);
+      try{
+        const idsRaw = localStorage.getItem(k.IDS);
+        const metaRaw = localStorage.getItem(k.META);
+        const tsRaw = localStorage.getItem(k.TS);
+        if(!idsRaw || !metaRaw || !tsRaw) return null;
 
-        if (!Array.isArray(pool) || !meta?.ts) return null;
-        if (Date.now() - meta.ts > CACHE_TTL_MS) return null;
+        const poolIds = JSON.parse(idsRaw);
+        const metaMap = JSON.parse(metaRaw);
+        const meta = JSON.parse(tsRaw);
 
-        return { pool, meta };
-      } catch {
+        if(!Array.isArray(poolIds) || !meta?.ts) return null;
+        if(Date.now() - meta.ts > CACHE_TTL_MS) return null;
+
+        return { poolIds, metaMap, meta };
+      }catch{
         return null;
       }
     }
 
-    function saveCache(pool, metaExtra = {}) {
-      const meta = { ts: Date.now(), count: pool.length, ...metaExtra };
-      localStorage.setItem(CACHE_KEY, JSON.stringify(pool));
-      localStorage.setItem(META_KEY, JSON.stringify(meta));
+    function saveCache(ch, poolIds, metaMap, extra={}){
+      const k = keysFor(ch);
+      const meta = { ts: Date.now(), count: poolIds.length, ...extra };
+      localStorage.setItem(k.IDS, JSON.stringify(poolIds));
+      localStorage.setItem(k.META, JSON.stringify(metaMap));
+      localStorage.setItem(k.TS, JSON.stringify(meta));
       return meta;
     }
 
-    function clearPoolCache() {
-      localStorage.removeItem(CACHE_KEY);
-      localStorage.removeItem(META_KEY);
+    function clearCache(ch){
+      const k = keysFor(ch);
+      localStorage.removeItem(k.IDS);
+      localStorage.removeItem(k.META);
+      localStorage.removeItem(k.TS);
     }
 
-    /* ========= HISTORIQUE ========= */
-    function loadSeenList() {
-      try {
-        const raw = localStorage.getItem(SEEN_KEY);
+    /* ========= HISTORIQUE (par chaîne) ========= */
+    function loadSeenList(ch){
+      const k = keysFor(ch);
+      try{
+        const raw = localStorage.getItem(k.SEEN);
         const arr = raw ? JSON.parse(raw) : [];
         return Array.isArray(arr) ? arr : [];
-      } catch {
+      }catch{
         return [];
       }
     }
 
-    function saveSeenList(list) {
+    function saveSeenList(ch, list){
+      const k = keysFor(ch);
+      const MAX_SEEN = 10000;
       const trimmed = list.slice(Math.max(0, list.length - MAX_SEEN));
-      localStorage.setItem(SEEN_KEY, JSON.stringify(trimmed));
+      localStorage.setItem(k.SEEN, JSON.stringify(trimmed));
     }
 
-    function resetSeen() {
-      localStorage.removeItem(SEEN_KEY);
+    function resetSeenAll(){
+      for(const ch of CHANNELS){
+        const k = keysFor(ch);
+        localStorage.removeItem(k.SEEN);
+      }
     }
 
-    /* ========= YOUTUBE QUOTA-MIN ========= */
-    async function getUploadsPlaylistId(channelId) {
+    /* ========= YOUTUBE (quota-min) ========= */
+    async function getUploadsPlaylistId(channelId){
       const url = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`;
       const data = await fetchJson(url);
       const uploads = data?.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-      if (!uploads) throw new Error("Impossible de récupérer la playlist Uploads.");
+      if(!uploads) throw new Error("Impossible de récupérer la playlist Uploads.");
       return uploads;
     }
 
-    async function collectVideoIdsUpToCutoff(uploadsPlaylistId) {
-      const cutoff = cutoffMs(YEARS_BACK);
+    async function collectVideoIdsUpToCutoff(uploadsPlaylistId, cutoffMs){
       let pageToken = "";
-      let all = [];
+      const all = [];
 
-      for (let page = 0; page < MAX_PAGES; page++) {
+      for(let page=0; page<MAX_PAGES; page++){
         const url =
-          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails` +
-          `&playlistId=${uploadsPlaylistId}&maxResults=50` +
-          (pageToken ? `&pageToken=${pageToken}` : "") +
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails`+
+          `&playlistId=${uploadsPlaylistId}&maxResults=50`+
+          (pageToken ? `&pageToken=${pageToken}` : "")+
           `&key=${apiKey}`;
 
         const data = await fetchJson(url);
         const items = data.items || [];
-        if (!items.length) break;
+        if(!items.length) break;
 
         let reachedOld = false;
 
-        for (const it of items) {
+        for(const it of items){
           const publishedAt = it?.snippet?.publishedAt;
           const ms = publishedAt ? new Date(publishedAt).getTime() : null;
           const vid = it?.contentDetails?.videoId;
+          if(!vid || !ms) continue;
 
-          if (!vid || !ms) continue;
+          if(ms < cutoffMs){ reachedOld = true; break; }
 
-          if (ms < cutoff) { reachedOld = true; break; }
           all.push(vid);
-
-          if (all.length >= MAX_VIDEOS) { reachedOld = true; break; }
+          if(all.length >= MAX_VIDEOS){ reachedOld = true; break; }
         }
 
-        if (reachedOld) break;
-        if (!data.nextPageToken) break;
+        if(reachedOld) break;
+        if(!data.nextPageToken) break;
         pageToken = data.nextPageToken;
       }
 
       return all;
     }
 
-    async function filterNoShorts(videoIds) {
-      const keep = [];
-      for (let i = 0; i < videoIds.length; i += 50) {
-        const chunk = videoIds.slice(i, i + 50);
-        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${chunk.join(",")}&key=${apiKey}`;
+    async function buildMetaAndFilterNoShorts(videoIds){
+      const poolIds = [];
+      const metaMap = {}; // compact: id -> [title, thumb]
+
+      for(let i=0; i<videoIds.length; i+=50){
+        const chunk = videoIds.slice(i, i+50);
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${chunk.join(",")}&key=${apiKey}`;
         const data = await fetchJson(url);
 
-        for (const v of (data.items || [])) {
+        for(const v of (data.items || [])){
+          const id = v?.id;
           const iso = v?.contentDetails?.duration;
-          if (!iso) continue;
-          if (isoDurationToSeconds(iso) >= MIN_SECONDS) keep.push(v.id);
+          if(!id || !iso) continue;
+
+          const sec = isoDurationToSeconds(iso);
+          const sn = v?.snippet;
+
+          const thumb =
+            sn?.thumbnails?.default?.url ||
+            sn?.thumbnails?.medium?.url ||
+            sn?.thumbnails?.high?.url ||
+            "";
+
+          const title = (sn?.title || "").trim();
+          metaMap[id] = [title, thumb];
+
+          if(sec >= MIN_SECONDS) poolIds.push(id);
         }
       }
-      return keep;
+
+      return { poolIds, metaMap };
     }
 
-    async function buildPool(force = false) {
-      if (!force) {
-        const cached = loadCache();
-        if (cached) {
-          const { pool, meta } = cached;
-          const seenCount = loadSeenList().length;
-          setStatus(`Cache OK (${meta.count} vidéos)\nDéjà vues: ${seenCount}\nDernier rebuild : ${formatDate(meta.ts)}`);
-          return pool;
-        }
+    async function buildPoolForChannel(ch, force=false){
+      if(!force){
+        const cached = loadCache(ch);
+        if(cached) return cached;
       }
 
-      setStatus("Rebuild…\nRécupération playlist Uploads…");
-      const uploadsId = await getUploadsPlaylistId(CHANNEL_ID);
+      const cutoff = cutoffMsForChannel(ch);
+      setStatus(`Rebuild ${ch.name}…\nPlaylist Uploads…`);
+      const uploadsId = await getUploadsPlaylistId(ch.id);
 
-      setStatus("Indexation des vidéos sur 6 ans…");
-      const ids = await collectVideoIdsUpToCutoff(uploadsId);
+      setStatus(`Rebuild ${ch.name}…\nIndexation…`);
+      const ids = await collectVideoIdsUpToCutoff(uploadsId, cutoff);
 
-      setStatus(`Filtrage anti-Shorts…\n${ids.length} vidéos candidates`);
-      const pool = await filterNoShorts(ids);
+      setStatus(`Rebuild ${ch.name}…\nTitres + miniatures + durées…\n${ids.length} candidates`);
+      const built = await buildMetaAndFilterNoShorts(ids);
 
-      if (!pool.length) throw new Error("Pool vide (chaîne quasi full-shorts ?).");
+      if(!built.poolIds.length) throw new Error(`Pool vide pour ${ch.name} (beaucoup de shorts ?).`);
 
-      const meta = saveCache(pool, { raw: ids.length });
-      const seenCount = loadSeenList().length;
-      setStatus(`Pool prêt ✅\n${meta.count} vidéos (≥ ${MIN_SECONDS}s)\nDéjà vues: ${seenCount}\nDernier rebuild : ${formatDate(meta.ts)}`);
-      return pool;
+      saveCache(ch, built.poolIds, built.metaMap, { raw: ids.length });
+      return { poolIds: built.poolIds, metaMap: built.metaMap, meta: { ts: Date.now(), count: built.poolIds.length } };
     }
 
-    /* ========= RANDOM (ANTI-REPEAT) ========= */
-    async function pickUnseen(pool) {
-      const seenList = loadSeenList();
+    /* ========= RANDOM (50/50) ========= */
+    function pickChannel50_50(){
+      return (Math.random() < 0.5) ? CHANNELS[0] : CHANNELS[1];
+    }
+
+    function pickUnseen(ch, poolIds){
+      const seenList = loadSeenList(ch);
       const seenSet = new Set(seenList);
 
-      const available = pool.filter(id => !seenSet.has(id));
+      const available = poolIds.filter(id => !seenSet.has(id));
 
       let pickedId;
-      if (available.length > 0) {
+      if(available.length > 0){
         pickedId = available[Math.floor(Math.random() * available.length)];
       } else {
-        // Tout vu => reset historique
-        resetSeen();
-        pickedId = pool[Math.floor(Math.random() * pool.length)];
+        // tout vu -> reset historique de cette chaîne seulement
+        saveSeenList(ch, []);
+        pickedId = poolIds[Math.floor(Math.random() * poolIds.length)];
       }
 
-      // Sauver historique (ordre)
-      if (!seenSet.has(pickedId)) {
+      if(!seenSet.has(pickedId)){
         seenList.push(pickedId);
-        saveSeenList(seenList);
+        saveSeenList(ch, seenList);
       }
 
-      return { id: pickedId, seenCount: seenList.length, remaining: Math.max(0, pool.length - seenList.length) };
+      return { id: pickedId, seenCount: seenList.length, remaining: Math.max(0, poolIds.length - seenList.length) };
     }
 
-    /* ========= MODAL HISTORIQUE ========= */
+    /* ========= MODAL HISTORIQUE (affiche les 2) ========= */
     const modal = document.getElementById("history-modal");
     const historyBtn = document.getElementById("history-btn");
     const closeBtn = document.getElementById("history-close");
@@ -471,143 +417,197 @@
     const historyListEl = document.getElementById("history-list");
     const historyCountEl = document.getElementById("history-count");
 
-    function openHistory() {
-      const seenList = loadSeenList().slice().reverse(); // dernier vu en premier
-      historyCountEl.textContent = `Vidéos déjà sorties : ${seenList.length}`;
+    function openHistory(){
       historyListEl.innerHTML = "";
+      let total = 0;
 
-      if (seenList.length === 0) {
-        historyListEl.innerHTML = `<div style="color: rgba(255,255,255,0.7); padding: 10px 0;">Aucune vidéo pour l’instant.</div>`;
-        modal.classList.remove("hidden");
-        return;
+      for(const ch of CHANNELS){
+        const cached = loadCache(ch);
+        const metaMap = cached?.metaMap || {};
+        const seenList = loadSeenList(ch).slice().reverse();
+        total += seenList.length;
+
+        const header = document.createElement("div");
+        header.style.color = "rgba(255,255,255,0.9)";
+        header.style.fontWeight = "900";
+        header.style.margin = "12px 0 8px 0";
+        header.textContent = `${ch.name} — ${seenList.length} vidéo(s)`;
+        historyListEl.appendChild(header);
+
+        if(seenList.length === 0){
+          const empty = document.createElement("div");
+          empty.style.color = "rgba(255,255,255,0.65)";
+          empty.style.marginBottom = "8px";
+          empty.textContent = "Aucune vidéo pour l’instant.";
+          historyListEl.appendChild(empty);
+          continue;
+        }
+
+        for(const id of seenList){
+          const url = `https://www.youtube.com/watch?v=${id}`;
+          const meta = metaMap[id] || ["(titre indisponible — rebuild conseillé)", ""];
+          const title = meta[0] || "(sans titre)";
+          const thumb = meta[1] || "";
+
+          const row = document.createElement("div");
+          row.className = "history-item";
+
+          const img = document.createElement("img");
+          img.className = "thumb";
+          img.alt = "Miniature";
+          img.loading = "lazy";
+          if(thumb) img.src = thumb;
+
+          const left = document.createElement("div");
+          left.className = "history-left";
+
+          const titleEl = document.createElement("div");
+          titleEl.className = "history-title";
+          titleEl.textContent = title;
+
+          const idEl = document.createElement("div");
+          idEl.className = "history-id";
+          idEl.textContent = id;
+
+          const link = document.createElement("a");
+          link.className = "history-link";
+          link.href = url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = url;
+
+          left.appendChild(titleEl);
+          left.appendChild(idEl);
+          left.appendChild(link);
+
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "small-btn";
+          copyBtn.textContent = "Copier";
+          copyBtn.addEventListener("click", async () => {
+            try{
+              await navigator.clipboard.writeText(url);
+              copyBtn.textContent = "Copié ✅";
+              setTimeout(()=>copyBtn.textContent="Copier", 900);
+            }catch{
+              alert("Impossible de copier (autorisation navigateur).");
+            }
+          });
+
+          row.appendChild(img);
+          row.appendChild(left);
+          row.appendChild(copyBtn);
+          historyListEl.appendChild(row);
+        }
       }
 
-      for (const id of seenList) {
-        const url = `https://www.youtube.com/watch?v=${id}`;
-
-        const row = document.createElement("div");
-        row.className = "history-item";
-
-        const left = document.createElement("div");
-        left.className = "history-left";
-
-        const idEl = document.createElement("div");
-        idEl.className = "history-id";
-        idEl.textContent = id;
-
-        const link = document.createElement("a");
-        link.className = "history-link";
-        link.href = url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.textContent = url;
-
-        left.appendChild(idEl);
-        left.appendChild(link);
-
-        const copyBtn = document.createElement("button");
-        copyBtn.className = "small-btn";
-        copyBtn.textContent = "Copier";
-        copyBtn.addEventListener("click", async () => {
-          try {
-            await navigator.clipboard.writeText(url);
-            copyBtn.textContent = "Copié ✅";
-            setTimeout(() => (copyBtn.textContent = "Copier"), 900);
-          } catch {
-            alert("Impossible de copier (autorisation navigateur).");
-          }
-        });
-
-        row.appendChild(left);
-        row.appendChild(copyBtn);
-        historyListEl.appendChild(row);
-      }
-
+      historyCountEl.textContent = `Total vidéos déjà sorties (2 chaînes) : ${total}`;
       modal.classList.remove("hidden");
     }
 
-    function closeHistory() {
-      modal.classList.add("hidden");
-    }
+    function closeHistory(){ modal.classList.add("hidden"); }
 
-    historyBtn?.addEventListener("click", openHistory);
-    closeBtn?.addEventListener("click", closeHistory);
+    historyBtn.addEventListener("click", openHistory);
+    closeBtn.addEventListener("click", closeHistory);
+    modal.addEventListener("click", (e)=>{ if(e.target === modal) closeHistory(); });
 
-    // fermer en cliquant hors de la carte
-    modal?.addEventListener("click", (e) => {
-      if (e.target === modal) closeHistory();
-    });
-
-    historyClearBtn?.addEventListener("click", () => {
-      resetSeen();
+    historyClearBtn.addEventListener("click", ()=>{
+      resetSeenAll();
       openHistory();
     });
 
-    copyAllBtn?.addEventListener("click", async () => {
-      const seenList = loadSeenList().slice().reverse();
-      const all = seenList.map(id => `https://www.youtube.com/watch?v=${id}`).join("\n");
-      try {
-        await navigator.clipboard.writeText(all);
+    copyAllBtn.addEventListener("click", async ()=>{
+      const lines = [];
+      for(const ch of CHANNELS){
+        const seenList = loadSeenList(ch).slice().reverse();
+        if(seenList.length){
+          lines.push(`=== ${ch.name} ===`);
+          for(const id of seenList) lines.push(`https://www.youtube.com/watch?v=${id}`);
+          lines.push("");
+        }
+      }
+      try{
+        await navigator.clipboard.writeText(lines.join("\n"));
         copyAllBtn.textContent = "Tout copié ✅";
-        setTimeout(() => (copyAllBtn.textContent = "Copier tout"), 1000);
-      } catch {
+        setTimeout(()=>copyAllBtn.textContent="Copier tout", 1000);
+      }catch{
         alert("Impossible de copier (autorisation navigateur).");
       }
     });
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !modal.classList.contains("hidden")) closeHistory();
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape" && !modal.classList.contains("hidden")) closeHistory();
     });
 
-    /* ========= ACTIONS UI ========= */
-    btn.addEventListener("click", async () => {
+    /* ========= ACTIONS ========= */
+
+    // ✅ C’EST ICI QUE TU CHERCHAIS : UN SEUL EVENT, MAIS 50/50 ENTRE LES 2 CACHES
+    btn.addEventListener("click", async ()=>{
       const tab = window.open("about:blank", "_blank");
-      try {
-        const pool = await buildPool(false);
+      try{
+        const chosen = pickChannel50_50();
 
-        const pick = await pickUnseen(pool);
-        setStatus(`OK 🎲 (${pool.length} vidéos en cache)\nDéjà vues: ${pick.seenCount}\nRestantes: ${pick.remaining}\nOuverture…`);
+        setStatus(`Fuze III\nSource : ${chosen.name}\nChargement cache…`);
+        const built = await buildPoolForChannel(chosen, false);
+
+        const pick = pickUnseen(chosen, built.poolIds);
+
+        setStatus(
+          `Fuze III\nSource : ${chosen.name}\n` +
+          `Cache : ${built.poolIds.length} vidéos\n` +
+          `Déjà vues : ${pick.seenCount}\n` +
+          `Restantes : ${pick.remaining}\nOuverture…`
+        );
+
         tab.location.href = `https://www.youtube.com/watch?v=${pick.id}`;
-      } catch (e) {
-        if (tab) tab.close();
-        setStatus("Erreur : " + (e.message || e));
+      }catch(e){
+        if(tab) tab.close();
         console.error(e);
-      }
-    });
-
-    rebuildBtn.addEventListener("click", async () => {
-      try {
-        await buildPool(true);
-      } catch (e) {
         setStatus("Erreur : " + (e.message || e));
+      }
+    });
+
+    rebuildAllBtn.addEventListener("click", async ()=>{
+      try{
+        for(const ch of CHANNELS){
+          setStatus(`Rebuild caches…\n${ch.name}`);
+          await buildPoolForChannel(ch, true);
+        }
+        setStatus("✅ Rebuild terminé (2 chaînes).");
+      }catch(e){
         console.error(e);
+        setStatus("Erreur : " + (e.message || e));
       }
     });
 
-    clearCacheBtn.addEventListener("click", () => {
-      clearPoolCache();
-      setStatus("Cache pool vidé. (prochain clic = rebuild)");
+    clearAllCacheBtn.addEventListener("click", ()=>{
+      for(const ch of CHANNELS) clearCache(ch);
+      setStatus("Caches vidés (2 chaînes). Prochain clic = rebuild de la chaîne tirée.");
     });
 
-    resetSeenBtn.addEventListener("click", () => {
-      resetSeen();
-      const cached = loadCache();
-      if (cached) {
-        setStatus(`Historique réinitialisé ✅\nCache OK (${cached.meta.count} vidéos)\nDernier rebuild : ${formatDate(cached.meta.ts)}`);
-      } else {
-        setStatus("Historique réinitialisé ✅\nPrêt. (1er clic = build + cache)");
-      }
+    resetSeenBtn.addEventListener("click", ()=>{
+      resetSeenAll();
+      const a = loadCache(CHANNELS[0]);
+      const b = loadCache(CHANNELS[1]);
+      setStatus(
+        `Historique réinitialisé ✅\n` +
+        `${CHANNELS[0].name}: cache ${a ? a.meta.count : "vide"}\n` +
+        `${CHANNELS[1].name}: cache ${b ? b.meta.count : "vide"}`
+      );
     });
 
     /* ========= BOOT ========= */
-    (function boot() {
-      const cached = loadCache();
-      const seenCount = loadSeenList().length;
-      if (cached) {
-        setStatus(`Cache OK (${cached.meta.count} vidéos)\nDéjà vues: ${seenCount}\nDernier rebuild : ${formatDate(cached.meta.ts)}`);
-      } else {
-        setStatus(`Prêt.\nDéjà vues: ${seenCount}\n(1er clic = build + cache)`);
-      }
+    (function boot(){
+      const a = loadCache(CHANNELS[0]);
+      const b = loadCache(CHANNELS[1]);
+      const sa = loadSeenList(CHANNELS[0]).length;
+      const sb = loadSeenList(CHANNELS[1]).length;
+
+      setStatus(
+        `Prêt.\n` +
+        `${CHANNELS[0].name}: cache ${a ? a.meta.count : "vide"} | vus ${sa}\n` +
+        `${CHANNELS[1].name}: cache ${b ? b.meta.count : "vide"} | vus ${sb}\n` +
+        `Clic = tirage 50/50`
+      );
     })();
   </script>
 </body>
