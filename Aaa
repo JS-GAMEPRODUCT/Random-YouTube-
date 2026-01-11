@@ -14,7 +14,7 @@
   <div id="status"></div>
 
   <script>
-    const apiKey = "TA_CLE_API_ICI";
+    const apiKey = "https://js-gameproduct.github.io/Random-YouTube-/";
     const handleOrChannel = "@FuzeIII";
 
     // Fenêtre & filtre
