@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
   <title>YouTube Random — Menu + Favoris + Random</title>
 
   <style>
@@ -14,6 +15,7 @@
       --shadow: 0 18px 55px rgba(0,0,0,0.45);
       --accent:#ff2e2e;
       --gold:#ffd24a;
+      color-scheme: dark;
     }
 
     *{ box-sizing:border-box; }
@@ -133,11 +135,12 @@
 
     .footer{ margin-top:12px; text-align:center; color:rgba(255,255,255,0.55); font-size:12px; }
 
-    /* ✅ Zone scrollable si pas assez grand */
+    /* ✅ Zone scrollable */
     .scroll{
       max-height:60vh;
       overflow:auto;
       padding-right:4px;
+      padding-bottom:95px;
     }
     .scroll::-webkit-scrollbar{ width:10px; }
     .scroll::-webkit-scrollbar-thumb{
@@ -291,6 +294,15 @@
       .thumb{ width:96px; height:72px; }
       .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
     }
+
+    /* ✅ FIX iPhone WebKit */
+    .menu-card, .channel-item, .toast, .modal-card{
+      -webkit-backdrop-filter: blur(10px);
+    }
+    @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+      .menu-card{ background: rgba(15, 5, 6, 0.88) !important; }
+      .channel-item{ background: rgba(255,255,255,0.08) !important; }
+    }
   </style>
 </head>
 
@@ -305,7 +317,7 @@
 
   <div class="app">
 
-    <!-- ===== PAGE MENU ===== -->
+    <!-- PAGE MENU -->
     <section id="page-home" class="page active">
       <div class="menu-card">
         <div class="menu-list">
@@ -349,7 +361,7 @@
       </div>
     </section>
 
-    <!-- ===== PAGE CHAÎNES ===== -->
+    <!-- PAGE CHAÎNES -->
     <section id="page-channels" class="page">
       <div class="page-top">
         <button class="back-btn" data-back="page-home">← Retour</button>
@@ -369,7 +381,7 @@
       </div>
     </section>
 
-    <!-- ===== PAGE FAVORIS ===== -->
+    <!-- PAGE FAVORIS -->
     <section id="page-favs" class="page">
       <div class="page-top">
         <button class="back-btn" data-back="page-home">← Retour</button>
@@ -383,7 +395,7 @@
       </div>
     </section>
 
-    <!-- ===== PAGE HELP ===== -->
+    <!-- PAGE HELP -->
     <section id="page-help" class="page">
       <div class="page-top">
         <button class="back-btn" data-back="page-home">← Retour</button>
@@ -407,10 +419,10 @@
 
   </div>
 
-  <!-- ===== TOAST ===== -->
+  <!-- TOAST -->
   <div id="toast-wrap" class="toast-wrap"></div>
 
-  <!-- ===== MODAL HISTORIQUE ===== -->
+  <!-- MODAL HISTORIQUE -->
   <div id="history-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="history-title">
     <div class="modal-card">
       <div class="modal-header">
@@ -438,9 +450,11 @@
       if(id === "page-favs") renderFavorites();
       if(id === "page-channels") renderChannels();
     }
+
     document.addEventListener("click", (e)=>{
       const go = e.target.closest("[data-go]");
       if(go) showPage(go.dataset.go);
+
       const back = e.target.closest("[data-back]");
       if(back) showPage(back.dataset.back);
     });
@@ -469,17 +483,13 @@
       }
 
       const start = Date.now();
-
-      // tentative app via iframe invisible (souvent le plus fiable iOS)
       const iframe = document.createElement("iframe");
       iframe.style.display = "none";
       iframe.src = appUrl;
       document.body.appendChild(iframe);
 
-      // fallback web si l’app ne s’est pas ouverte
       setTimeout(() => {
         try{ document.body.removeChild(iframe); }catch{}
-
         if(document.visibilityState === "visible" && (Date.now() - start) < 2500){
           window.location.href = webUrl;
         }
@@ -489,7 +499,6 @@
     /* ========= CONFIG ========= */
     const apiKey = "AIzaSyBVx63xYeRm34oQIsCigJozDp9hIoRLhxo"; // <-- Mets ta clé ici
 
-    // robuste si un ID est collé sans "UC"
     function normalizeChannelId(id){
       const s = String(id || "").trim();
       if(s.startsWith("UC")) return s;
@@ -502,18 +511,17 @@
     const CHANNEL_AMIXEM_ID  = normalizeChannelId("UCgvqvBoSHB1ctlyyhoHrGwQ");
 
     const CHANNEL_SQUEEZIE_ID = normalizeChannelId("UCWeg2Pkate69NFdBeuRFTAw");
-    const CHANNEL_MEC_ID      = normalizeChannelId("UCDPK_MTu3uTUFJXRVcTJcEw"); // MacFly et Carlito
+    const CHANNEL_MEC_ID      = normalizeChannelId("UCDPK_MTu3uTUFJXRVcTJcEw");
     const CHANNEL_INOXTAG_ID  = normalizeChannelId("UCL9aTJb0ur4sovxcppAopEw");
-    const CHANNEL_JOYCA_ID    = normalizeChannelId("UCow2IGnug1l3Xazkrc5jM_Q"); // ✅ fixé
-    const CHANNEL_MASTU_ID    = normalizeChannelId("UCahaFPP6v3WCfK5Tjao0B7A"); // ✅ fixé (avec UC)
+    const CHANNEL_JOYCA_ID    = normalizeChannelId("UCow2IGnug1l3Xazkrc5jM_Q");
+    const CHANNEL_MASTU_ID    = normalizeChannelId("UCahaFPP6v3WCfK5Tjao0B7A");
 
-    const MIN_SECONDS = 61;                  // anti-shorts
-    const CACHE_TTL_MS = 48 * 60 * 60 * 1000; // 48h
+    const MIN_SECONDS = 61;
+    const CACHE_TTL_MS = 48 * 60 * 60 * 1000;
 
-    const MAX_PAGES = 200;    // par chaîne
-    const MAX_VIDEOS = 6000;  // par chaîne
+    const MAX_PAGES = 200;
+    const MAX_VIDEOS = 6000;
 
-    // Fenêtres de dates par chaîne
     const CH_FUZE3  = { key:"fuze3",  name:"Fuze III", id:CHANNEL_FUZE3_ID,  cutoffType:"yearsBack", yearsBack:6 };
     const CH_FIOUSE = { key:"fiouse", name:"Fiouse",  id:CHANNEL_FIOUSE_ID, cutoffType:"sinceIso",  sinceIso:"2023-01-01T00:00:00Z" };
     const CH_AMIXEM = { key:"amixem", name:"Amixem",  id:CHANNEL_AMIXEM_ID, cutoffType:"yearsBack", yearsBack:6 };
@@ -526,7 +534,6 @@
 
     const CHANNELS_ALL = [CH_FUZE3, CH_FIOUSE, CH_AMIXEM, CH_SQUEEZIE, CH_MEC, CH_INOXTAG, CH_JOYCA, CH_MASTU];
 
-    // ✅ anti double-clic / anti concurrence
     let isPicking = false;
 
     /* ========= UTILS ========= */
@@ -548,7 +555,6 @@
       }
       return new Date(ch.sinceIso).getTime();
     }
-
     function pad2(n){ return String(n).padStart(2,"0"); }
     function formatDuration(ms){
       if(ms <= 0) return "0h";
@@ -589,7 +595,7 @@
     }
 
     /* ========= AVATAR (API + CACHE) ========= */
-    const AVATAR_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 jours
+    const AVATAR_TTL_MS = 30 * 24 * 60 * 60 * 1000;
     function avatarCacheKey(channelId){ return `yt_avatar_${channelId}_v1`; }
     function avatarCacheTsKey(channelId){ return `yt_avatar_${channelId}_ts_v1`; }
 
@@ -622,7 +628,7 @@
       return avatarUrl || "";
     }
 
-    /* ========= KEYS (1 cache par chaîne) ========= */
+    /* ========= KEYS ========= */
     function keysFor(ch){
       const base = `yt_${ch.key}_${ch.id}_${MIN_SECONDS}s`;
       return {
@@ -633,7 +639,7 @@
       };
     }
 
-    /* ========= CACHE (par chaîne) ========= */
+    /* ========= CACHE ========= */
     function loadCache(ch){
       const k = keysFor(ch);
       try{
@@ -671,18 +677,16 @@
       localStorage.removeItem(k.TS);
     }
 
-    // ✅ pour que "Vidéos dispo" baisse à chaque clic
     function removeFromCache(ch, videoId){
       const cached = loadCache(ch);
       if(!cached || !Array.isArray(cached.poolIds)) return;
       const idx = cached.poolIds.indexOf(videoId);
       if(idx === -1) return;
-
       cached.poolIds.splice(idx, 1);
       saveCache(ch, cached.poolIds, cached.metaMap, { pruned_to: cached.poolIds.length });
     }
 
-    /* ========= HISTORIQUE (par chaîne) ========= */
+    /* ========= HISTORIQUE ========= */
     function loadSeenList(ch){
       const k = keysFor(ch);
       try{
@@ -709,11 +713,9 @@
     function seenCountFor(ch){ return loadSeenList(ch).length; }
     function remainingCountFor(ch){ return loadCache(ch)?.poolIds?.length || 0; }
 
-    // ✅ Timer UX: quand expiré -> "charger une vidéo random"
     function rebuildTimeLeftForGroup(group){
       const now = Date.now();
       const times = [];
-
       for(const ch of group){
         const cached = loadCache(ch);
         if(cached?.meta?.ts){
@@ -721,16 +723,13 @@
           times.push(left);
         }
       }
-
       if(times.length === 0) return "charger une vidéo random";
-
       const minLeft = Math.min(...times);
       if(minLeft <= 0) return "charger une vidéo random";
-
       return formatDuration(minLeft);
     }
 
-    /* ========= YOUTUBE (quota-min) ========= */
+    /* ========= YT quota-min ========= */
     async function getUploadsPlaylistId(channelId){
       const url = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`;
       const data = await fetchJson(url);
@@ -824,7 +823,6 @@
 
       if(!built.poolIds.length) throw new Error(`Pool vide pour ${ch.name} (beaucoup de shorts ?).`);
 
-      // ✅ Filtrage local des vidéos déjà vues (0 quota en +)
       const seenSet = new Set(loadSeenList(ch));
       const prunedPoolIds = built.poolIds.filter(id => !seenSet.has(id));
 
@@ -849,7 +847,6 @@
 
       const pickedId = poolIds[Math.floor(Math.random() * poolIds.length)];
 
-      // add to seen (anti doublon)
       const seen = loadSeenList(ch);
       if(!seen.includes(pickedId)){
         seen.push(pickedId);
@@ -866,7 +863,7 @@
       subtitlePrefix: "• Fuze III / Fiouse",
       avatarChannelId: CHANNEL_FUZE3_ID,
       type: "group_random",
-      group: [CH_FUZE3, CH_FIOUSE] // 50/50
+      group: [CH_FUZE3, CH_FIOUSE]
     };
 
     function makeSingleEntry(key, title, channel, avatarChannelId, yearsLabel){
@@ -909,7 +906,6 @@
 
           const vid = pickFromPool(chosen, built.poolIds);
           removeFromCache(chosen, vid);
-
           openYouTubePreferApp(vid);
         } else {
           const ch = entry.channel;
@@ -917,7 +913,6 @@
 
           const vid = pickFromPool(ch, built.poolIds);
           removeFromCache(ch, vid);
-
           openYouTubePreferApp(vid);
         }
 
@@ -996,7 +991,6 @@
       star.textContent = "★";
       starBtn.appendChild(star);
 
-      // ⭐ toggle favorite, sans lancer la vidéo
       starBtn.addEventListener("click", (e)=>{
         e.stopPropagation();
         const on = toggleFav(entry.entryId);
@@ -1016,7 +1010,6 @@
 
       card.addEventListener("click", ()=> launchEntry(entry));
 
-      // avatar async
       (async ()=>{
         try{
           const url = await ensureAvatarFor(entry.avatarChannelId);
@@ -1048,6 +1041,7 @@
         favoritesEmptyEl.classList.remove("hidden");
         return;
       }
+
       favoritesEmptyEl.classList.add("hidden");
 
       for(const entry of items){
