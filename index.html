@@ -153,10 +153,10 @@
       border:2px solid rgba(0,0,0,0.15);
     }
 
-    /* Channel card */
+    /* =========================
+       ✅ CHANNEL CARD + ACCORDION
+       ========================= */
     .channel-item{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:14px 14px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.06);
@@ -165,9 +165,15 @@
       cursor:pointer;
       transition: filter .12s ease, transform .12s ease;
       margin-bottom:12px;
+      overflow:hidden;
     }
     .channel-item:hover{ filter:brightness(1.08); }
     .channel-item:active{ transform:translateY(1px); }
+
+    .channel-main{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 14px;
+    }
 
     .channel-left{ display:flex; align-items:center; gap:14px; min-width:0; flex:1 1 auto; }
 
@@ -195,9 +201,16 @@
       font-size:18px; font-weight:900; color:#fff; letter-spacing:.3px;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
+
+    /* ✅ Ligne sous le nom => plus petite + plus “clean”
+       (et on enlève Vidéos dispo/Déjà vues => elles partent dans le bloc random) */
     .channel-sub{
-      font-size:12px; color:rgba(255,255,255,0.70); margin-top:4px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      font-size:11px;            /* ✅ plus petit */
+      color:rgba(255,255,255,0.68);
+      margin-top:4px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .channel-right{ display:flex; align-items:center; gap:10px; flex:0 0 auto; }
@@ -216,6 +229,170 @@
 
     .star{ font-size:18px; line-height:1; color: rgba(255,255,255,0.55); }
     .star.fav{ color: var(--gold); text-shadow: 0 0 10px rgba(255,210,74,0.35); }
+
+    .chev-btn{
+      width:34px; height:34px; border-radius:12px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.16);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      user-select:none;
+      transition: filter .12s ease, transform .18s ease;
+      color:rgba(255,255,255,0.65);
+      font-size:22px;
+      line-height:1;
+    }
+    .chev-btn:hover{ filter:brightness(1.08); }
+    .chev-btn:active{ transform:translateY(1px); }
+    .channel-item.open .chev-btn{ transform: rotate(90deg); }
+
+    .channel-expand{
+      max-height:0;
+      overflow:hidden;
+      transition: max-height .22s ease;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.12);
+    }
+    .expand-inner{ padding:12px 14px 14px 14px; }
+
+    .latest-title{
+      font-weight:900;
+      color:rgba(255,255,255,0.90);
+      font-size:13px;
+      margin-bottom:10px;
+    }
+    .latest-row{ display:flex; gap:12px; align-items:flex-start; }
+    .latest-thumb{
+      width:160px; height:90px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.14);
+      object-fit:cover;
+      background: rgba(255,255,255,0.06);
+      cursor:pointer;
+      flex:0 0 auto;
+      transition: filter .12s ease, transform .12s ease;
+    }
+    .latest-thumb:hover{ filter:brightness(1.06); }
+    .latest-thumb:active{ transform:translateY(1px); }
+
+    .latest-meta{ min-width:0; }
+    .latest-video-title{
+      font-weight:900;
+      font-size:14px;
+      color:rgba(255,255,255,0.92);
+      line-height:1.25;
+      cursor:pointer;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      transition: filter .12s ease;
+    }
+    .latest-video-title:hover{ filter:brightness(1.08); }
+    .latest-hint{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(255,255,255,0.60);
+    }
+    .latest-loading{
+      font-size:12px;
+      color:rgba(255,255,255,0.65);
+      padding:10px 0;
+    }
+    .latest-error{
+      font-size:12px;
+      color:rgba(255,120,120,0.95);
+      padding:10px 0;
+      font-weight:800;
+    }
+
+    /* ✅ Bloc "Random" dans l'accordéon */
+    .random-title{
+      font-weight:900;
+      color:rgba(255,255,255,0.90);
+      font-size:13px;
+      margin:14px 0 10px 0;
+    }
+    .random-row{ display:flex; gap:12px; align-items:flex-start; }
+    .random-thumb{
+      width:160px; height:90px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.14);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,0.14), rgba(0,0,0,0.22));
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      flex:0 0 auto;
+      transition: filter .12s ease, transform .12s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .random-thumb:hover{ filter:brightness(1.06); }
+    .random-thumb:active{ transform:translateY(1px); }
+
+    /* ✅ Miniature aléatoire moins floutée + moins sombre */
+    .random-blur{
+      position:absolute;
+      inset:-10%;
+      width:120%;
+      height:120%;
+      object-fit:cover;
+
+      /* AVANT: blur(22px) opacity 0.55 => trop noir
+         MAINTENANT: blur moins fort + opacity plus haute */
+      filter: blur(12px) saturate(1.15) contrast(1.08) brightness(1.10);
+      opacity:0.78;
+      transform: scale(1.10);
+      pointer-events:none;
+    }
+    .random-thumb::after{
+      content:"";
+      position:absolute;
+      inset:0;
+
+      /* overlay moins dark */
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.10), transparent 55%),
+                  linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.18));
+      pointer-events:none;
+    }
+    .random-q{
+      position:relative;
+      z-index:2;
+      font-family:"Arial Black",Impact,sans-serif;
+      font-size:46px;
+      color:rgba(255,255,255,0.90);
+      text-shadow: 0 12px 30px rgba(0,0,0,0.55);
+      line-height:1;
+    }
+
+    .random-meta{ min-width:0; }
+    .random-action{
+      font-weight:900;
+      font-size:14px;
+      color:rgba(255,255,255,0.92);
+      line-height:1.25;
+      cursor:pointer;
+      transition: filter .12s ease;
+    }
+    .random-action:hover{ filter:brightness(1.08); }
+    .random-hint{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(255,255,255,0.60);
+    }
+
+    /* ✅ la ligne déplacée comme sur ton image */
+    .random-stats{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(255,255,255,0.72);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
 
     .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; justify-content:center; }
     .small-btn{
@@ -296,9 +473,11 @@
       .history-item{ grid-template-columns:96px 1fr; grid-template-rows:auto auto; }
       .thumb{ width:96px; height:72px; }
       .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
+      .latest-thumb, .random-thumb{ width:140px; height:78px; }
+      .random-q{ font-size:42px; }
     }
 
-    /* ✅ iOS STABLE : pas de backdrop-filter (sinon bug cartes blanches), mais rendu "glass clair" recréé */
+    /* ✅ iOS STABLE */
     @supports (-webkit-touch-callout: none) {
       .menu-card, .menu-item, .channel-item, .toast, .modal-card{
         -webkit-backdrop-filter: none !important;
@@ -390,7 +569,7 @@
 
         <div class="row">
           <button id="rebuild-all-btn" class="small-btn">Rebuild caches</button>
-          <button id="clear-all-cache-btn" class="small-btn">Vider caches</button>
+          <button id="rebuild-latest-btn" class="small-btn">Rebuild dernières vidéos</button>
           <button id="reset-seen-btn" class="small-btn">Reset historique</button>
           <button id="history-btn" class="small-btn">Historique</button>
         </div>
@@ -422,12 +601,12 @@
       <div class="menu-card">
         <div style="color:rgba(255,255,255,0.70); font-size:13px; line-height:1.45;">
           • Va dans “Chaînes”.<br>
-          • Clique sur une carte : ça lance une vidéo aléatoire (sans shorts).<br>
+          • Clique sur une carte : ça ouvre le détail (dernier upload + random).<br>
+          • Clique sur “Lance une vidéo random” dans le détail pour lancer une vidéo (sans shorts).<br>
           • Fuze III = tirage 50/50 entre Fuze III et Fiouse.<br>
-          • Les autres cartes = tirage sur la chaîne du youtubeur (sur X années).<br>
           • L’étoile ⭐ ajoute/retire le bouton des Favoris.<br>
-          • Historique = évite de retomber sur les mêmes vidéos.<br>
-          • Rebuild/Vider/Reset disponibles dans l’onglet Chaînes.<br>
+          • Rebuild caches = rebuild pools random (48h).<br>
+          • Rebuild dernières vidéos = force la MAJ des dernières vidéos (cache 6h).<br>
           • Sur téléphone : ouverture tente l’app YouTube, sinon navigateur.
         </div>
       </div>
@@ -551,7 +730,7 @@
 
     /* ========= UTILS ========= */
     function isoDurationToSeconds(iso){
-      const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+      const m = String(iso||"").match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
       return (+(m?.[1]||0))*3600 + (+(m?.[2]||0))*60 + (+(m?.[3]||0));
     }
     async function fetchJson(url){
@@ -650,7 +829,7 @@
       };
     }
 
-    /* ========= CACHE ========= */
+    /* ========= CACHE (POOLS RANDOM) ========= */
     function loadCache(ch){
       const k = keysFor(ch);
       try{
@@ -833,7 +1012,7 @@
 
       if(!built.poolIds.length) throw new Error(`Pool vide pour ${ch.name} (beaucoup de shorts ?).`);
 
-      // on prune ce qui est déjà vu (économie: évite de re-proposer)
+      // prune déjà-vu
       const seenSet = new Set(loadSeenList(ch));
       const prunedPoolIds = built.poolIds.filter(id => !seenSet.has(id));
 
@@ -843,11 +1022,7 @@
         pruned_to: prunedPoolIds.length
       });
 
-      return {
-        poolIds: prunedPoolIds,
-        metaMap: built.metaMap,
-        meta: { ts: Date.now(), count: prunedPoolIds.length }
-      };
+      return { poolIds: prunedPoolIds, metaMap: built.metaMap, meta: { ts: Date.now(), count: prunedPoolIds.length } };
     }
 
     /* ========= PICK ========= */
@@ -871,7 +1046,7 @@
     const ENTRY_FUZE_RANDOM = {
       entryId: "entry_fuze_random_50",
       title: "Fuze III",
-      subtitlePrefix: "• Fuze III / Fiouse",
+      subtitlePrefix: "Fuze III / Fiouse",
       avatarChannelId: CHANNEL_FUZE3_ID,
       type: "group_random",
       group: [CH_FUZE3, CH_FIOUSE]
@@ -881,7 +1056,7 @@
       return {
         entryId: `entry_${key}`,
         title,
-        subtitlePrefix: `• ${yearsLabel}`,
+        subtitlePrefix: yearsLabel, // ex: "Inoxtag (5 ans)"
         avatarChannelId,
         type: "single_random",
         channel
@@ -898,7 +1073,7 @@
       makeSingleEntry("mastu",    "Mastu",             CH_MASTU,    CHANNEL_MASTU_ID,    "Mastu (5 ans)")
     ];
 
-    /* ========= LAUNCH ========= */
+    /* ========= LAUNCH RANDOM (uniquement via bloc "random" de l'accordéon) ========= */
     async function launchEntry(entry){
       if(isPicking) return;
       isPicking = true;
@@ -908,13 +1083,13 @@
           const chosen = (Math.random() < 0.5) ? entry.group[0] : entry.group[1];
           const built = await buildPoolForChannel(chosen, false);
           const vid = pickFromPool(chosen, built.poolIds);
-          removeFromCache(chosen, vid); // ✅ la ligne "Vidéos dispo" descend bien
+          removeFromCache(chosen, vid);
           openYouTubePreferApp(vid);
         } else {
           const ch = entry.channel;
           const built = await buildPoolForChannel(ch, false);
           const vid = pickFromPool(ch, built.poolIds);
-          removeFromCache(ch, vid); // ✅ idem
+          removeFromCache(ch, vid);
           openYouTubePreferApp(vid);
         }
 
@@ -928,29 +1103,335 @@
       }
     }
 
-    /* ========= STATS LINE ========= */
-    function statsLineForEntry(entry){
+    /* ========= STATS LINE (SOUS LE NOM) =========
+       ✅ On garde seulement un truc court + Rebuild (comme sur ton image) */
+    function shortLineForEntry(entry){
+      const timeLeft = (entry.type === "group_random")
+        ? rebuildTimeLeftForGroup(entry.group)
+        : rebuildTimeLeftForGroup([entry.channel]);
+
+      return `• ${entry.subtitlePrefix} • Rebuild : ${timeLeft}`;
+    }
+
+    /* ✅ Ligne déplacée dans "Vidéo aléatoire" */
+    function movedStatsForEntry(entry){
       if(entry.type === "group_random"){
         const remaining = remainingCountFor(entry.group[0]) + remainingCountFor(entry.group[1]);
         const seen = seenCountFor(entry.group[0]) + seenCountFor(entry.group[1]);
-        const timeLeft = rebuildTimeLeftForGroup(entry.group);
-        return `Vidéos dispo : ${remaining} • Déjà vues : ${seen} • Rebuild : ${timeLeft}`;
+        return `${entry.subtitlePrefix} • Vidéos dispo : ${remaining} • Déjà vues : ${seen}`;
       } else {
         const remaining = remainingCountFor(entry.channel);
         const seen = seenCountFor(entry.channel);
-        const timeLeft = rebuildTimeLeftForGroup([entry.channel]);
-        return `Vidéos dispo : ${remaining} • Déjà vues : ${seen} • Rebuild : ${timeLeft}`;
+
+        // On essaye d’afficher seulement "(5 ans)" comme sur ton screenshot
+        const m = String(entry.subtitlePrefix||"").match(/\([^)]*\)/);
+        const yearsOnly = m ? m[0] : entry.subtitlePrefix; // fallback
+
+        return `${yearsOnly} / Vidéos dispo : ${remaining} • Déjà vues : ${seen}`;
       }
     }
 
-    /* ========= RENDER ========= */
+    /* =========================
+       ✅ DERNIÈRE VIDÉO (ACCORDÉON) + CACHE 6h (ANTI-SHORTS)
+       ========================= */
+    const LATEST_TTL_MS = 6 * 60 * 60 * 1000;
+
+    // v3 pour éviter collision avec tes anciens essais
+    function latestKey(channelId){ return `yt_latest_${channelId}_v3`; }
+    function latestTsKey(channelId){ return `yt_latest_${channelId}_ts_v3`; }
+
+    function loadLatest(channelId){
+      try{
+        const raw = localStorage.getItem(latestKey(channelId));
+        const ts = Number(localStorage.getItem(latestTsKey(channelId)) || 0);
+        if(!raw || !ts) return null;
+        if(Date.now() - ts > LATEST_TTL_MS) return null;
+        const obj = JSON.parse(raw);
+        if(!obj?.videoId) return null;
+        return obj;
+      }catch{ return null; }
+    }
+
+    function saveLatest(channelId, obj){
+      try{
+        localStorage.setItem(latestKey(channelId), JSON.stringify(obj));
+        localStorage.setItem(latestTsKey(channelId), String(Date.now()));
+      }catch{}
+    }
+
+    function clearLatest(channelId){
+      try{
+        localStorage.removeItem(latestKey(channelId));
+        localStorage.removeItem(latestTsKey(channelId));
+      }catch{}
+    }
+
+    async function fetchLatestVideo(channelId){
+      const uploadsId = await getUploadsPlaylistId(channelId);
+
+      const N = 10; // plus tu mets haut, plus c'est robuste si shorts à la suite
+      const url =
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}`+
+        `&maxResults=${N}&key=${apiKey}`;
+      const data = await fetchJson(url);
+
+      const items = data?.items || [];
+      const ids = [];
+      for(const it of items){
+        const vid = it?.snippet?.resourceId?.videoId;
+        if(vid) ids.push(vid);
+      }
+      if(!ids.length) throw new Error("Dernière vidéo introuvable.");
+
+      const vUrl =
+        `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${ids.join(",")}&key=${apiKey}`;
+      const vData = await fetchJson(vUrl);
+
+      const byId = new Map();
+      for(const v of (vData.items || [])) byId.set(v.id, v);
+
+      for(const id of ids){
+        const v = byId.get(id);
+        const iso = v?.contentDetails?.duration;
+        if(!iso) continue;
+
+        const sec = isoDurationToSeconds(iso);
+        if(sec < MIN_SECONDS) continue; // ✅ exclut shorts
+
+        const sn = v?.snippet || {};
+        const thumbs = sn?.thumbnails || {};
+        const thumb =
+          thumbs?.maxres?.url ||
+          thumbs?.standard?.url ||
+          thumbs?.high?.url ||
+          thumbs?.medium?.url ||
+          thumbs?.default?.url ||
+          "";
+
+        const title = (sn?.title || "").trim();
+        const obj = { videoId: id, title: title || "(Sans titre)", thumb };
+
+        saveLatest(channelId, obj);
+        return obj;
+      }
+
+      throw new Error("Aucune vidéo non-short trouvée parmi les derniers uploads.");
+    }
+
+    async function ensureLatest(channelId){
+      const cached = loadLatest(channelId);
+      if(cached) return cached;
+      return await fetchLatestVideo(channelId);
+    }
+
+    function uniqueLatestChannelIds(){
+      const set = new Set();
+      for(const e of ENTRIES) set.add(e.avatarChannelId);
+      return Array.from(set);
+    }
+
+    /* =========================
+       ✅ THUMB MYSTÈRE : depuis cache pool
+       ========================= */
+    function pickMysteryThumbUrlForEntry(entry){
+      const tryFromChannel = (ch)=>{
+        const cached = loadCache(ch);
+        if(!cached?.poolIds?.length) return "";
+        const ids = cached.poolIds;
+        for(let i=0;i<10;i++){
+          const id = ids[Math.floor(Math.random()*ids.length)];
+          const meta = cached.metaMap?.[id];
+          const thumb = meta?.[1] || "";
+          if(thumb) return thumb;
+        }
+        return "";
+      };
+
+      if(entry.type === "group_random"){
+        const a = tryFromChannel(entry.group[0]);
+        if(a) return a;
+        const b = tryFromChannel(entry.group[1]);
+        if(b) return b;
+        return "";
+      } else {
+        return tryFromChannel(entry.channel);
+      }
+    }
+
+    /* ========= ACCORDEON UI ========= */
     const channelsListEl = document.getElementById("channels-list");
     const favoritesListEl = document.getElementById("favorites-list");
     const favoritesEmptyEl = document.getElementById("favorites-empty");
 
+    function setExpandHeight(card, expandEl){
+      if(!card.classList.contains("open")){
+        expandEl.style.maxHeight = "0px";
+        return;
+      }
+      expandEl.style.maxHeight = expandEl.scrollHeight + "px";
+    }
+
+    async function fillAccordion(entry, expandInner, card, expand){
+      const channelId = entry.avatarChannelId;
+
+      expandInner.innerHTML = `<div class="latest-loading">Chargement…</div>`;
+      setExpandHeight(card, expand);
+
+      try{
+        const latest = await ensureLatest(channelId);
+
+        const wrap = document.createElement("div");
+
+        // Dernière vidéo
+        const t = document.createElement("div");
+        t.className = "latest-title";
+        t.textContent = "Dernière vidéo en ligne";
+        wrap.appendChild(t);
+
+        const row = document.createElement("div");
+        row.className = "latest-row";
+
+        const img = document.createElement("img");
+        img.className = "latest-thumb";
+        img.alt = "Miniature dernière vidéo";
+        if(latest.thumb) img.src = latest.thumb;
+
+        const meta = document.createElement("div");
+        meta.className = "latest-meta";
+
+        const title = document.createElement("div");
+        title.className = "latest-video-title";
+        title.textContent = latest.title || "(Sans titre)";
+
+        const hint = document.createElement("div");
+        hint.className = "latest-hint";
+        hint.textContent = "Clique sur la miniature ou le titre pour ouvrir la vidéo.";
+
+        const openLatest = (e)=>{
+          e.stopPropagation();
+          openYouTubePreferApp(latest.videoId);
+        };
+        img.addEventListener("click", openLatest);
+        title.addEventListener("click", openLatest);
+
+        img.addEventListener("load", ()=> setExpandHeight(card, expand));
+
+        meta.appendChild(title);
+        meta.appendChild(hint);
+
+        row.appendChild(img);
+        row.appendChild(meta);
+        wrap.appendChild(row);
+
+        // Random
+        const rt = document.createElement("div");
+        rt.className = "random-title";
+        rt.textContent = "Vidéo aléatoire";
+        wrap.appendChild(rt);
+
+        const rrow = document.createElement("div");
+        rrow.className = "random-row";
+
+        const rthumb = document.createElement("div");
+        rthumb.className = "random-thumb";
+        rthumb.title = "Lancer une vidéo random";
+
+        const mysteryUrl = pickMysteryThumbUrlForEntry(entry);
+        if(mysteryUrl){
+          const blurImg = document.createElement("img");
+          blurImg.className = "random-blur";
+          blurImg.alt = "Mystère";
+          blurImg.loading = "lazy";
+          blurImg.src = mysteryUrl;
+          blurImg.addEventListener("load", ()=> setExpandHeight(card, expand));
+          rthumb.appendChild(blurImg);
+        }
+
+        const q = document.createElement("div");
+        q.className = "random-q";
+        q.textContent = "?";
+        rthumb.appendChild(q);
+
+        const rmeta = document.createElement("div");
+        rmeta.className = "random-meta";
+
+        const raction = document.createElement("div");
+        raction.className = "random-action";
+        raction.textContent = "Lance une vidéo random";
+
+        const rhint = document.createElement("div");
+        rhint.className = "random-hint";
+        rhint.textContent = "Tu ne sais pas sur quoi tu vas tomber 😄";
+
+        /* ✅ ligne déplacée ici (comme sur ton image) */
+        const rstats = document.createElement("div");
+        rstats.className = "random-stats";
+        rstats.textContent = movedStatsForEntry(entry);
+
+        const doRandom = (e)=>{
+          e.stopPropagation();
+          launchEntry(entry);
+        };
+
+        rthumb.addEventListener("click", doRandom);
+        raction.addEventListener("click", doRandom);
+
+        rmeta.appendChild(raction);
+        rmeta.appendChild(rhint);
+        rmeta.appendChild(rstats);
+
+        rrow.appendChild(rthumb);
+        rrow.appendChild(rmeta);
+        wrap.appendChild(rrow);
+
+        expandInner.innerHTML = "";
+        expandInner.appendChild(wrap);
+
+        setExpandHeight(card, expand);
+
+      }catch(err){
+        console.error(err);
+        expandInner.innerHTML = `<div class="latest-error">Impossible de charger (API / quota / réseau).</div>`;
+        setExpandHeight(card, expand);
+      }
+    }
+
+    function closeAllAccordions(container){
+      container.querySelectorAll(".channel-item.open").forEach(card=>{
+        card.classList.remove("open");
+        const expand = card.querySelector(".channel-expand");
+        if(expand) expand.style.maxHeight = "0px";
+      });
+    }
+
+    function toggleAccordion(card){
+      const expand = card.querySelector(".channel-expand");
+      const expandInner = card.querySelector(".expand-inner");
+      const entry = card._entry;
+
+      const willOpen = !card.classList.contains("open");
+
+      const container = card.parentElement;
+      closeAllAccordions(container);
+
+      card.classList.toggle("open", willOpen);
+
+      if(willOpen){
+        fillAccordion(entry, expandInner, card, expand);
+      } else {
+        expandInner.innerHTML = "";
+      }
+
+      setExpandHeight(card, expand);
+    }
+
     function makeEntryCard(entry){
       const card = document.createElement("div");
       card.className = "channel-item";
+      card._entry = entry;
+
+      const main = document.createElement("div");
+      main.className = "channel-main";
 
       const left = document.createElement("div");
       left.className = "channel-left";
@@ -972,7 +1453,7 @@
 
       const sub = document.createElement("div");
       sub.className = "channel-sub";
-      sub.textContent = `${entry.subtitlePrefix} / ${statsLineForEntry(entry)}`;
+      sub.textContent = shortLineForEntry(entry); // ✅ version courte
 
       text.appendChild(name);
       text.appendChild(sub);
@@ -1000,17 +1481,35 @@
         renderFavorites();
       });
 
-      const chev = document.createElement("div");
-      chev.className = "chev";
-      chev.textContent = "›";
+      const chevBtn = document.createElement("div");
+      chevBtn.className = "chev-btn";
+      chevBtn.title = "Ouvrir";
+      chevBtn.textContent = "›";
 
       right.appendChild(starBtn);
-      right.appendChild(chev);
+      right.appendChild(chevBtn);
 
-      card.appendChild(left);
-      card.appendChild(right);
+      main.appendChild(left);
+      main.appendChild(right);
 
-      card.addEventListener("click", ()=> launchEntry(entry));
+      const expand = document.createElement("div");
+      expand.className = "channel-expand";
+
+      const expandInner = document.createElement("div");
+      expandInner.className = "expand-inner";
+      expand.appendChild(expandInner);
+
+      card.appendChild(main);
+      card.appendChild(expand);
+
+      // ✅ clic carte = ouvrir/fermer (ne lance plus de vidéo)
+      card.addEventListener("click", ()=> toggleAccordion(card));
+
+      // clic chevron
+      chevBtn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        toggleAccordion(card);
+      });
 
       (async ()=>{
         try{
@@ -1181,7 +1680,7 @@
 
     /* ========= ACTIONS ========= */
     const rebuildAllBtn = document.getElementById("rebuild-all-btn");
-    const clearAllCacheBtn = document.getElementById("clear-all-cache-btn");
+    const rebuildLatestBtn = document.getElementById("rebuild-latest-btn");
     const resetSeenBtn = document.getElementById("reset-seen-btn");
 
     rebuildAllBtn.addEventListener("click", async ()=>{
@@ -1199,11 +1698,21 @@
       }
     });
 
-    clearAllCacheBtn.addEventListener("click", ()=>{
-      for(const ch of CHANNELS_ALL) clearCache(ch);
-      toast("Caches vidés ✅");
-      renderChannels();
-      renderFavorites();
+    rebuildLatestBtn.addEventListener("click", async ()=>{
+      try{
+        const ids = uniqueLatestChannelIds();
+        for(const id of ids) clearLatest(id);
+        for(const id of ids){
+          toast("Dernière vidéo…");
+          await fetchLatestVideo(id);
+        }
+        toast("✅ Dernières vidéos mises à jour.");
+        renderChannels();
+        renderFavorites();
+      }catch(e){
+        console.error(e);
+        toast("Erreur : " + (e.message || e));
+      }
     });
 
     resetSeenBtn.addEventListener("click", ()=>{
