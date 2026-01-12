@@ -94,6 +94,7 @@
       background: rgba(255,255,255,0.07);
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       padding:18px;
     }
 
@@ -104,6 +105,8 @@
       padding:14px 14px; border-radius:18px;
       border:1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       cursor:pointer;
       transition: filter .12s ease, transform .12s ease;
     }
@@ -134,13 +137,14 @@
     .chev{ font-size:22px; color:rgba(255,255,255,0.55); flex:0 0 auto; padding-left:10px; }
 
     .footer{ margin-top:12px; text-align:center; color:rgba(255,255,255,0.55); font-size:12px; }
+    .hidden{ display:none !important; }
 
     /* ✅ Zone scrollable */
     .scroll{
       max-height:60vh;
       overflow:auto;
       padding-right:4px;
-      padding-bottom:95px;
+      padding-bottom:105px;
     }
     .scroll::-webkit-scrollbar{ width:10px; }
     .scroll::-webkit-scrollbar-thumb{
@@ -157,6 +161,7 @@
       border:1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.06);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       cursor:pointer;
       transition: filter .12s ease, transform .12s ease;
       margin-bottom:12px;
@@ -173,7 +178,6 @@
       background: rgba(255,255,255,0.08);
       flex:0 0 auto;
     }
-    .hidden{ display:none !important; }
 
     .channel-fallback{
       width:52px; height:52px; border-radius:50%;
@@ -239,6 +243,7 @@
       background: rgba(15,5,6,0.88);
       box-shadow: 0 18px 45px rgba(0,0,0,0.45);
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       color:rgba(255,255,255,0.90);
       font-weight:800;
       text-align:center;
@@ -247,16 +252,14 @@
     @keyframes toastIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
 
     /* Modal historique */
-    .modal{
-      position:fixed; inset:0; background:rgba(0,0,0,0.55);
-      display:flex; align-items:center; justify-content:center;
-      padding:18px; z-index:9999;
-    }
+    .modal{ position:fixed; inset:0; background:rgba(0,0,0,0.55);
+      display:flex; align-items:center; justify-content:center; padding:18px; z-index:9999; }
     .modal-card{
       width:min(900px,94vw); max-height:78vh; overflow:hidden;
       border-radius:16px; border:2px solid rgba(255,255,255,0.12);
       background:rgba(15,5,6,0.92); box-shadow:0 20px 50px rgba(0,0,0,0.55);
       backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
     .modal-header{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -287,36 +290,35 @@
     @media (max-width:768px){
       .logo-app{ font-size:26px; top:16px; }
       .logo-accent{ height:22px; }
-      .scroll{ max-height:58vh; }
+      .scroll{ max-height:58vh; padding-bottom:115px; }
       .modal-card{ max-height:84vh; }
       .modal-list{ max-height:calc(84vh - 130px); }
       .history-item{ grid-template-columns:96px 1fr; grid-template-rows:auto auto; }
       .thumb{ width:96px; height:72px; }
       .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
     }
-    
-    /* ✅ FIX iOS : évite les cartes blanches (WebKit/backdrop-filter bug) */
-@supports (-webkit-touch-callout: none) {
-  .menu-card{
-    background: rgba(0,0,0,0.22) !important;
-  }
-  .menu-item{
-    background: rgba(0,0,0,0.18) !important;
-  }
-  .channel-item{
-    background: rgba(0,0,0,0.20) !important;
-  }
-}  /* ✅ <-- IMPORTANT : fermeture ici */
 
-/* ✅ FIX iPhone WebKit */
-.menu-card, .channel-item, .toast, .modal-card{
-  -webkit-backdrop-filter: blur(10px);
-}
+    /* ✅ iOS STABLE : pas de backdrop-filter (sinon bug cartes blanches), mais rendu "glass clair" recréé */
+    @supports (-webkit-touch-callout: none) {
+      .menu-card, .menu-item, .channel-item, .toast, .modal-card{
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
 
-@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .menu-card{ background: rgba(15, 5, 6, 0.88) !important; }
-  .channel-item{ background: rgba(255,255,255,0.08) !important; }
-}
+      .menu-card{
+        background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;
+        box-shadow: 0 18px 55px rgba(0,0,0,0.35) !important;
+      }
+      .menu-item{
+        background: rgba(255,255,255,0.14) !important;
+      }
+      .channel-item{
+        background: rgba(255,255,255,0.12) !important;
+      }
+      .toast{
+        background: rgba(15,5,6,0.92) !important;
+      }
+    }
   </style>
 </head>
 
@@ -426,7 +428,7 @@
           • L’étoile ⭐ ajoute/retire le bouton des Favoris.<br>
           • Historique = évite de retomber sur les mêmes vidéos.<br>
           • Rebuild/Vider/Reset disponibles dans l’onglet Chaînes.<br>
-          • Si l’app YouTube est installée, l’ouverture tente d’abord l’app, sinon navigateur.
+          • Sur téléphone : ouverture tente l’app YouTube, sinon navigateur.
         </div>
       </div>
     </section>
@@ -460,7 +462,6 @@
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       const el = document.getElementById(id);
       if(el) el.classList.add("active");
-
       if(id === "page-favs") renderFavorites();
       if(id === "page-channels") renderChannels();
     }
@@ -468,7 +469,6 @@
     document.addEventListener("click", (e)=>{
       const go = e.target.closest("[data-go]");
       if(go) showPage(go.dataset.go);
-
       const back = e.target.closest("[data-back]");
       if(back) showPage(back.dataset.back);
     });
@@ -488,7 +488,6 @@
     function openYouTubePreferApp(videoId){
       const webUrl = `https://www.youtube.com/watch?v=${videoId}`;
       const appUrl = `youtube://watch?v=${videoId}`;
-
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
       if(!isMobile){
@@ -523,28 +522,28 @@
     const CHANNEL_FUZE3_ID   = normalizeChannelId("UCfznY5SlSoZoXN0-kBPtCdg");
     const CHANNEL_FIOUSE_ID  = normalizeChannelId("UCBIVKUsOGwCg8RNpucEGp_g");
     const CHANNEL_AMIXEM_ID  = normalizeChannelId("UCgvqvBoSHB1ctlyyhoHrGwQ");
+    const CHANNEL_SQUEEZIE_ID= normalizeChannelId("UCWeg2Pkate69NFdBeuRFTAw");
+    const CHANNEL_MEC_ID     = normalizeChannelId("UCDPK_MTu3uTUFJXRVcTJcEw");
+    const CHANNEL_INOXTAG_ID = normalizeChannelId("UCL9aTJb0ur4sovxcppAopEw");
+    const CHANNEL_JOYCA_ID   = normalizeChannelId("UCow2IGnug1l3Xazkrc5jM_Q");
+    const CHANNEL_MASTU_ID   = normalizeChannelId("UCahaFPP6v3WCfK5Tjao0B7A");
 
-    const CHANNEL_SQUEEZIE_ID = normalizeChannelId("UCWeg2Pkate69NFdBeuRFTAw");
-    const CHANNEL_MEC_ID      = normalizeChannelId("UCDPK_MTu3uTUFJXRVcTJcEw");
-    const CHANNEL_INOXTAG_ID  = normalizeChannelId("UCL9aTJb0ur4sovxcppAopEw");
-    const CHANNEL_JOYCA_ID    = normalizeChannelId("UCow2IGnug1l3Xazkrc5jM_Q");
-    const CHANNEL_MASTU_ID    = normalizeChannelId("UCahaFPP6v3WCfK5Tjao0B7A");
-
-    const MIN_SECONDS = 61;
+    const MIN_SECONDS = 61;                 // anti-shorts
     const CACHE_TTL_MS = 48 * 60 * 60 * 1000;
 
+    // Limites (PAR CHAÎNE)
     const MAX_PAGES = 200;
     const MAX_VIDEOS = 6000;
 
+    // Définition des chaînes (fenêtres)
     const CH_FUZE3  = { key:"fuze3",  name:"Fuze III", id:CHANNEL_FUZE3_ID,  cutoffType:"yearsBack", yearsBack:6 };
     const CH_FIOUSE = { key:"fiouse", name:"Fiouse",  id:CHANNEL_FIOUSE_ID, cutoffType:"sinceIso",  sinceIso:"2023-01-01T00:00:00Z" };
     const CH_AMIXEM = { key:"amixem", name:"Amixem",  id:CHANNEL_AMIXEM_ID, cutoffType:"yearsBack", yearsBack:6 };
-
     const CH_SQUEEZIE = { key:"squeezie", name:"Squeezie", id:CHANNEL_SQUEEZIE_ID, cutoffType:"yearsBack", yearsBack:7 };
-    const CH_MEC      = { key:"mec",      name:"MacFly et Carlito", id:CHANNEL_MEC_ID, cutoffType:"yearsBack", yearsBack:4 };
-    const CH_INOXTAG  = { key:"inoxtag",  name:"Inoxtag", id:CHANNEL_INOXTAG_ID, cutoffType:"yearsBack", yearsBack:5 };
-    const CH_JOYCA    = { key:"joyca",    name:"Joyca", id:CHANNEL_JOYCA_ID, cutoffType:"yearsBack", yearsBack:5 };
-    const CH_MASTU    = { key:"mastu",    name:"Mastu", id:CHANNEL_MASTU_ID, cutoffType:"yearsBack", yearsBack:5 };
+    const CH_MEC      = { key:"mec", name:"MacFly et Carlito", id:CHANNEL_MEC_ID, cutoffType:"yearsBack", yearsBack:4 };
+    const CH_INOXTAG  = { key:"inoxtag", name:"Inoxtag", id:CHANNEL_INOXTAG_ID, cutoffType:"yearsBack", yearsBack:5 };
+    const CH_JOYCA    = { key:"joyca", name:"Joyca", id:CHANNEL_JOYCA_ID, cutoffType:"yearsBack", yearsBack:5 };
+    const CH_MASTU    = { key:"mastu", name:"Mastu", id:CHANNEL_MASTU_ID, cutoffType:"yearsBack", yearsBack:5 };
 
     const CHANNELS_ALL = [CH_FUZE3, CH_FIOUSE, CH_AMIXEM, CH_SQUEEZIE, CH_MEC, CH_INOXTAG, CH_JOYCA, CH_MASTU];
 
@@ -591,19 +590,17 @@
       }catch{ return []; }
     }
     function saveFavorites(list){ localStorage.setItem(FAV_KEY, JSON.stringify(list)); }
-    function isFav(id){ return loadFavorites().includes(id); }
-    function toggleFav(id){
+    function isFav(entryId){ return loadFavorites().includes(entryId); }
+    function toggleFav(entryId){
       const favs = loadFavorites();
-      const idx = favs.indexOf(id);
+      const idx = favs.indexOf(entryId);
       if(idx >= 0){
         favs.splice(idx, 1);
         saveFavorites(favs);
-        toast("Retiré des favoris ✖️");
         return false;
       }else{
-        favs.push(id);
+        favs.push(entryId);
         saveFavorites(favs);
-        toast("Ajouté aux favoris ⭐");
         return true;
       }
     }
@@ -828,15 +825,15 @@
         if(cached) return cached;
       }
 
-      const cutoff = cutoffMsForChannel(ch);
       toast(`Rebuild ${ch.name}…`);
-
+      const cutoff = cutoffMsForChannel(ch);
       const uploadsId = await getUploadsPlaylistId(ch.id);
       const ids = await collectVideoIdsUpToCutoff(uploadsId, cutoff);
       const built = await buildMetaAndFilterNoShorts(ids);
 
       if(!built.poolIds.length) throw new Error(`Pool vide pour ${ch.name} (beaucoup de shorts ?).`);
 
+      // on prune ce qui est déjà vu (économie: évite de re-proposer)
       const seenSet = new Set(loadSeenList(ch));
       const prunedPoolIds = built.poolIds.filter(id => !seenSet.has(id));
 
@@ -891,21 +888,14 @@
       };
     }
 
-    const ENTRY_AMIXEM   = makeSingleEntry("amixem",   "Amixem",   CH_AMIXEM,   CHANNEL_AMIXEM_ID,   "Amixem (6 ans)");
-    const ENTRY_SQUEEZIE = makeSingleEntry("squeezie", "Squeezie", CH_SQUEEZIE, CHANNEL_SQUEEZIE_ID, "Squeezie (7 ans)");
-    const ENTRY_MEC      = makeSingleEntry("mec",      "MacFly et Carlito", CH_MEC, CHANNEL_MEC_ID,  "MacFly et Carlito (4 ans)");
-    const ENTRY_INOXTAG  = makeSingleEntry("inoxtag",  "Inoxtag",  CH_INOXTAG,  CHANNEL_INOXTAG_ID,  "Inoxtag (5 ans)");
-    const ENTRY_JOYCA    = makeSingleEntry("joyca",    "Joyca",    CH_JOYCA,    CHANNEL_JOYCA_ID,    "Joyca (5 ans)");
-    const ENTRY_MASTU    = makeSingleEntry("mastu",    "Mastu",    CH_MASTU,    CHANNEL_MASTU_ID,    "Mastu (5 ans)");
-
     const ENTRIES = [
       ENTRY_FUZE_RANDOM,
-      ENTRY_AMIXEM,
-      ENTRY_SQUEEZIE,
-      ENTRY_MEC,
-      ENTRY_INOXTAG,
-      ENTRY_JOYCA,
-      ENTRY_MASTU
+      makeSingleEntry("amixem",   "Amixem",            CH_AMIXEM,   CHANNEL_AMIXEM_ID,   "Amixem (6 ans)"),
+      makeSingleEntry("squeezie", "Squeezie",          CH_SQUEEZIE, CHANNEL_SQUEEZIE_ID, "Squeezie (7 ans)"),
+      makeSingleEntry("mec",      "MacFly et Carlito", CH_MEC,      CHANNEL_MEC_ID,      "MacFly et Carlito (4 ans)"),
+      makeSingleEntry("inoxtag",  "Inoxtag",           CH_INOXTAG,  CHANNEL_INOXTAG_ID,  "Inoxtag (5 ans)"),
+      makeSingleEntry("joyca",    "Joyca",             CH_JOYCA,    CHANNEL_JOYCA_ID,    "Joyca (5 ans)"),
+      makeSingleEntry("mastu",    "Mastu",             CH_MASTU,    CHANNEL_MASTU_ID,    "Mastu (5 ans)")
     ];
 
     /* ========= LAUNCH ========= */
@@ -917,16 +907,14 @@
         if(entry.type === "group_random"){
           const chosen = (Math.random() < 0.5) ? entry.group[0] : entry.group[1];
           const built = await buildPoolForChannel(chosen, false);
-
           const vid = pickFromPool(chosen, built.poolIds);
-          removeFromCache(chosen, vid);
+          removeFromCache(chosen, vid); // ✅ la ligne "Vidéos dispo" descend bien
           openYouTubePreferApp(vid);
         } else {
           const ch = entry.channel;
           const built = await buildPoolForChannel(ch, false);
-
           const vid = pickFromPool(ch, built.poolIds);
-          removeFromCache(ch, vid);
+          removeFromCache(ch, vid); // ✅ idem
           openYouTubePreferApp(vid);
         }
 
@@ -1057,7 +1045,6 @@
       }
 
       favoritesEmptyEl.classList.add("hidden");
-
       for(const entry of items){
         favoritesListEl.appendChild(makeEntryCard(entry));
       }
