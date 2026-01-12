@@ -297,14 +297,20 @@
     
     /* ✅ FIX iOS : évite les cartes blanches (WebKit/backdrop-filter bug) */
 @supports (-webkit-touch-callout: none) {
-  .menu-card{
-    background: rgba(0,0,0,0.22) !important;
+  menu-card{
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.18),
+      rgba(255,255,255,0.06)
+    ) !important;
   }
+
   .menu-item{
-    background: rgba(0,0,0,0.18) !important;
+    background: rgba(255,255,255,0.14) !important;
   }
+
   .channel-item{
-    background: rgba(0,0,0,0.20) !important;
+    background: rgba(255,255,255,0.12) !important;
   }
 }  /* ✅ <-- IMPORTANT : fermeture ici */
 
