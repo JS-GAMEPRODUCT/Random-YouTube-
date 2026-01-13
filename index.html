@@ -250,6 +250,49 @@
       border:2px solid rgba(0,0,0,0.15);
     }
 
+    /* ✅ TOOLBAR CHAÎNES (recherche + tri) */
+    .channels-toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin: 0 0 12px 0;
+    }
+    .search{
+      flex: 1 1 260px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.18);
+    }
+    .search svg{ width:18px; height:18px; fill: rgba(255,255,255,0.72); flex:0 0 auto; }
+    .search input{
+      width:100%;
+      border:none;
+      outline:none;
+      background:transparent;
+      color:#fff;
+      font-weight:900;
+      font-size:14px;
+    }
+    .search input::placeholder{ color: rgba(255,255,255,0.45); font-weight:800; }
+
+    .sort{
+      flex:0 0 auto;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.18);
+      color:#fff;
+      font-weight:950;
+      outline:none;
+      cursor:pointer;
+    }
+
     /* =========================
        ✅ CHANNEL CARD + ACCORDION
        ========================= */
@@ -426,7 +469,7 @@
     .random-thumb:hover{ filter:brightness(1.06); }
     .random-thumb:active{ transform:translateY(1px); }
 
-    /* ✅ Miniature mystère : moins floue (on distingue mieux) */
+    /* ✅ Miniature mystère : moins floue */
     .mystery-img{
       position:absolute;
       inset:0;
@@ -469,7 +512,7 @@
     .small-btn:hover{ filter:brightness(1.10); }
     .small-btn:active{ transform:translateY(1px); }
 
-    /* ===== HISTORIQUE (nouvelle page) ===== */
+    /* ===== HISTORIQUE ===== */
     .seg-wrap{
       display:flex; gap:10px; margin:8px 0 12px 0; flex-wrap:wrap;
     }
@@ -567,6 +610,47 @@
       animation: toastIn 180ms ease both;
     }
     @keyframes toastIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+    /* ✅ OVERLAY (rebuild / tri abonnés) */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,0.55);
+      z-index:9999;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+    }
+    .overlay.show{ display:flex; }
+    .overlay-card{
+      width: min(520px, 92vw);
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(15,5,6,0.92);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+      padding: 16px;
+      text-align:center;
+    }
+    .overlay-title{
+      font-weight:950;
+      font-size:16px;
+      margin: 2px 0 8px 0;
+    }
+    .overlay-sub{
+      color: rgba(255,255,255,0.70);
+      font-size: 13px;
+      line-height:1.4;
+      margin: 0 0 12px 0;
+    }
+    .spinner{
+      width:44px; height:44px;
+      margin: 8px auto 10px auto;
+      border-radius:50%;
+      border:4px solid rgba(255,255,255,0.18);
+      border-top-color: rgba(255,46,46,0.90);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
 
     @media (max-width:768px){
       .topbar{ top: calc(8px + env(safe-area-inset-top)); }
@@ -672,7 +756,6 @@
             </div>
           </div>
 
-          <!-- ✅ NOUVEAU : Historique dans le menu -->
           <div class="menu-item" data-go="page-history" role="button" aria-label="Aller vers Historique">
             <div class="menu-left">
               <div class="icon" aria-hidden="true">
@@ -722,9 +805,25 @@
       </div>
 
       <div class="menu-card">
+
+        <!-- ✅ Recherche + Tri -->
+        <div class="channels-toolbar">
+          <div class="search" title="Rechercher une chaîne">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 5L20.5 19l-5-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
+            <input id="channels-search" type="text" placeholder="Rechercher une chaîne…" />
+          </div>
+
+          <!-- ✅ Tri : seulement ceux demandés -->
+          <select id="channels-sort" class="sort" title="Trier">
+            <option value="default">Tri : Par défaut</option>
+            <option value="az">Tri : A → Z</option>
+            <option value="za">Tri : Z → A</option>
+            <option value="subs_desc">Tri : Abonnés (↓)</option>
+          </select>
+        </div>
+
         <div id="channels-list" class="scroll"></div>
 
-        <!-- ✅ Page chaînes : on garde seulement les rebuilds -->
         <div class="row">
           <button id="rebuild-all-btn" class="small-btn">Rebuild caches</button>
           <button id="rebuild-latest-btn" class="small-btn">Rebuild dernières vidéos</button>
@@ -746,7 +845,7 @@
       </div>
     </section>
 
-    <!-- PAGE HISTORIQUE (NOUVEAU DESIGN) -->
+    <!-- PAGE HISTORIQUE -->
     <section id="page-history" class="page">
       <div class="page-top">
         <button class="back-btn" data-back="page-home">← Retour</button>
@@ -809,6 +908,15 @@
   <!-- TOAST -->
   <div id="toast-wrap" class="toast-wrap"></div>
 
+  <!-- ✅ OVERLAY -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="overlay-card">
+      <div class="spinner" aria-hidden="true"></div>
+      <div id="overlay-title" class="overlay-title">Chargement…</div>
+      <div id="overlay-sub" class="overlay-sub">Merci de patienter</div>
+    </div>
+  </div>
+
   <script>
     /* ========= NAVIGATION ========= */
     function showPage(id){
@@ -836,6 +944,22 @@
       toastWrap.appendChild(el);
       setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(8px)"; }, 1500);
       setTimeout(()=>{ el.remove(); }, 1900);
+    }
+
+    /* ========= OVERLAY ========= */
+    const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlay-title");
+    const overlaySub = document.getElementById("overlay-sub");
+
+    function showOverlay(title, sub){
+      overlayTitle.textContent = title || "Chargement…";
+      overlaySub.textContent = sub || "Merci de patienter";
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden", "false");
+    }
+    function hideOverlay(){
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden", "true");
     }
 
     /* ========= OPEN YT (APP FIRST, FALLBACK WEB) ========= */
@@ -882,26 +1006,19 @@
     const CHANNEL_JOYCA_ID   = normalizeChannelId("UCow2IGnug1l3Xazkrc5jM_Q");
     const CHANNEL_MASTU_ID   = normalizeChannelId("AhaFPP6v3WCfK5Tjao0B7A");
 
-    // ✅ Nouvelles chaînes
     const CHANNEL_LEGEND_ID  = normalizeChannelId("UCIh7PDUAP226Pa_NtjN9Jqw");
     const CHANNEL_DJILSI_ID  = normalizeChannelId("UCEUZRSYr1a2hnBfnpWslFeQ");
     const CHANNEL_SYLVAIN_ID = normalizeChannelId("UCd26XTdCltsEpyvZmmGW9Aw");
     const CHANNEL_WANKIL_ID  = normalizeChannelId("UCYGjxo5ifuhnmvhPvCc3DJQ");
     const CHANNEL_GOTAGA_ID  = normalizeChannelId("UCwDeagCMN0rTg5-r3s9AINA");
 
-    // ✅ Random : anti-shorts “classique”
     const MIN_SECONDS = 61;
-
-    // ✅ Dernière vidéo : filtre plus strict (évite shorts ~2 min)
-    const LATEST_MIN_SECONDS = 181;  // <-- tu peux mettre 121 / 241 etc si tu veux
-
+    const LATEST_MIN_SECONDS = 181;
     const CACHE_TTL_MS = 48 * 60 * 60 * 1000;
 
-    // Limites (PAR CHAÎNE)
     const MAX_PAGES = 200;
     const MAX_VIDEOS = 6000;
 
-    // Définition des chaînes (fenêtres)
     const CH_FUZE3    = { key:"fuze3",    name:"Fuze III", id:CHANNEL_FUZE3_ID,   cutoffType:"yearsBack", yearsBack:6 };
     const CH_FIOUSE   = { key:"fiouse",   name:"Fiouse",   id:CHANNEL_FIOUSE_ID,  cutoffType:"sinceIso",  sinceIso:"2023-01-01T00:00:00Z" };
     const CH_AMIXEM   = { key:"amixem",   name:"Amixem",   id:CHANNEL_AMIXEM_ID,  cutoffType:"yearsBack", yearsBack:6 };
@@ -911,7 +1028,6 @@
     const CH_JOYCA    = { key:"joyca",    name:"Joyca",    id:CHANNEL_JOYCA_ID,   cutoffType:"yearsBack", yearsBack:5 };
     const CH_MASTU    = { key:"mastu",    name:"Mastu",    id:CHANNEL_MASTU_ID,   cutoffType:"yearsBack", yearsBack:5 };
 
-    // ✅ Nouvelles (5 ans)
     const CH_LEGEND   = { key:"legend",   name:"LEGEND",   id:CHANNEL_LEGEND_ID,  cutoffType:"yearsBack", yearsBack:5 };
     const CH_DJILSI   = { key:"djilsi",   name:"DJILSI",   id:CHANNEL_DJILSI_ID,  cutoffType:"yearsBack", yearsBack:5 };
     const CH_SYLVAIN  = { key:"sylvain",  name:"SYLVAIN LYVE", id:CHANNEL_SYLVAIN_ID, cutoffType:"yearsBack", yearsBack:5 };
@@ -1015,6 +1131,44 @@
       return avatarUrl || "";
     }
 
+    /* ========= SUBSCRIBERS (CACHE 7 JOURS) ========= */
+    const SUBS_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+    function subsKey(channelId){ return `yt_subs_${channelId}_v1`; }
+    function subsTsKey(channelId){ return `yt_subs_${channelId}_ts_v1`; }
+
+    function loadSubs(channelId){
+      try{
+        const raw = localStorage.getItem(subsKey(channelId));
+        const ts = Number(localStorage.getItem(subsTsKey(channelId)) || 0);
+        if(!raw || !ts) return null;
+        if(Date.now() - ts > SUBS_TTL_MS) return null;
+        const n = Number(raw);
+        return Number.isFinite(n) ? n : null;
+      }catch{ return null; }
+    }
+    function saveSubs(channelId, n){
+      try{
+        localStorage.setItem(subsKey(channelId), String(n));
+        localStorage.setItem(subsTsKey(channelId), String(Date.now()));
+      }catch{}
+    }
+
+    async function fetchSubs(channelId){
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${apiKey}`;
+      const data = await fetchJson(url);
+      const s = data?.items?.[0]?.statistics?.subscriberCount;
+      const n = Number(s);
+      if(!Number.isFinite(n)) return -1;
+      saveSubs(channelId, n);
+      return n;
+    }
+
+    async function ensureSubs(channelId){
+      const cached = loadSubs(channelId);
+      if(cached !== null) return cached;
+      return await fetchSubs(channelId);
+    }
+
     /* ========= KEYS ========= */
     function keysFor(ch){
       const base = `yt_${ch.key}_${ch.id}_${MIN_SECONDS}s`;
@@ -1066,7 +1220,7 @@
       saveCache(ch, cached.poolIds, cached.metaMap, { pruned_to: cached.poolIds.length });
     }
 
-    /* ========= HISTORIQUE (PAR CHAÎNE) + LOG GLOBAL ========= */
+    /* ========= HISTORIQUE ========= */
     const GLOBAL_HISTORY_KEY = "yt_history_global_v1";
 
     function loadGlobalHistory(){
@@ -1080,10 +1234,8 @@
       try{ localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(arr)); }catch{}
     }
     function addGlobalHistoryItem(ch, videoId){
-      // garde l’ordre réel (timestamp)
       const arr = loadGlobalHistory();
       arr.push({ t: Date.now(), chKey: ch.key, id: videoId });
-      // limite raisonnable
       const MAX = 20000;
       const trimmed = arr.slice(Math.max(0, arr.length - MAX));
       saveGlobalHistory(trimmed);
@@ -1223,35 +1375,43 @@
       return { poolIds, metaMap };
     }
 
+    /* ========= BUILD POOL (✅ NOTIF REBUILD + OVERLAY) ========= */
     async function buildPoolForChannel(ch, force=false){
       if(!force){
         const cached = loadCache(ch);
         if(cached) return cached;
       }
 
+      // ✅ notif claire
       toast(`Rebuild ${ch.name}…`);
-      const cutoff = cutoffMsForChannel(ch);
-      const uploadsId = await getUploadsPlaylistId(ch.id);
-      const ids = await collectVideoIdsUpToCutoff(uploadsId, cutoff);
-      const built = await buildMetaAndFilterNoShorts(ids);
+      showOverlay(`Rebuild en cours : ${ch.name}`, "Création du cache (anti-shorts) — ça peut prendre un moment…");
 
-      if(!built.poolIds.length) throw new Error(`Pool vide pour ${ch.name} (beaucoup de shorts ?).`);
+      try{
+        const cutoff = cutoffMsForChannel(ch);
+        const uploadsId = await getUploadsPlaylistId(ch.id);
+        const ids = await collectVideoIdsUpToCutoff(uploadsId, cutoff);
+        const built = await buildMetaAndFilterNoShorts(ids);
 
-      // prune déjà-vu
-      const seenSet = new Set(loadSeenList(ch));
-      const prunedPoolIds = built.poolIds.filter(id => !seenSet.has(id));
+        if(!built.poolIds.length) throw new Error(`Pool vide pour ${ch.name} (beaucoup de shorts ?).`);
 
-      saveCache(ch, prunedPoolIds, built.metaMap, {
-        raw: ids.length,
-        pruned_from: built.poolIds.length,
-        pruned_to: prunedPoolIds.length
-      });
+        const seenSet = new Set(loadSeenList(ch));
+        const prunedPoolIds = built.poolIds.filter(id => !seenSet.has(id));
 
-      return {
-        poolIds: prunedPoolIds,
-        metaMap: built.metaMap,
-        meta: { ts: Date.now(), count: prunedPoolIds.length }
-      };
+        saveCache(ch, prunedPoolIds, built.metaMap, {
+          raw: ids.length,
+          pruned_from: built.poolIds.length,
+          pruned_to: prunedPoolIds.length
+        });
+
+        toast(`✅ Rebuild terminé : ${ch.name}`);
+        return {
+          poolIds: prunedPoolIds,
+          metaMap: built.metaMap,
+          meta: { ts: Date.now(), count: prunedPoolIds.length }
+        };
+      } finally {
+        hideOverlay();
+      }
     }
 
     /* ========= PICK ========= */
@@ -1266,7 +1426,7 @@
       if(!seen.includes(pickedId)){
         seen.push(pickedId);
         saveSeenList(ch, seen);
-        addGlobalHistoryItem(ch, pickedId); // ✅ ordre global réel
+        addGlobalHistoryItem(ch, pickedId);
       }
 
       return pickedId;
@@ -1286,7 +1446,7 @@
       return {
         entryId: `entry_${key}`,
         title,
-        yearsText: title, // plus de "(x ans)"
+        yearsText: title,
         avatarChannelId,
         type: "single_random",
         channel
@@ -1295,15 +1455,12 @@
 
     const ENTRIES = [
       ENTRY_FUZE_RANDOM,
-
       makeSingleEntry("amixem",   "Amixem",            CH_AMIXEM,   CHANNEL_AMIXEM_ID),
       makeSingleEntry("squeezie", "Squeezie",          CH_SQUEEZIE, CHANNEL_SQUEEZIE_ID),
       makeSingleEntry("mec",      "MacFly et Carlito", CH_MEC,      CHANNEL_MEC_ID),
       makeSingleEntry("inoxtag",  "Inoxtag",           CH_INOXTAG,  CHANNEL_INOXTAG_ID),
       makeSingleEntry("joyca",    "Joyca",             CH_JOYCA,    CHANNEL_JOYCA_ID),
       makeSingleEntry("mastu",    "Mastu",             CH_MASTU,    CHANNEL_MASTU_ID),
-
-      // ✅ Ajouts
       makeSingleEntry("legend",   "LEGEND",            CH_LEGEND,   CHANNEL_LEGEND_ID),
       makeSingleEntry("djilsi",   "DJILSI",            CH_DJILSI,   CHANNEL_DJILSI_ID),
       makeSingleEntry("sylvain",  "SYLVAIN LYVE",      CH_SYLVAIN,  CHANNEL_SYLVAIN_ID),
@@ -1311,7 +1468,7 @@
       makeSingleEntry("gotaga",   "GOTAGA",            CH_GOTAGA,   CHANNEL_GOTAGA_ID),
     ];
 
-    /* ========= LAUNCH RANDOM (seulement via bloc dans accordéon) ========= */
+    /* ========= LAUNCH RANDOM ========= */
     async function launchEntry(entry){
       if(isPicking) return;
       isPicking = true;
@@ -1333,7 +1490,6 @@
 
         renderChannels();
         renderFavorites();
-        // si on est sur la page historique => refresh
         if(document.getElementById("page-history")?.classList.contains("active")) renderHistoryPage();
       }catch(e){
         console.error(e);
@@ -1345,7 +1501,6 @@
 
     /* ========= STATS LINES ========= */
     function headerLineForEntry(entry){
-      // ✅ Plus de "(x ans)" : on garde juste Rebuild + (pour le groupe, son nom)
       if(entry.type === "group_random"){
         const timeLeft = rebuildTimeLeftForGroup(entry.group);
         return `• ${entry.yearsText} • Rebuild : ${timeLeft}`;
@@ -1356,7 +1511,6 @@
     }
 
     function fullStatsForEntry(entry){
-      // ✅ Sous "Lance une vidéo random" : SANS nom de chaîne, SANS temps rebuild
       if(entry.type === "group_random"){
         const remaining = remainingCountFor(entry.group[0]) + remainingCountFor(entry.group[1]);
         const seen = seenCountFor(entry.group[0]) + seenCountFor(entry.group[1]);
@@ -1368,7 +1522,7 @@
       }
     }
 
-    /* ========= MYSTERY THUMB (floutée depuis le cache) ========= */
+    /* ========= MYSTERY THUMB ========= */
     function pickMysteryThumbFromChannel(ch){
       const cached = loadCache(ch);
       if(!cached) return "";
@@ -1391,9 +1545,7 @@
       return pickMysteryThumbFromChannel(entry.channel) || "";
     }
 
-    /* =========================
-       ✅ DERNIÈRE VIDÉO (ACCORDÉON) + CACHE 6h
-       ========================= */
+    /* ========= DERNIÈRE VIDÉO (cache 6h) ========= */
     const LATEST_TTL_MS = 6 * 60 * 60 * 1000;
 
     function latestKey(channelId){ return `yt_latest_${channelId}_v2`; }
@@ -1410,14 +1562,12 @@
         return obj;
       }catch{ return null; }
     }
-
     function saveLatest(channelId, obj){
       try{
         localStorage.setItem(latestKey(channelId), JSON.stringify(obj));
         localStorage.setItem(latestTsKey(channelId), String(Date.now()));
       }catch{}
     }
-
     function clearLatest(channelId){
       try{
         localStorage.removeItem(latestKey(channelId));
@@ -1428,7 +1578,7 @@
     async function fetchLatestVideo(channelId){
       const uploadsId = await getUploadsPlaylistId(channelId);
 
-      const N = 12; // on check un peu plus pour éviter les shorts dans les derniers
+      const N = 12;
       const url =
         `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}`+
         `&maxResults=${N}&key=${apiKey}`;
@@ -1452,13 +1602,10 @@
         if(!id || !iso) continue;
 
         const sec = isoDurationToSeconds(iso);
-
-        // ✅ filtre plus strict pour “dernière vidéo”
         if(sec < LATEST_MIN_SECONDS) continue;
 
         const sn = v?.snippet || {};
         const thumbs = sn?.thumbnails || {};
-
         const thumb =
           thumbs?.maxres?.url ||
           thumbs?.standard?.url ||
@@ -1493,6 +1640,9 @@
     const channelsListEl = document.getElementById("channels-list");
     const favoritesListEl = document.getElementById("favorites-list");
     const favoritesEmptyEl = document.getElementById("favorites-empty");
+
+    const channelsSearchEl = document.getElementById("channels-search");
+    const channelsSortEl = document.getElementById("channels-sort");
 
     function setExpandHeight(card, expandEl){
       if(!card.classList.contains("open")){
@@ -1602,12 +1752,10 @@
 
         rrow.appendChild(rthumb);
         rrow.appendChild(rmeta);
-
         wrap.appendChild(rrow);
 
         expandInner.innerHTML = "";
         expandInner.appendChild(wrap);
-
         setExpandHeight(card, expand);
 
       }catch(err){
@@ -1744,14 +1892,70 @@
       return card;
     }
 
-    function renderChannels(){
+    /* ========= Recherche + Tri ========= */
+    let renderToken = 0;
+
+    function filterEntriesBySearch(entries){
+      const q = String(channelsSearchEl.value || "").trim().toLowerCase();
+      if(!q) return entries;
+      return entries.filter(e => (e.title || "").toLowerCase().includes(q));
+    }
+
+    async function sortEntries(entries){
+      const mode = channelsSortEl.value || "default";
+      const arr = entries.slice();
+
+      if(mode === "az"){
+        arr.sort((a,b)=> a.title.localeCompare(b.title, "fr", { sensitivity:"base" }));
+        return arr;
+      }
+      if(mode === "za"){
+        arr.sort((a,b)=> b.title.localeCompare(a.title, "fr", { sensitivity:"base" }));
+        return arr;
+      }
+
+      if(mode === "subs_desc"){
+        toast("Récupération des abonnés… (cache 7 jours)");
+        showOverlay("Tri par abonnés…", "Lecture du cache abonnés / appel quota-mini si nécessaire…");
+        const token = ++renderToken;
+
+        try{
+          const subsMap = new Map();
+          for(const e of arr){
+            if(token !== renderToken) return arr;
+            const n = await ensureSubs(e.avatarChannelId);
+            subsMap.set(e.entryId, n ?? -1);
+          }
+
+          arr.sort((a,b)=>{
+            const sa = subsMap.get(a.entryId) ?? -1;
+            const sb = subsMap.get(b.entryId) ?? -1;
+            if(sb !== sa) return sb - sa;
+            return a.title.localeCompare(b.title, "fr", { sensitivity:"base" });
+          });
+
+          return arr;
+        } finally {
+          hideOverlay();
+        }
+      }
+
+      // default
+      return arr;
+    }
+
+    async function renderChannels(){
       channelsListEl.innerHTML = "";
-      for(const entry of ENTRIES){
+      let entries = ENTRIES.slice();
+      entries = filterEntriesBySearch(entries);
+      entries = await sortEntries(entries);
+
+      for(const entry of entries){
         channelsListEl.appendChild(makeEntryCard(entry));
       }
     }
 
-    function renderFavorites(){
+    async function renderFavorites(){
       const favs = loadFavorites();
       favoritesListEl.innerHTML = "";
 
@@ -1768,6 +1972,15 @@
       }
     }
 
+    channelsSearchEl.addEventListener("input", ()=>{
+      closeAllAccordions(channelsListEl);
+      renderChannels();
+    });
+    channelsSortEl.addEventListener("change", ()=>{
+      closeAllAccordions(channelsListEl);
+      renderChannels();
+    });
+
     /* ========= HISTORIQUE PAGE ========= */
     const histModeGlobalBtn = document.getElementById("hist-mode-global");
     const histModeChannelBtn = document.getElementById("hist-mode-channel");
@@ -1778,7 +1991,7 @@
     const histTopline = document.getElementById("hist-topline");
     const histListEl = document.getElementById("history-list");
 
-    let histMode = "global"; // "global" | "channel"
+    let histMode = "global";
 
     function channelByKey(key){
       return CHANNELS_ALL.find(c => c.key === key) || null;
@@ -1815,7 +2028,6 @@
         return;
       }
 
-      // affichage du plus récent au plus ancien
       const list = arr.slice().reverse();
 
       for(const item of list){
@@ -1951,7 +2163,6 @@
     }
 
     function renderHistoryPage(){
-      // init select si vide
       if(!histSelect.options.length) buildChannelSelect();
 
       histModeGlobalBtn.classList.toggle("active", histMode === "global");
@@ -2014,6 +2225,7 @@
 
     rebuildAllBtn.addEventListener("click", async ()=>{
       try{
+        showOverlay("Rebuild caches…", "Rebuild de toutes les chaînes (anti-shorts)…");
         for(const ch of CHANNELS_ALL){
           toast(`Rebuild… ${ch.name}`);
           await buildPoolForChannel(ch, true);
@@ -2025,11 +2237,14 @@
       }catch(e){
         console.error(e);
         toast("Erreur : " + (e.message || e));
+      }finally{
+        hideOverlay();
       }
     });
 
     rebuildLatestBtn.addEventListener("click", async ()=>{
       try{
+        showOverlay("Dernières vidéos…", "Mise à jour des dernières vidéos (cache 6h)…");
         const ids = uniqueLatestChannelIds();
         for(const id of ids) clearLatest(id);
         for(const id of ids){
@@ -2042,6 +2257,8 @@
       }catch(e){
         console.error(e);
         toast("Erreur : " + (e.message || e));
+      }finally{
+        hideOverlay();
       }
     });
 
