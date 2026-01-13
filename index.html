@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <title>YouTube Random — Menu + Favoris + Random</title>
+  <title>YouTube Random Video — V0.1</title>
 
   <style>
     :root{
@@ -15,8 +15,6 @@
       --shadow: 0 18px 55px rgba(0,0,0,0.45);
       --accent:#ff2e2e;
       --gold:#ffd24a;
-      --card: rgba(255,255,255,0.07);
-      --card2: rgba(255,255,255,0.10);
       color-scheme: dark;
     }
 
@@ -30,7 +28,6 @@
       overflow:hidden;
     }
 
-    /* Background glow (slightly richer) */
     .bg-glow{
       position:fixed; inset:-25%;
       background:
@@ -43,7 +40,7 @@
       z-index:0;
     }
 
-    /* ===== TOP BAR (mobile-app feeling) ===== */
+    /* ===== TOP BAR ===== */
     .topbar{
       position:fixed;
       top: calc(10px + env(safe-area-inset-top));
@@ -63,7 +60,6 @@
     .brand{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
-
     .brand-left{ display:flex; align-items:center; gap:10px; min-width:0; }
     .brand-mark{
       width:44px; height:44px; border-radius:14px;
@@ -90,13 +86,13 @@
       border-radius: 3px;
     }
     .brand-title .rd{ color: var(--accent); text-shadow:0 0 14px rgba(255,0,0,0.38); }
+    .brand-title .vd{ color: rgba(255,255,255,0.92); text-shadow:0 0 10px rgba(255,255,255,0.10); }
     .brand-sub{
       margin-top:2px;
       font-size: 12px;
       color: rgba(255,255,255,0.66);
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-
     .brand-chip{
       flex:0 0 auto;
       display:flex; align-items:center; gap:8px;
@@ -106,7 +102,7 @@
       background: rgba(0,0,0,0.16);
       color: rgba(255,255,255,0.80);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
       user-select:none;
     }
     .brand-chip .dot{
@@ -120,7 +116,7 @@
       position:relative; z-index:1;
       width:100%; height:100vh;
       display:flex; align-items:flex-start; justify-content:center;
-      padding: calc(92px + env(safe-area-inset-top)) 16px 24px 16px; /* topbar space */
+      padding: calc(92px + env(safe-area-inset-top)) 16px 24px 16px;
       overflow:hidden;
     }
 
@@ -133,7 +129,6 @@
     .page.active{ display:block; }
     @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
 
-    /* Small top row on sub-pages */
     .page-top{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       margin: 6px 4px 12px 4px;
@@ -142,7 +137,7 @@
       display:inline-flex; align-items:center; gap:8px;
       cursor:pointer; border:none;
       background:rgba(0,0,0,0.20);
-      color:#fff; font-weight:900;
+      color:#fff; font-weight:950;
       padding:10px 12px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,0.12);
@@ -156,7 +151,6 @@
       letter-spacing:.5px; font-size:16px; opacity:0.95;
     }
 
-    /* Card container */
     .menu-card{
       border-radius:24px;
       border:1px solid rgba(255,255,255,0.13);
@@ -168,7 +162,6 @@
       overflow:hidden;
     }
 
-    /* ===== HOME HERO ===== */
     .home-hero{
       padding: 12px 4px 14px 4px;
     }
@@ -185,7 +178,6 @@
       line-height: 1.35;
     }
 
-    /* ===== MENU LIST (more "native") ===== */
     .menu-list{ display:flex; flex-direction:column; gap:10px; }
 
     .menu-item{
@@ -202,7 +194,6 @@
 
     .menu-left{ display:flex; align-items:center; gap:12px; min-width:0; }
 
-    /* Modern icon container */
     .icon{
       width:44px; height:44px; border-radius:14px;
       display:flex; align-items:center; justify-content:center;
@@ -213,10 +204,10 @@
     }
     .icon svg{ width:22px; height:22px; fill: rgba(255,255,255,0.92); }
 
-    /* Accent ring per item */
     .menu-item[data-go="page-channels"] .icon{ outline: 2px solid rgba(255,46,46,0.35); }
     .menu-item[data-go="page-favs"] .icon{ outline: 2px solid rgba(255,210,74,0.35); }
     .menu-item[data-go="page-help"] .icon{ outline: 2px solid rgba(93,167,255,0.28); }
+    .menu-item[data-go="page-history"] .icon{ outline: 2px solid rgba(255,255,255,0.18); }
 
     .menu-text{ min-width:0; }
     .menu-text .t1{
@@ -233,10 +224,9 @@
       display:flex; align-items:center; justify-content:center;
       border:1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.14);
-      color: rgba(255,255,255,0.70);
-      font-size: 20px;
       flex:0 0 auto;
     }
+    .chev svg{ width:16px; height:16px; fill: rgba(255,255,255,0.72); }
 
     .footer{
       margin-top:12px;
@@ -246,7 +236,6 @@
     }
     .hidden{ display:none !important; }
 
-    /* ✅ Zone scrollable */
     .scroll{
       max-height:60vh;
       overflow:auto;
@@ -262,7 +251,7 @@
     }
 
     /* =========================
-       ✅ CHANNEL CARD + ACCORDION (unchanged)
+       ✅ CHANNEL CARD + ACCORDION
        ========================= */
     .channel-item{
       border-radius:16px;
@@ -316,7 +305,7 @@
 
     .channel-right{ display:flex; align-items:center; gap:10px; flex:0 0 auto; }
 
-    .star-btn{
+    .star-btn, .chev-btn{
       width:34px; height:34px; border-radius:12px;
       border:1px solid rgba(255,255,255,0.14);
       background: rgba(0,0,0,0.16);
@@ -324,28 +313,16 @@
       cursor:pointer;
       transition: filter .12s ease, transform .12s ease;
       user-select:none;
+      flex:0 0 auto;
     }
-    .star-btn:hover{ filter:brightness(1.08); }
-    .star-btn:active{ transform:translateY(1px); }
+    .star-btn:hover, .chev-btn:hover{ filter:brightness(1.08); }
+    .star-btn:active, .chev-btn:active{ transform:translateY(1px); }
 
     .star{ font-size:18px; line-height:1; color: rgba(255,255,255,0.55); }
     .star.fav{ color: var(--gold); text-shadow: 0 0 10px rgba(255,210,74,0.35); }
 
-    .chev-btn{
-      width:34px; height:34px; border-radius:12px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.16);
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer;
-      user-select:none;
-      transition: filter .12s ease, transform .18s ease;
-      color:rgba(255,255,255,0.65);
-      font-size:22px;
-      line-height:1;
-    }
-    .chev-btn:hover{ filter:brightness(1.08); }
-    .chev-btn:active{ transform:translateY(1px); }
-    .channel-item.open .chev-btn{ transform: rotate(90deg); }
+    .chev-btn svg{ width:16px; height:16px; fill: rgba(255,255,255,0.72); transition: transform .18s ease; }
+    .channel-item.open .chev-btn svg{ transform: rotate(90deg); }
 
     .channel-expand{
       max-height:0;
@@ -395,10 +372,18 @@
     }
     .latest-video-title:hover{ filter:brightness(1.08); }
 
-    .latest-hint, .random-hint{
+    .latest-hint, .random-hint, .random-stats{
       margin-top:6px;
       font-size:12px;
       color:rgba(255,255,255,0.60);
+    }
+    .random-stats{
+      margin-top:6px;
+      color:rgba(255,255,255,0.68);
+      font-weight:800;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .latest-loading{
@@ -414,6 +399,8 @@
     }
 
     .random-thumb{
+      position:relative;
+      overflow:hidden;
       width:160px; height:90px;
       border-radius:12px;
       border:1px solid rgba(255,255,255,0.14);
@@ -426,10 +413,10 @@
       cursor:pointer;
       flex:0 0 auto;
       transition: filter .12s ease, transform .12s ease;
-      position:relative;
-      overflow:hidden;
     }
     .random-thumb::before{
+      position:relative;
+      z-index:2;
       content:"?";
       font-family:"Arial Black",Impact,sans-serif;
       font-size:46px;
@@ -438,6 +425,28 @@
     }
     .random-thumb:hover{ filter:brightness(1.06); }
     .random-thumb:active{ transform:translateY(1px); }
+
+    /* ✅ Miniature mystère : moins floue (on distingue mieux) */
+    .mystery-img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter: blur(6px) saturate(1.00) brightness(0.92);
+      transform: scale(1.10);
+      opacity:0.92;
+      z-index:1;
+      pointer-events:none;
+    }
+    .random-thumb::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.00), rgba(0,0,0,0.20));
+      z-index:1;
+      pointer-events:none;
+    }
 
     .random-action{
       font-weight:900;
@@ -451,7 +460,7 @@
 
     .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; justify-content:center; }
     .small-btn{
-      font-weight:850; font-size:14px;
+      font-weight:900; font-size:14px;
       padding:10px 14px; border-radius:14px;
       border:1px solid rgba(255,255,255,0.16);
       background:rgba(0,0,0,0.22); color:#fff;
@@ -460,9 +469,85 @@
     .small-btn:hover{ filter:brightness(1.10); }
     .small-btn:active{ transform:translateY(1px); }
 
+    /* ===== HISTORIQUE (nouvelle page) ===== */
+    .seg-wrap{
+      display:flex; gap:10px; margin:8px 0 12px 0; flex-wrap:wrap;
+    }
+    .seg-btn{
+      flex:0 0 auto;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.18);
+      color:#fff;
+      font-weight:950;
+      cursor:pointer;
+      transition: filter .12s ease, transform .12s ease;
+      user-select:none;
+    }
+    .seg-btn:hover{ filter:brightness(1.08); }
+    .seg-btn:active{ transform:translateY(1px); }
+    .seg-btn.active{
+      border-color: rgba(255,46,46,0.35);
+      box-shadow: 0 0 0 2px rgba(255,46,46,0.12) inset;
+    }
+
+    .select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.18);
+      color:#fff;
+      font-weight:900;
+      outline:none;
+    }
+
+    .history-topline{
+      margin-top:6px;
+      color:rgba(255,255,255,0.70);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .history-list{
+      margin-top:12px;
+      overflow:auto;
+      max-height:56vh;
+      padding-right:4px;
+      overscroll-behavior: contain;
+    }
+    .history-list::-webkit-scrollbar{ width:10px; }
+    .history-list::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,0.16);
+      border-radius:10px;
+      border:2px solid rgba(0,0,0,0.15);
+    }
+
+    .history-item{
+      display:grid;
+      grid-template-columns:120px 1fr auto;
+      gap:10px; align-items:center;
+      padding:10px; border-radius:14px; margin-bottom:10px;
+      background: rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    .thumb{
+      width:120px; height:90px; border-radius:12px;
+      border:1px solid rgba(255,255,255,0.12);
+      object-fit:cover; background:rgba(255,255,255,0.05);
+    }
+    .history-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+    .history-title{ color:rgba(255,255,255,0.95); font-weight:900; font-size:14px; line-height:1.2; }
+    .history-id{ font-family:monospace; color:rgba(255,255,255,0.80); font-size:12px; }
+    .history-link{ color:#ff4d4d; text-decoration:none; word-break:break-all; font-size:13px; }
+    .history-link:hover{ text-decoration:underline; }
+
     /* Toast */
     .toast-wrap{
-      position:fixed; left:50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform:translateX(-50%);
+      position:fixed; left:50%;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      transform:translateX(-50%);
       z-index:10000; display:flex; flex-direction:column; gap:10px;
       pointer-events:none;
     }
@@ -477,47 +562,11 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       color:rgba(255,255,255,0.90);
-      font-weight:900;
+      font-weight:950;
       text-align:center;
       animation: toastIn 180ms ease both;
     }
     @keyframes toastIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
-
-    /* Modal historique */
-    .modal{ position:fixed; inset:0; background:rgba(0,0,0,0.55);
-      display:flex; align-items:center; justify-content:center; padding:18px; z-index:9999; }
-    .modal-card{
-      width:min(900px,94vw); max-height:78vh; overflow:hidden;
-      border-radius:16px; border:2px solid rgba(255,255,255,0.12);
-      background:rgba(15,5,6,0.92); box-shadow:0 20px 50px rgba(0,0,0,0.55);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-    }
-    .modal-header{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:14px 14px 10px 14px; border-bottom:1px solid rgba(255,255,255,0.10);
-    }
-    .modal-title{ font-family:"Arial Black",Impact,sans-serif; color:#fff; font-size:20px; letter-spacing:0.6px; }
-    .modal-actions{ display:flex; gap:10px; flex-wrap:wrap; padding:12px 14px 6px 14px; }
-    .modal-sub{ padding:0 14px 10px 14px; color:rgba(255,255,255,0.75); font-size:13px; }
-    .modal-list{ padding:0 14px 14px 14px; overflow:auto; max-height:calc(78vh - 120px); }
-
-    .history-item{
-      display:grid; grid-template-columns:120px 1fr auto;
-      gap:10px; align-items:center;
-      padding:10px; border-radius:12px; margin-bottom:8px;
-      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);
-    }
-    .thumb{
-      width:120px; height:90px; border-radius:10px;
-      border:1px solid rgba(255,255,255,0.12);
-      object-fit:cover; background:rgba(255,255,255,0.05);
-    }
-    .history-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
-    .history-title{ color:rgba(255,255,255,0.95); font-weight:900; font-size:14px; line-height:1.2; }
-    .history-id{ font-family:monospace; color:rgba(255,255,255,0.8); font-size:12px; }
-    .history-link{ color:#ff4d4d; text-decoration:none; word-break:break-all; font-size:13px; }
-    .history-link:hover{ text-decoration:underline; }
 
     @media (max-width:768px){
       .topbar{ top: calc(8px + env(safe-area-inset-top)); }
@@ -525,23 +574,20 @@
       .brand-title{ font-size:17px; }
       .app{ padding-top: calc(90px + env(safe-area-inset-top)); }
       .scroll{ max-height:58vh; padding-bottom:115px; }
-      .modal-card{ max-height:84vh; }
-      .modal-list{ max-height:calc(84vh - 130px); }
+      .latest-thumb, .random-thumb{ width:140px; height:78px; }
       .history-item{ grid-template-columns:96px 1fr; grid-template-rows:auto auto; }
       .thumb{ width:96px; height:72px; }
       .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
-      .latest-thumb, .random-thumb{ width:140px; height:78px; }
+      .history-list{ max-height:60vh; }
     }
 
     /* ✅ iOS STABLE */
     @supports (-webkit-touch-callout: none) {
-      .topbar, .menu-card, .menu-item, .channel-item, .toast, .modal-card{
+      .topbar, .menu-card, .menu-item, .channel-item, .toast{
         -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
       }
-      .topbar{
-        background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;
-      }
+      .topbar{ background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important; }
       .menu-card{
         background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;
         box-shadow: 0 18px 55px rgba(0,0,0,0.35) !important;
@@ -549,6 +595,7 @@
       .menu-item{ background: rgba(255,255,255,0.14) !important; }
       .channel-item{ background: rgba(255,255,255,0.12) !important; }
       .toast{ background: rgba(15,5,6,0.92) !important; }
+      .history-item{ background: rgba(255,255,255,0.10) !important; }
     }
   </style>
 </head>
@@ -556,26 +603,24 @@
 <body>
   <div class="bg-glow"></div>
 
-  <!-- ✅ Top bar (remplace le logo flottant + supprime l'espace vide) -->
-  <header class="topbar" aria-label="YouTube Random">
+  <header class="topbar" aria-label="YouTube Random Video">
     <div class="brand">
       <div class="brand-left">
         <div class="brand-mark" aria-hidden="true">
-          <!-- Play icon -->
           <svg viewBox="0 0 24 24">
             <path d="M8 5.5v13l11-6.5L8 5.5z"></path>
           </svg>
         </div>
         <div class="brand-text">
           <div class="brand-title">
-            <span class="yt">YouTube</span><span class="sep"></span><span class="rd">Random</span>
+            <span class="yt">YouTube</span><span class="sep"></span><span class="rd">Random</span> <span class="vd">Video</span>
           </div>
           <div class="brand-sub">Choisis une chaîne, puis lance une vidéo au hasard</div>
         </div>
       </div>
-      <div class="brand-chip" title="Mode appli">
+      <div class="brand-chip" title="Version">
         <span class="dot"></span>
-        <span>Mobile-first</span>
+        <span>V 0.1</span>
       </div>
     </div>
   </header>
@@ -588,7 +633,7 @@
 
         <div class="home-hero">
           <h1>Menu</h1>
-          <p>Une interface simple, pensée comme une appli. Tout se joue dans <b>Chaînes</b> : dernière vidéo + random (sans shorts).</p>
+          <p>Interface pensée comme une appli. Dans <b>Chaînes</b> : dernière vidéo + random (sans shorts).</p>
         </div>
 
         <div class="menu-list">
@@ -596,7 +641,6 @@
           <div class="menu-item" data-go="page-channels" role="button" aria-label="Aller vers Chaînes">
             <div class="menu-left">
               <div class="icon" aria-hidden="true">
-                <!-- Users icon -->
                 <svg viewBox="0 0 24 24">
                   <path d="M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11zm-8 0c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.95 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
                 </svg>
@@ -606,13 +650,14 @@
                 <div class="t2">Sélectionner un youtubeur</div>
               </div>
             </div>
-            <div class="chev" aria-hidden="true">›</div>
+            <div class="chev" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
+            </div>
           </div>
 
           <div class="menu-item" data-go="page-favs" role="button" aria-label="Aller vers Favoris">
             <div class="menu-left">
               <div class="icon" aria-hidden="true">
-                <!-- Star icon -->
                 <svg viewBox="0 0 24 24">
                   <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                 </svg>
@@ -622,13 +667,32 @@
                 <div class="t2">Tes chaînes favorites</div>
               </div>
             </div>
-            <div class="chev" aria-hidden="true">›</div>
+            <div class="chev" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
+            </div>
+          </div>
+
+          <!-- ✅ NOUVEAU : Historique dans le menu -->
+          <div class="menu-item" data-go="page-history" role="button" aria-label="Aller vers Historique">
+            <div class="menu-left">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M13 3a9 9 0 1 0 8.95 10h-2.02A7 7 0 1 1 13 5V2l4 4-4 4V7a5 5 0 1 0 5 6h2a7 7 0 1 1-7-10z"/>
+                </svg>
+              </div>
+              <div class="menu-text">
+                <div class="t1">Historique</div>
+                <div class="t2">Global ou par chaîne</div>
+              </div>
+            </div>
+            <div class="chev" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
+            </div>
           </div>
 
           <div class="menu-item" data-go="page-help" role="button" aria-label="Aller vers Comment ça marche ?">
             <div class="menu-left">
               <div class="icon" aria-hidden="true">
-                <!-- Help icon -->
                 <svg viewBox="0 0 24 24">
                   <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
                 </svg>
@@ -638,12 +702,14 @@
                 <div class="t2">Explication rapide</div>
               </div>
             </div>
-            <div class="chev" aria-hidden="true">›</div>
+            <div class="chev" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
+            </div>
           </div>
 
         </div>
 
-        <div class="footer">YouTube Random — Menu</div>
+        <div class="footer">YouTube Random Video — Menu</div>
       </div>
     </section>
 
@@ -658,11 +724,10 @@
       <div class="menu-card">
         <div id="channels-list" class="scroll"></div>
 
+        <!-- ✅ Page chaînes : on garde seulement les rebuilds -->
         <div class="row">
           <button id="rebuild-all-btn" class="small-btn">Rebuild caches</button>
           <button id="rebuild-latest-btn" class="small-btn">Rebuild dernières vidéos</button>
-          <button id="reset-seen-btn" class="small-btn">Reset historique</button>
-          <button id="history-btn" class="small-btn">Historique</button>
         </div>
       </div>
     </section>
@@ -681,6 +746,42 @@
       </div>
     </section>
 
+    <!-- PAGE HISTORIQUE (NOUVEAU DESIGN) -->
+    <section id="page-history" class="page">
+      <div class="page-top">
+        <button class="back-btn" data-back="page-home">← Retour</button>
+        <div class="page-title">Historique</div>
+        <div style="width:92px;"></div>
+      </div>
+
+      <div class="menu-card">
+        <div class="home-hero" style="padding-top:6px;">
+          <h1 style="font-size:18px;">Historique</h1>
+          <p style="margin-top:6px;">Choisis <b>Global</b> (ordre réel) ou <b>Par chaîne</b> (filtrer + supprimer une chaîne).</p>
+        </div>
+
+        <div class="seg-wrap">
+          <button id="hist-mode-global" class="seg-btn active" type="button">Global</button>
+          <button id="hist-mode-channel" class="seg-btn" type="button">Par chaîne</button>
+        </div>
+
+        <div id="hist-channel-picker" class="hidden">
+          <select id="hist-channel-select" class="select"></select>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button id="hist-copy" class="small-btn">Copier</button>
+          <button id="hist-clear" class="small-btn">Supprimer</button>
+        </div>
+
+        <div id="hist-topline" class="history-topline"></div>
+
+        <div id="history-list" class="history-list"></div>
+
+        <div class="footer">YouTube Random Video — Historique</div>
+      </div>
+    </section>
+
     <!-- PAGE HELP -->
     <section id="page-help" class="page">
       <div class="page-top">
@@ -690,14 +791,14 @@
       </div>
 
       <div class="menu-card">
-        <div style="color:rgba(255,255,255,0.70); font-size:13px; line-height:1.45;">
-          • Va dans “Chaînes”.<br>
+        <div style="color:rgba(255,255,255,0.74); font-size:13px; line-height:1.55;">
+          • Va dans <b>“Chaînes”</b>.<br>
           • Clique sur une carte : ça ouvre le détail (dernier upload + random).<br>
-          • Clique sur “Lance une vidéo random” dans le détail pour lancer une vidéo (sans shorts).<br>
-          • Fuze III = tirage 50/50 entre Fuze III et Fiouse.<br>
-          • L’étoile ⭐ ajoute/retire le bouton des Favoris.<br>
-          • Rebuild caches = rebuild pools random (48h).<br>
-          • Rebuild dernières vidéos = force la MAJ des dernières vidéos (cache 6h).<br>
+          • Clique sur <b>“Lance une vidéo random”</b> dans le détail pour lancer une vidéo (sans shorts).<br>
+          • <b>Fuze III</b> = tirage 50/50 entre Fuze III et Fiouse.<br>
+          • L’étoile <b>★</b> ajoute/retire la chaîne des Favoris.<br>
+          • <b>Rebuild caches</b> = rebuild pools random (48h).<br>
+          • <b>Rebuild dernières vidéos</b> = force la MAJ des dernières vidéos (cache 6h).<br>
           • Sur téléphone : ouverture tente l’app YouTube, sinon navigateur.
         </div>
       </div>
@@ -708,24 +809,6 @@
   <!-- TOAST -->
   <div id="toast-wrap" class="toast-wrap"></div>
 
-  <!-- MODAL HISTORIQUE -->
-  <div id="history-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="history-title">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div id="history-title" class="modal-title">Historique</div>
-        <button id="history-close" class="small-btn">Fermer</button>
-      </div>
-
-      <div class="modal-actions">
-        <button id="history-copy-all" class="small-btn">Copier tout</button>
-        <button id="history-clear" class="small-btn">Vider historique</button>
-      </div>
-
-      <div id="history-count" class="modal-sub"></div>
-      <div id="history-list" class="modal-list"></div>
-    </div>
-  </div>
-
   <script>
     /* ========= NAVIGATION ========= */
     function showPage(id){
@@ -734,6 +817,7 @@
       if(el) el.classList.add("active");
       if(id === "page-favs") renderFavorites();
       if(id === "page-channels") renderChannels();
+      if(id === "page-history") renderHistoryPage();
     }
 
     document.addEventListener("click", (e)=>{
@@ -796,9 +880,21 @@
     const CHANNEL_MEC_ID     = normalizeChannelId("UCDPK_MTu3uTUFJXRVcTJcEw");
     const CHANNEL_INOXTAG_ID = normalizeChannelId("UCL9aTJb0ur4sovxcppAopEw");
     const CHANNEL_JOYCA_ID   = normalizeChannelId("UCow2IGnug1l3Xazkrc5jM_Q");
-    const CHANNEL_MASTU_ID   = normalizeChannelId("UCahaFPP6v3WCfK5Tjao0B7A");
+    const CHANNEL_MASTU_ID   = normalizeChannelId("AhaFPP6v3WCfK5Tjao0B7A");
 
-    const MIN_SECONDS = 61;                 // anti-shorts
+    // ✅ Nouvelles chaînes
+    const CHANNEL_LEGEND_ID  = normalizeChannelId("UCIh7PDUAP226Pa_NtjN9Jqw");
+    const CHANNEL_DJILSI_ID  = normalizeChannelId("UCEUZRSYr1a2hnBfnpWslFeQ");
+    const CHANNEL_SYLVAIN_ID = normalizeChannelId("UCd26XTdCltsEpyvZmmGW9Aw");
+    const CHANNEL_WANKIL_ID  = normalizeChannelId("UCYGjxo5ifuhnmvhPvCc3DJQ");
+    const CHANNEL_GOTAGA_ID  = normalizeChannelId("UCwDeagCMN0rTg5-r3s9AINA");
+
+    // ✅ Random : anti-shorts “classique”
+    const MIN_SECONDS = 61;
+
+    // ✅ Dernière vidéo : filtre plus strict (évite shorts ~2 min)
+    const LATEST_MIN_SECONDS = 181;  // <-- tu peux mettre 121 / 241 etc si tu veux
+
     const CACHE_TTL_MS = 48 * 60 * 60 * 1000;
 
     // Limites (PAR CHAÎNE)
@@ -806,16 +902,26 @@
     const MAX_VIDEOS = 6000;
 
     // Définition des chaînes (fenêtres)
-    const CH_FUZE3  = { key:"fuze3",  name:"Fuze III", id:CHANNEL_FUZE3_ID,  cutoffType:"yearsBack", yearsBack:6 };
-    const CH_FIOUSE = { key:"fiouse", name:"Fiouse",  id:CHANNEL_FIOUSE_ID, cutoffType:"sinceIso",  sinceIso:"2023-01-01T00:00:00Z" };
-    const CH_AMIXEM = { key:"amixem", name:"Amixem",  id:CHANNEL_AMIXEM_ID, cutoffType:"yearsBack", yearsBack:6 };
-    const CH_SQUEEZIE = { key:"squeezie", name:"Squeezie", id:CHANNEL_SQUEEZIE_ID, cutoffType:"yearsBack", yearsBack:7 };
-    const CH_MEC      = { key:"mec", name:"MacFly et Carlito", id:CHANNEL_MEC_ID, cutoffType:"yearsBack", yearsBack:4 };
-    const CH_INOXTAG  = { key:"inoxtag", name:"Inoxtag", id:CHANNEL_INOXTAG_ID, cutoffType:"yearsBack", yearsBack:5 };
-    const CH_JOYCA    = { key:"joyca", name:"Joyca", id:CHANNEL_JOYCA_ID, cutoffType:"yearsBack", yearsBack:5 };
-    const CH_MASTU    = { key:"mastu", name:"Mastu", id:CHANNEL_MASTU_ID, cutoffType:"yearsBack", yearsBack:5 };
+    const CH_FUZE3    = { key:"fuze3",    name:"Fuze III", id:CHANNEL_FUZE3_ID,   cutoffType:"yearsBack", yearsBack:6 };
+    const CH_FIOUSE   = { key:"fiouse",   name:"Fiouse",   id:CHANNEL_FIOUSE_ID,  cutoffType:"sinceIso",  sinceIso:"2023-01-01T00:00:00Z" };
+    const CH_AMIXEM   = { key:"amixem",   name:"Amixem",   id:CHANNEL_AMIXEM_ID,  cutoffType:"yearsBack", yearsBack:6 };
+    const CH_SQUEEZIE = { key:"squeezie", name:"Squeezie", id:CHANNEL_SQUEEZIE_ID,cutoffType:"yearsBack", yearsBack:7 };
+    const CH_MEC      = { key:"mec",      name:"MacFly et Carlito", id:CHANNEL_MEC_ID, cutoffType:"yearsBack", yearsBack:4 };
+    const CH_INOXTAG  = { key:"inoxtag",  name:"Inoxtag",  id:CHANNEL_INOXTAG_ID, cutoffType:"yearsBack", yearsBack:5 };
+    const CH_JOYCA    = { key:"joyca",    name:"Joyca",    id:CHANNEL_JOYCA_ID,   cutoffType:"yearsBack", yearsBack:5 };
+    const CH_MASTU    = { key:"mastu",    name:"Mastu",    id:CHANNEL_MASTU_ID,   cutoffType:"yearsBack", yearsBack:5 };
 
-    const CHANNELS_ALL = [CH_FUZE3, CH_FIOUSE, CH_AMIXEM, CH_SQUEEZIE, CH_MEC, CH_INOXTAG, CH_JOYCA, CH_MASTU];
+    // ✅ Nouvelles (5 ans)
+    const CH_LEGEND   = { key:"legend",   name:"LEGEND",   id:CHANNEL_LEGEND_ID,  cutoffType:"yearsBack", yearsBack:5 };
+    const CH_DJILSI   = { key:"djilsi",   name:"DJILSI",   id:CHANNEL_DJILSI_ID,  cutoffType:"yearsBack", yearsBack:5 };
+    const CH_SYLVAIN  = { key:"sylvain",  name:"SYLVAIN LYVE", id:CHANNEL_SYLVAIN_ID, cutoffType:"yearsBack", yearsBack:5 };
+    const CH_WANKIL   = { key:"wankil",   name:"Wankil Studio - Laink et Terracid", id:CHANNEL_WANKIL_ID, cutoffType:"yearsBack", yearsBack:5 };
+    const CH_GOTAGA   = { key:"gotaga",   name:"GOTAGA",   id:CHANNEL_GOTAGA_ID,  cutoffType:"yearsBack", yearsBack:5 };
+
+    const CHANNELS_ALL = [
+      CH_FUZE3, CH_FIOUSE, CH_AMIXEM, CH_SQUEEZIE, CH_MEC, CH_INOXTAG, CH_JOYCA, CH_MASTU,
+      CH_LEGEND, CH_DJILSI, CH_SYLVAIN, CH_WANKIL, CH_GOTAGA
+    ];
 
     let isPicking = false;
 
@@ -960,7 +1066,36 @@
       saveCache(ch, cached.poolIds, cached.metaMap, { pruned_to: cached.poolIds.length });
     }
 
-    /* ========= HISTORIQUE ========= */
+    /* ========= HISTORIQUE (PAR CHAÎNE) + LOG GLOBAL ========= */
+    const GLOBAL_HISTORY_KEY = "yt_history_global_v1";
+
+    function loadGlobalHistory(){
+      try{
+        const raw = localStorage.getItem(GLOBAL_HISTORY_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch{ return []; }
+    }
+    function saveGlobalHistory(arr){
+      try{ localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(arr)); }catch{}
+    }
+    function addGlobalHistoryItem(ch, videoId){
+      // garde l’ordre réel (timestamp)
+      const arr = loadGlobalHistory();
+      arr.push({ t: Date.now(), chKey: ch.key, id: videoId });
+      // limite raisonnable
+      const MAX = 20000;
+      const trimmed = arr.slice(Math.max(0, arr.length - MAX));
+      saveGlobalHistory(trimmed);
+    }
+    function removeGlobalHistoryByChannelKey(chKey){
+      const arr = loadGlobalHistory();
+      saveGlobalHistory(arr.filter(x => x?.chKey !== chKey));
+    }
+    function clearGlobalHistory(){
+      try{ localStorage.removeItem(GLOBAL_HISTORY_KEY); }catch{}
+    }
+
     function loadSeenList(ch){
       const k = keysFor(ch);
       try{
@@ -982,6 +1117,12 @@
         const k = keysFor(ch);
         localStorage.removeItem(k.SEEN);
       }
+      clearGlobalHistory();
+    }
+    function resetSeenForChannel(ch){
+      const k = keysFor(ch);
+      localStorage.removeItem(k.SEEN);
+      removeGlobalHistoryByChannelKey(ch.key);
     }
 
     function seenCountFor(ch){ return loadSeenList(ch).length; }
@@ -1116,7 +1257,7 @@
     /* ========= PICK ========= */
     function pickFromPool(ch, poolIds){
       if(!poolIds || poolIds.length === 0){
-        throw new Error(`Plus de vidéos dispo pour ${ch.name}. Fais un rebuild ou reset historique.`);
+        throw new Error(`Plus de vidéos dispo pour ${ch.name}. Fais un rebuild.`);
       }
 
       const pickedId = poolIds[Math.floor(Math.random() * poolIds.length)];
@@ -1125,6 +1266,7 @@
       if(!seen.includes(pickedId)){
         seen.push(pickedId);
         saveSeenList(ch, seen);
+        addGlobalHistoryItem(ch, pickedId); // ✅ ordre global réel
       }
 
       return pickedId;
@@ -1134,17 +1276,17 @@
     const ENTRY_FUZE_RANDOM = {
       entryId: "entry_fuze_random_50",
       title: "Fuze III",
-      subtitlePrefix: "• Fuze III / Fiouse",
+      yearsText: "Fuze III / Fiouse",
       avatarChannelId: CHANNEL_FUZE3_ID,
       type: "group_random",
       group: [CH_FUZE3, CH_FIOUSE]
     };
 
-    function makeSingleEntry(key, title, channel, avatarChannelId, yearsLabel){
+    function makeSingleEntry(key, title, channel, avatarChannelId){
       return {
         entryId: `entry_${key}`,
         title,
-        subtitlePrefix: `• ${yearsLabel}`,
+        yearsText: title, // plus de "(x ans)"
         avatarChannelId,
         type: "single_random",
         channel
@@ -1153,12 +1295,20 @@
 
     const ENTRIES = [
       ENTRY_FUZE_RANDOM,
-      makeSingleEntry("amixem",   "Amixem",            CH_AMIXEM,   CHANNEL_AMIXEM_ID,   "Amixem (6 ans)"),
-      makeSingleEntry("squeezie", "Squeezie",          CH_SQUEEZIE, CHANNEL_SQUEEZIE_ID, "Squeezie (7 ans)"),
-      makeSingleEntry("mec",      "MacFly et Carlito", CH_MEC,      CHANNEL_MEC_ID,      "MacFly et Carlito (4 ans)"),
-      makeSingleEntry("inoxtag",  "Inoxtag",           CH_INOXTAG,  CHANNEL_INOXTAG_ID,  "Inoxtag (5 ans)"),
-      makeSingleEntry("joyca",    "Joyca",             CH_JOYCA,    CHANNEL_JOYCA_ID,    "Joyca (5 ans)"),
-      makeSingleEntry("mastu",    "Mastu",             CH_MASTU,    CHANNEL_MASTU_ID,    "Mastu (5 ans)")
+
+      makeSingleEntry("amixem",   "Amixem",            CH_AMIXEM,   CHANNEL_AMIXEM_ID),
+      makeSingleEntry("squeezie", "Squeezie",          CH_SQUEEZIE, CHANNEL_SQUEEZIE_ID),
+      makeSingleEntry("mec",      "MacFly et Carlito", CH_MEC,      CHANNEL_MEC_ID),
+      makeSingleEntry("inoxtag",  "Inoxtag",           CH_INOXTAG,  CHANNEL_INOXTAG_ID),
+      makeSingleEntry("joyca",    "Joyca",             CH_JOYCA,    CHANNEL_JOYCA_ID),
+      makeSingleEntry("mastu",    "Mastu",             CH_MASTU,    CHANNEL_MASTU_ID),
+
+      // ✅ Ajouts
+      makeSingleEntry("legend",   "LEGEND",            CH_LEGEND,   CHANNEL_LEGEND_ID),
+      makeSingleEntry("djilsi",   "DJILSI",            CH_DJILSI,   CHANNEL_DJILSI_ID),
+      makeSingleEntry("sylvain",  "SYLVAIN LYVE",      CH_SYLVAIN,  CHANNEL_SYLVAIN_ID),
+      makeSingleEntry("wankil",   "Wankil Studio - Laink et Terracid", CH_WANKIL, CHANNEL_WANKIL_ID),
+      makeSingleEntry("gotaga",   "GOTAGA",            CH_GOTAGA,   CHANNEL_GOTAGA_ID),
     ];
 
     /* ========= LAUNCH RANDOM (seulement via bloc dans accordéon) ========= */
@@ -1183,6 +1333,8 @@
 
         renderChannels();
         renderFavorites();
+        // si on est sur la page historique => refresh
+        if(document.getElementById("page-history")?.classList.contains("active")) renderHistoryPage();
       }catch(e){
         console.error(e);
         toast("Erreur : " + (e.message || e));
@@ -1191,23 +1343,56 @@
       }
     }
 
-    /* ========= STATS LINE ========= */
-    function statsLineForEntry(entry){
+    /* ========= STATS LINES ========= */
+    function headerLineForEntry(entry){
+      // ✅ Plus de "(x ans)" : on garde juste Rebuild + (pour le groupe, son nom)
       if(entry.type === "group_random"){
-        const remaining = remainingCountFor(entry.group[0]) + remainingCountFor(entry.group[1]);
-        const seen = seenCountFor(entry.group[0]) + seenCountFor(entry.group[1]);
         const timeLeft = rebuildTimeLeftForGroup(entry.group);
-        return `Vidéos dispo : ${remaining} • Déjà vues : ${seen} • Rebuild : ${timeLeft}`;
+        return `• ${entry.yearsText} • Rebuild : ${timeLeft}`;
       } else {
-        const remaining = remainingCountFor(entry.channel);
-        const seen = seenCountFor(entry.channel);
         const timeLeft = rebuildTimeLeftForGroup([entry.channel]);
-        return `Vidéos dispo : ${remaining} • Déjà vues : ${seen} • Rebuild : ${timeLeft}`;
+        return `• Rebuild : ${timeLeft}`;
       }
     }
 
+    function fullStatsForEntry(entry){
+      // ✅ Sous "Lance une vidéo random" : SANS nom de chaîne, SANS temps rebuild
+      if(entry.type === "group_random"){
+        const remaining = remainingCountFor(entry.group[0]) + remainingCountFor(entry.group[1]);
+        const seen = seenCountFor(entry.group[0]) + seenCountFor(entry.group[1]);
+        return `Vidéos dispo : ${remaining} • Déjà vues : ${seen}`;
+      } else {
+        const remaining = remainingCountFor(entry.channel);
+        const seen = seenCountFor(entry.channel);
+        return `Vidéos dispo : ${remaining} • Déjà vues : ${seen}`;
+      }
+    }
+
+    /* ========= MYSTERY THUMB (floutée depuis le cache) ========= */
+    function pickMysteryThumbFromChannel(ch){
+      const cached = loadCache(ch);
+      if(!cached) return "";
+      const metaMap = cached.metaMap || {};
+      let ids = Array.isArray(cached.poolIds) ? cached.poolIds.slice() : [];
+      if(!ids.length) ids = Object.keys(metaMap);
+      if(!ids.length) return "";
+      const id = ids[Math.floor(Math.random() * ids.length)];
+      const meta = metaMap[id];
+      return meta && meta[1] ? meta[1] : "";
+    }
+    function getMysteryThumbUrl(entry){
+      if(entry.type === "group_random"){
+        const a = entry.group[0], b = entry.group[1];
+        if(Math.random() < 0.5){
+          return pickMysteryThumbFromChannel(a) || pickMysteryThumbFromChannel(b) || "";
+        }
+        return pickMysteryThumbFromChannel(b) || pickMysteryThumbFromChannel(a) || "";
+      }
+      return pickMysteryThumbFromChannel(entry.channel) || "";
+    }
+
     /* =========================
-       ✅ DERNIÈRE VIDÉO (ACCORDÉON) + CACHE 6h (ANTI-SHORTS)
+       ✅ DERNIÈRE VIDÉO (ACCORDÉON) + CACHE 6h
        ========================= */
     const LATEST_TTL_MS = 6 * 60 * 60 * 1000;
 
@@ -1243,7 +1428,7 @@
     async function fetchLatestVideo(channelId){
       const uploadsId = await getUploadsPlaylistId(channelId);
 
-      const N = 10;
+      const N = 12; // on check un peu plus pour éviter les shorts dans les derniers
       const url =
         `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}`+
         `&maxResults=${N}&key=${apiKey}`;
@@ -1267,7 +1452,9 @@
         if(!id || !iso) continue;
 
         const sec = isoDurationToSeconds(iso);
-        if(sec < MIN_SECONDS) continue; // ✅ pas de short
+
+        // ✅ filtre plus strict pour “dernière vidéo”
+        if(sec < LATEST_MIN_SECONDS) continue;
 
         const sn = v?.snippet || {};
         const thumbs = sn?.thumbnails || {};
@@ -1287,7 +1474,7 @@
         return obj;
       }
 
-      throw new Error("Aucune vidéo non-short trouvée parmi les derniers uploads.");
+      throw new Error("Aucune vidéo assez longue trouvée parmi les derniers uploads.");
     }
 
     async function ensureLatest(channelId){
@@ -1328,7 +1515,6 @@
 
         const wrap = document.createElement("div");
 
-        // Dernière vidéo
         const t = document.createElement("div");
         t.className = "latest-title";
         t.textContent = "Dernière vidéo en ligne";
@@ -1362,7 +1548,6 @@
         row.appendChild(meta);
         wrap.appendChild(row);
 
-        // Random
         const rt = document.createElement("div");
         rt.className = "random-title";
         rt.textContent = "Vidéo aléatoire";
@@ -1375,6 +1560,18 @@
         rthumb.className = "random-thumb";
         rthumb.title = "Lancer une vidéo random";
 
+        const mysteryImg = document.createElement("img");
+        mysteryImg.className = "mystery-img";
+        mysteryImg.alt = "";
+        mysteryImg.loading = "lazy";
+
+        const refreshMystery = ()=>{
+          const u = getMysteryThumbUrl(entry);
+          if(u) mysteryImg.src = u;
+        };
+        refreshMystery();
+        rthumb.appendChild(mysteryImg);
+
         const rmeta = document.createElement("div");
         rmeta.className = "random-meta";
 
@@ -1386,8 +1583,13 @@
         rhint.className = "random-hint";
         rhint.textContent = "Tu ne sais pas sur quoi tu vas tomber 😄";
 
+        const rstats = document.createElement("div");
+        rstats.className = "random-stats";
+        rstats.textContent = fullStatsForEntry(entry);
+
         const doRandom = (e)=>{
           e.stopPropagation();
+          refreshMystery();
           launchEntry(entry);
         };
 
@@ -1396,6 +1598,7 @@
 
         rmeta.appendChild(raction);
         rmeta.appendChild(rhint);
+        rmeta.appendChild(rstats);
 
         rrow.appendChild(rthumb);
         rrow.appendChild(rmeta);
@@ -1405,7 +1608,6 @@
         expandInner.innerHTML = "";
         expandInner.appendChild(wrap);
 
-        // recalcul hauteur
         setExpandHeight(card, expand);
 
       }catch(err){
@@ -1429,17 +1631,14 @@
 
       const willOpen = !card.classList.contains("open");
 
-      // close others in same list (plus propre)
       const container = card.parentElement;
       closeAllAccordions(container);
 
       card.classList.toggle("open", willOpen);
 
       if(willOpen){
-        if(!expandInner.dataset.filled){
-          fillLatestUI(entry, expandInner, card, expand);
-          expandInner.dataset.filled = "1";
-        }
+        fillLatestUI(entry, expandInner, card, expand);
+        expandInner.dataset.filled = "1";
       }
 
       setExpandHeight(card, expand);
@@ -1473,7 +1672,7 @@
 
       const sub = document.createElement("div");
       sub.className = "channel-sub";
-      sub.textContent = `${entry.subtitlePrefix} / ${statsLineForEntry(entry)}`;
+      sub.textContent = headerLineForEntry(entry);
 
       text.appendChild(name);
       text.appendChild(sub);
@@ -1504,7 +1703,7 @@
       const chevBtn = document.createElement("div");
       chevBtn.className = "chev-btn";
       chevBtn.title = "Ouvrir";
-      chevBtn.textContent = "›";
+      chevBtn.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6z"></path></svg>`;
 
       right.appendChild(starBtn);
       right.appendChild(chevBtn);
@@ -1519,13 +1718,13 @@
       expandInner.className = "expand-inner";
       expand.appendChild(expandInner);
 
+      expand.addEventListener("click", (e)=> e.stopPropagation());
+
       card.appendChild(main);
       card.appendChild(expand);
 
-      // ✅ clic carte = ouvrir/fermer (plus de random direct)
-      card.addEventListener("click", ()=> toggleAccordion(card));
+      main.addEventListener("click", ()=> toggleAccordion(card));
 
-      // clic chevron = pareil
       chevBtn.addEventListener("click", (e)=>{
         e.stopPropagation();
         toggleAccordion(card);
@@ -1569,128 +1768,223 @@
       }
     }
 
-    /* ========= MODAL HISTORIQUE ========= */
-    const modal = document.getElementById("history-modal");
-    const historyBtn = document.getElementById("history-btn");
-    const closeBtn = document.getElementById("history-close");
-    const historyClearBtn = document.getElementById("history-clear");
-    const copyAllBtn = document.getElementById("history-copy-all");
-    const historyListEl = document.getElementById("history-list");
-    const historyCountEl = document.getElementById("history-count");
+    /* ========= HISTORIQUE PAGE ========= */
+    const histModeGlobalBtn = document.getElementById("hist-mode-global");
+    const histModeChannelBtn = document.getElementById("hist-mode-channel");
+    const histPickerWrap = document.getElementById("hist-channel-picker");
+    const histSelect = document.getElementById("hist-channel-select");
+    const histCopyBtn = document.getElementById("hist-copy");
+    const histClearBtn = document.getElementById("hist-clear");
+    const histTopline = document.getElementById("hist-topline");
+    const histListEl = document.getElementById("history-list");
 
-    function openHistory(){
-      historyListEl.innerHTML = "";
-      let total = 0;
+    let histMode = "global"; // "global" | "channel"
 
-      for(const ch of CHANNELS_ALL){
-        const cached = loadCache(ch);
-        const metaMap = cached?.metaMap || {};
-        const seenList = loadSeenList(ch).slice().reverse();
-        total += seenList.length;
-
-        const header = document.createElement("div");
-        header.style.color = "rgba(255,255,255,0.9)";
-        header.style.fontWeight = "900";
-        header.style.margin = "12px 0 8px 0";
-        header.textContent = `${ch.name} — ${seenList.length} vidéo(s)`;
-        historyListEl.appendChild(header);
-
-        if(seenList.length === 0){
-          const empty = document.createElement("div");
-          empty.style.color = "rgba(255,255,255,0.65)";
-          empty.style.marginBottom = "8px";
-          empty.textContent = "Aucune vidéo pour l’instant.";
-          historyListEl.appendChild(empty);
-          continue;
-        }
-
-        for(const id of seenList){
-          const url = `https://www.youtube.com/watch?v=${id}`;
-          const meta = metaMap[id] || ["(titre indisponible — rebuild conseillé)", ""];
-          const title = meta[0] || "(sans titre)";
-          const thumb = meta[1] || "";
-
-          const row = document.createElement("div");
-          row.className = "history-item";
-
-          const img = document.createElement("img");
-          img.className = "thumb";
-          img.alt = "Miniature";
-          img.loading = "lazy";
-          if(thumb) img.src = thumb;
-
-          const left = document.createElement("div");
-          left.className = "history-left";
-
-          const titleEl = document.createElement("div");
-          titleEl.className = "history-title";
-          titleEl.textContent = title;
-
-          const idEl = document.createElement("div");
-          idEl.className = "history-id";
-          idEl.textContent = id;
-
-          const link = document.createElement("a");
-          link.className = "history-link";
-          link.href = url;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = url;
-
-          left.appendChild(titleEl);
-          left.appendChild(idEl);
-          left.appendChild(link);
-
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "small-btn";
-          copyBtn.textContent = "Copier";
-          copyBtn.addEventListener("click", async () => {
-            try{
-              await navigator.clipboard.writeText(url);
-              copyBtn.textContent = "Copié ✅";
-              setTimeout(()=>copyBtn.textContent="Copier", 900);
-            }catch{
-              alert("Impossible de copier (autorisation navigateur).");
-            }
-          });
-
-          row.appendChild(img);
-          row.appendChild(left);
-          row.appendChild(copyBtn);
-          historyListEl.appendChild(row);
-        }
-      }
-
-      historyCountEl.textContent = `Total vidéos déjà sorties : ${total}`;
-      modal.classList.remove("hidden");
+    function channelByKey(key){
+      return CHANNELS_ALL.find(c => c.key === key) || null;
     }
 
-    function closeHistory(){ modal.classList.add("hidden"); }
-
-    historyBtn.addEventListener("click", openHistory);
-    closeBtn.addEventListener("click", closeHistory);
-    modal.addEventListener("click", (e)=>{ if(e.target === modal) closeHistory(); });
-    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && !modal.classList.contains("hidden")) closeHistory(); });
-
-    historyClearBtn.addEventListener("click", ()=>{
-      resetSeenAll();
-      openHistory();
-      renderChannels();
-      renderFavorites();
-      toast("Historique vidé ✅");
-    });
-
-    copyAllBtn.addEventListener("click", async ()=>{
-      const lines = [];
+    function buildChannelSelect(){
+      histSelect.innerHTML = "";
       for(const ch of CHANNELS_ALL){
-        const seenList = loadSeenList(ch).slice().reverse();
-        if(seenList.length){
-          lines.push(`=== ${ch.name} ===`);
-          for(const id of seenList) lines.push(`https://www.youtube.com/watch?v=${id}`);
-          lines.push("");
-        }
+        const opt = document.createElement("option");
+        opt.value = ch.key;
+        opt.textContent = ch.name;
+        histSelect.appendChild(opt);
       }
+    }
+
+    function resolveMetaThumbTitle(ch, videoId){
+      const cached = loadCache(ch);
+      const metaMap = cached?.metaMap || {};
+      const meta = metaMap[videoId];
+      const title = meta?.[0] || "(titre indisponible — rebuild conseillé)";
+      const thumb = meta?.[1] || "";
+      return { title, thumb };
+    }
+
+    function renderHistoryGlobal(){
+      const arr = loadGlobalHistory();
+      const total = arr.length;
+
+      histTopline.textContent = `Total vidéos déjà sorties : ${total} (ordre global)`;
+      histListEl.innerHTML = "";
+
+      if(!total){
+        histListEl.innerHTML = `<div style="color:rgba(255,255,255,0.65); font-weight:900; padding:10px 0;">Aucune vidéo pour l’instant.</div>`;
+        return;
+      }
+
+      // affichage du plus récent au plus ancien
+      const list = arr.slice().reverse();
+
+      for(const item of list){
+        const ch = channelByKey(item.chKey);
+        if(!ch) continue;
+
+        const id = item.id;
+        const url = `https://www.youtube.com/watch?v=${id}`;
+        const meta = resolveMetaThumbTitle(ch, id);
+
+        const row = document.createElement("div");
+        row.className = "history-item";
+
+        const img = document.createElement("img");
+        img.className = "thumb";
+        img.alt = "Miniature";
+        img.loading = "lazy";
+        if(meta.thumb) img.src = meta.thumb;
+
+        const left = document.createElement("div");
+        left.className = "history-left";
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "history-title";
+        titleEl.textContent = meta.title;
+
+        const idEl = document.createElement("div");
+        idEl.className = "history-id";
+        idEl.textContent = `${ch.name} • ${id}`;
+
+        const link = document.createElement("a");
+        link.className = "history-link";
+        link.href = url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = url;
+
+        left.appendChild(titleEl);
+        left.appendChild(idEl);
+        left.appendChild(link);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "small-btn";
+        copyBtn.textContent = "Copier";
+        copyBtn.addEventListener("click", async ()=>{
+          try{
+            await navigator.clipboard.writeText(url);
+            copyBtn.textContent = "Copié ✅";
+            setTimeout(()=>copyBtn.textContent="Copier", 900);
+          }catch{
+            alert("Impossible de copier (autorisation navigateur).");
+          }
+        });
+
+        row.appendChild(img);
+        row.appendChild(left);
+        row.appendChild(copyBtn);
+        histListEl.appendChild(row);
+      }
+    }
+
+    function renderHistoryChannel(){
+      const chKey = histSelect.value;
+      const ch = channelByKey(chKey);
+      if(!ch){
+        histTopline.textContent = "";
+        histListEl.innerHTML = "";
+        return;
+      }
+
+      const seen = loadSeenList(ch).slice().reverse();
+      histTopline.textContent = `${ch.name} — ${seen.length} vidéo(s)`;
+
+      histListEl.innerHTML = "";
+      if(seen.length === 0){
+        histListEl.innerHTML = `<div style="color:rgba(255,255,255,0.65); font-weight:900; padding:10px 0;">Aucune vidéo pour l’instant.</div>`;
+        return;
+      }
+
+      for(const id of seen){
+        const url = `https://www.youtube.com/watch?v=${id}`;
+        const meta = resolveMetaThumbTitle(ch, id);
+
+        const row = document.createElement("div");
+        row.className = "history-item";
+
+        const img = document.createElement("img");
+        img.className = "thumb";
+        img.alt = "Miniature";
+        img.loading = "lazy";
+        if(meta.thumb) img.src = meta.thumb;
+
+        const left = document.createElement("div");
+        left.className = "history-left";
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "history-title";
+        titleEl.textContent = meta.title;
+
+        const idEl = document.createElement("div");
+        idEl.className = "history-id";
+        idEl.textContent = id;
+
+        const link = document.createElement("a");
+        link.className = "history-link";
+        link.href = url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = url;
+
+        left.appendChild(titleEl);
+        left.appendChild(idEl);
+        left.appendChild(link);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "small-btn";
+        copyBtn.textContent = "Copier";
+        copyBtn.addEventListener("click", async ()=>{
+          try{
+            await navigator.clipboard.writeText(url);
+            copyBtn.textContent = "Copié ✅";
+            setTimeout(()=>copyBtn.textContent="Copier", 900);
+          }catch{
+            alert("Impossible de copier (autorisation navigateur).");
+          }
+        });
+
+        row.appendChild(img);
+        row.appendChild(left);
+        row.appendChild(copyBtn);
+        histListEl.appendChild(row);
+      }
+    }
+
+    function renderHistoryPage(){
+      // init select si vide
+      if(!histSelect.options.length) buildChannelSelect();
+
+      histModeGlobalBtn.classList.toggle("active", histMode === "global");
+      histModeChannelBtn.classList.toggle("active", histMode === "channel");
+      histPickerWrap.classList.toggle("hidden", histMode !== "channel");
+
+      if(histMode === "global") renderHistoryGlobal();
+      else renderHistoryChannel();
+    }
+
+    histModeGlobalBtn.addEventListener("click", ()=>{
+      histMode = "global";
+      renderHistoryPage();
+    });
+    histModeChannelBtn.addEventListener("click", ()=>{
+      histMode = "channel";
+      renderHistoryPage();
+    });
+    histSelect.addEventListener("change", renderHistoryPage);
+
+    histCopyBtn.addEventListener("click", async ()=>{
       try{
+        const lines = [];
+        if(histMode === "global"){
+          const arr = loadGlobalHistory().slice().reverse();
+          for(const it of arr){
+            if(it?.id) lines.push(`https://www.youtube.com/watch?v=${it.id}`);
+          }
+        }else{
+          const ch = channelByKey(histSelect.value);
+          const seen = ch ? loadSeenList(ch).slice().reverse() : [];
+          for(const id of seen) lines.push(`https://www.youtube.com/watch?v=${id}`);
+        }
         await navigator.clipboard.writeText(lines.join("\n"));
         toast("Historique copié ✅");
       }catch{
@@ -1698,10 +1992,25 @@
       }
     });
 
+    histClearBtn.addEventListener("click", ()=>{
+      if(histMode === "global"){
+        resetSeenAll();
+        toast("Historique global supprimé ✅");
+      }else{
+        const ch = channelByKey(histSelect.value);
+        if(ch){
+          resetSeenForChannel(ch);
+          toast(`Historique supprimé : ${ch.name} ✅`);
+        }
+      }
+      renderChannels();
+      renderFavorites();
+      renderHistoryPage();
+    });
+
     /* ========= ACTIONS ========= */
     const rebuildAllBtn = document.getElementById("rebuild-all-btn");
     const rebuildLatestBtn = document.getElementById("rebuild-latest-btn");
-    const resetSeenBtn = document.getElementById("reset-seen-btn");
 
     rebuildAllBtn.addEventListener("click", async ()=>{
       try{
@@ -1712,6 +2021,7 @@
         toast("✅ Rebuild terminé.");
         renderChannels();
         renderFavorites();
+        if(document.getElementById("page-history")?.classList.contains("active")) renderHistoryPage();
       }catch(e){
         console.error(e);
         toast("Erreur : " + (e.message || e));
@@ -1735,17 +2045,11 @@
       }
     });
 
-    resetSeenBtn.addEventListener("click", ()=>{
-      resetSeenAll();
-      toast("Historique réinitialisé ✅");
-      renderChannels();
-      renderFavorites();
-    });
-
     /* ========= BOOT ========= */
     (function boot(){
       renderChannels();
       renderFavorites();
+      buildChannelSelect();
     })();
   </script>
 </body>
