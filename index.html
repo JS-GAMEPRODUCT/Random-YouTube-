@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
   <title>YouTube Random — Menu + Favoris + Random</title>
 
@@ -15,128 +15,235 @@
       --shadow: 0 18px 55px rgba(0,0,0,0.45);
       --accent:#ff2e2e;
       --gold:#ffd24a;
+      --card: rgba(255,255,255,0.07);
+      --card2: rgba(255,255,255,0.10);
       color-scheme: dark;
     }
 
-    *{ box-sizing:border-box; }
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height:100%; }
     body{
-      margin:0; min-height:100vh;
-      font-family: Arial, sans-serif;
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       color: var(--text);
       background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
       overflow:hidden;
     }
 
+    /* Background glow (slightly richer) */
     .bg-glow{
-      position:fixed; inset:-20%;
+      position:fixed; inset:-25%;
       background:
-        radial-gradient(circle at 25% 25%, rgba(255,46,46,0.20), transparent 55%),
-        radial-gradient(circle at 70% 75%, rgba(255,255,255,0.08), transparent 60%),
-        radial-gradient(circle at 40% 85%, rgba(255,46,46,0.12), transparent 55%);
-      filter: blur(6px);
+        radial-gradient(circle at 18% 18%, rgba(255,46,46,0.22), transparent 56%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.10), transparent 55%),
+        radial-gradient(circle at 65% 80%, rgba(255,46,46,0.12), transparent 58%),
+        radial-gradient(circle at 25% 85%, rgba(255,255,255,0.06), transparent 55%);
+      filter: blur(10px);
       pointer-events:none;
       z-index:0;
     }
 
-    /* Logo */
-    .logo-app{
-      position:fixed; top:20px; left:50%; transform:translateX(-50%);
-      display:flex; align-items:center; gap:10px;
-      font-family:"Arial Black",Impact,sans-serif; font-size:32px; letter-spacing:1px;
-      user-select:none; z-index:5;
+    /* ===== TOP BAR (mobile-app feeling) ===== */
+    .topbar{
+      position:fixed;
+      top: calc(10px + env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(720px, 94vw);
+      z-index:50;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+      box-shadow: 0 18px 55px rgba(0,0,0,0.35);
+      padding: 12px 14px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    .logo-yt{ color:#fff; text-shadow:0 0 6px rgba(255,255,255,0.15); }
-    .logo-accent{ width:6px; height:26px; background:linear-gradient(#ff3b3b,#b31217); border-radius:3px; }
-    .logo-rd{ color:var(--accent); text-shadow:0 0 14px rgba(255,0,0,0.45); }
 
+    .brand{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+
+    .brand-left{ display:flex; align-items:center; gap:10px; min-width:0; }
+    .brand-mark{
+      width:44px; height:44px; border-radius:14px;
+      display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.18), transparent 55%),
+                  linear-gradient(180deg, rgba(255,46,46,0.38), rgba(0,0,0,0.10));
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+      flex:0 0 auto;
+    }
+    .brand-mark svg{ width:22px; height:22px; fill:#fff; opacity:.95; }
+    .brand-text{ min-width:0; }
+    .brand-title{
+      font-family: "Arial Black", Impact, sans-serif;
+      letter-spacing: .6px;
+      font-size: 18px;
+      line-height: 1.1;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .brand-title .yt{ color:#fff; text-shadow:0 0 10px rgba(255,255,255,0.12); }
+    .brand-title .sep{
+      display:inline-block; width:6px; height:16px; margin:0 6px -2px 6px;
+      background: linear-gradient(#ff3b3b,#b31217);
+      border-radius: 3px;
+    }
+    .brand-title .rd{ color: var(--accent); text-shadow:0 0 14px rgba(255,0,0,0.38); }
+    .brand-sub{
+      margin-top:2px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.66);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .brand-chip{
+      flex:0 0 auto;
+      display:flex; align-items:center; gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.16);
+      color: rgba(255,255,255,0.80);
+      font-size: 12px;
+      font-weight: 800;
+      user-select:none;
+    }
+    .brand-chip .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: rgba(255,46,46,0.9);
+      box-shadow: 0 0 14px rgba(255,46,46,0.45);
+    }
+
+    /* App layout */
     .app{
       position:relative; z-index:1;
       width:100%; height:100vh;
-      display:flex; align-items:center; justify-content:center;
-      padding:24px 16px;
+      display:flex; align-items:flex-start; justify-content:center;
+      padding: calc(92px + env(safe-area-inset-top)) 16px 24px 16px; /* topbar space */
+      overflow:hidden;
     }
 
     .page{
       width:min(720px, 94vw);
-      max-height:86vh;
+      max-height: calc(100vh - 130px - env(safe-area-inset-top));
       display:none;
       animation: fadeIn 180ms ease both;
     }
     .page.active{ display:block; }
-    @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+    @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
 
+    /* Small top row on sub-pages */
     .page-top{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      margin:0 4px 14px 4px;
+      margin: 6px 4px 12px 4px;
     }
-
     .back-btn{
       display:inline-flex; align-items:center; gap:8px;
       cursor:pointer; border:none;
-      background:rgba(0,0,0,0.18);
-      color:#fff; font-weight:800;
+      background:rgba(0,0,0,0.20);
+      color:#fff; font-weight:900;
       padding:10px 12px;
-      border-radius:12px;
+      border-radius:14px;
       border:1px solid rgba(255,255,255,0.12);
       transition: filter .12s ease, transform .12s ease;
     }
-    .back-btn:hover{ filter:brightness(1.08); }
+    .back-btn:hover{ filter:brightness(1.10); }
     .back-btn:active{ transform:translateY(1px); }
 
     .page-title{
       font-family:"Arial Black",Impact,sans-serif;
-      letter-spacing:.5px; font-size:18px; opacity:0.95;
+      letter-spacing:.5px; font-size:16px; opacity:0.95;
     }
 
+    /* Card container */
     .menu-card{
-      border-radius:22px;
-      border:1px solid var(--stroke);
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,0.13);
       background: rgba(255,255,255,0.07);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding:18px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding:16px;
+      overflow:hidden;
     }
 
-    /* Menu iOS-like */
-    .menu-list{ display:flex; flex-direction:column; gap:14px; }
+    /* ===== HOME HERO ===== */
+    .home-hero{
+      padding: 12px 4px 14px 4px;
+    }
+    .home-hero h1{
+      margin:0;
+      font-size: 20px;
+      letter-spacing: .2px;
+      font-weight: 950;
+    }
+    .home-hero p{
+      margin: 6px 0 0 0;
+      font-size: 13px;
+      color: rgba(255,255,255,0.70);
+      line-height: 1.35;
+    }
+
+    /* ===== MENU LIST (more "native") ===== */
+    .menu-list{ display:flex; flex-direction:column; gap:10px; }
+
     .menu-item{
-      display:flex; align-items:center; justify-content:space-between; gap:14px;
-      padding:14px 14px; border-radius:18px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px 12px;
+      border-radius:18px;
       border:1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
       cursor:pointer;
       transition: filter .12s ease, transform .12s ease;
     }
-    .menu-item:hover{ filter:brightness(1.06); }
+    .menu-item:hover{ filter:brightness(1.08); }
     .menu-item:active{ transform:translateY(1px); }
 
-    .menu-left{ display:flex; align-items:center; gap:14px; min-width:0; }
+    .menu-left{ display:flex; align-items:center; gap:12px; min-width:0; }
+
+    /* Modern icon container */
     .icon{
-      width:52px; height:52px; border-radius:16px;
+      width:44px; height:44px; border-radius:14px;
       display:flex; align-items:center; justify-content:center;
-      color:#fff; font-weight:900; font-size:22px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.28);
       flex:0 0 auto;
     }
-    .i-red{ background: linear-gradient(180deg, #ff5b5b, #cc1b1b); }
-    .i-gold{ background: linear-gradient(180deg, #ffc14a, #d37a00); }
-    .i-blue{ background: linear-gradient(180deg, #5da7ff, #2156ff); }
+    .icon svg{ width:22px; height:22px; fill: rgba(255,255,255,0.92); }
+
+    /* Accent ring per item */
+    .menu-item[data-go="page-channels"] .icon{ outline: 2px solid rgba(255,46,46,0.35); }
+    .menu-item[data-go="page-favs"] .icon{ outline: 2px solid rgba(255,210,74,0.35); }
+    .menu-item[data-go="page-help"] .icon{ outline: 2px solid rgba(93,167,255,0.28); }
 
     .menu-text{ min-width:0; }
     .menu-text .t1{
-      font-size:18px; font-weight:900; color:rgba(255,255,255,0.92);
+      font-size:16px; font-weight:950; color:rgba(255,255,255,0.93);
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
     .menu-text .t2{
-      margin-top:2px; font-size:13px; color:rgba(255,255,255,0.60);
+      margin-top:2px; font-size:12.5px; color:rgba(255,255,255,0.62);
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-    .chev{ font-size:22px; color:rgba(255,255,255,0.55); flex:0 0 auto; padding-left:10px; }
 
-    .footer{ margin-top:12px; text-align:center; color:rgba(255,255,255,0.55); font-size:12px; }
+    .chev{
+      width:32px; height:32px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.14);
+      color: rgba(255,255,255,0.70);
+      font-size: 20px;
+      flex:0 0 auto;
+    }
+
+    .footer{
+      margin-top:12px;
+      text-align:center;
+      color:rgba(255,255,255,0.55);
+      font-size:12px;
+    }
     .hidden{ display:none !important; }
 
     /* ✅ Zone scrollable */
@@ -145,6 +252,7 @@
       overflow:auto;
       padding-right:4px;
       padding-bottom:105px;
+      overscroll-behavior: contain;
     }
     .scroll::-webkit-scrollbar{ width:10px; }
     .scroll::-webkit-scrollbar-thumb{
@@ -154,7 +262,7 @@
     }
 
     /* =========================
-       ✅ CHANNEL CARD + ACCORDION
+       ✅ CHANNEL CARD + ACCORDION (unchanged)
        ========================= */
     .channel-item{
       border-radius:16px;
@@ -201,16 +309,9 @@
       font-size:18px; font-weight:900; color:#fff; letter-spacing:.3px;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-
-    /* ✅ Ligne sous le nom => plus petite + plus “clean”
-       (et on enlève Vidéos dispo/Déjà vues => elles partent dans le bloc random) */
     .channel-sub{
-      font-size:11px;            /* ✅ plus petit */
-      color:rgba(255,255,255,0.68);
-      margin-top:4px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      font-size:12px; color:rgba(255,255,255,0.70); margin-top:4px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
     .channel-right{ display:flex; align-items:center; gap:10px; flex:0 0 auto; }
@@ -255,13 +356,16 @@
     }
     .expand-inner{ padding:12px 14px 14px 14px; }
 
-    .latest-title{
+    .latest-title, .random-title{
       font-weight:900;
       color:rgba(255,255,255,0.90);
       font-size:13px;
       margin-bottom:10px;
     }
-    .latest-row{ display:flex; gap:12px; align-items:flex-start; }
+    .random-title{ margin:14px 0 10px 0; }
+
+    .latest-row, .random-row{ display:flex; gap:12px; align-items:flex-start; }
+
     .latest-thumb{
       width:160px; height:90px;
       border-radius:12px;
@@ -275,7 +379,8 @@
     .latest-thumb:hover{ filter:brightness(1.06); }
     .latest-thumb:active{ transform:translateY(1px); }
 
-    .latest-meta{ min-width:0; }
+    .latest-meta, .random-meta{ min-width:0; }
+
     .latest-video-title{
       font-weight:900;
       font-size:14px;
@@ -289,11 +394,13 @@
       transition: filter .12s ease;
     }
     .latest-video-title:hover{ filter:brightness(1.08); }
-    .latest-hint{
+
+    .latest-hint, .random-hint{
       margin-top:6px;
       font-size:12px;
       color:rgba(255,255,255,0.60);
     }
+
     .latest-loading{
       font-size:12px;
       color:rgba(255,255,255,0.65);
@@ -306,69 +413,32 @@
       font-weight:800;
     }
 
-    /* ✅ Bloc "Random" dans l'accordéon */
-    .random-title{
-      font-weight:900;
-      color:rgba(255,255,255,0.90);
-      font-size:13px;
-      margin:14px 0 10px 0;
-    }
-    .random-row{ display:flex; gap:12px; align-items:flex-start; }
     .random-thumb{
       width:160px; height:90px;
       border-radius:12px;
       border:1px solid rgba(255,255,255,0.14);
       background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), transparent 55%),
-        linear-gradient(180deg, rgba(0,0,0,0.14), rgba(0,0,0,0.22));
-      position:relative;
-      overflow:hidden;
-      cursor:pointer;
-      flex:0 0 auto;
-      transition: filter .12s ease, transform .12s ease;
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.14), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.32));
       display:flex;
       align-items:center;
       justify-content:center;
+      cursor:pointer;
+      flex:0 0 auto;
+      transition: filter .12s ease, transform .12s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .random-thumb::before{
+      content:"?";
+      font-family:"Arial Black",Impact,sans-serif;
+      font-size:46px;
+      color:rgba(255,255,255,0.85);
+      text-shadow: 0 10px 30px rgba(0,0,0,0.45);
     }
     .random-thumb:hover{ filter:brightness(1.06); }
     .random-thumb:active{ transform:translateY(1px); }
 
-    /* ✅ Miniature aléatoire moins floutée + moins sombre */
-    .random-blur{
-      position:absolute;
-      inset:-10%;
-      width:120%;
-      height:120%;
-      object-fit:cover;
-
-      /* AVANT: blur(22px) opacity 0.55 => trop noir
-         MAINTENANT: blur moins fort + opacity plus haute */
-      filter: blur(12px) saturate(1.15) contrast(1.08) brightness(1.10);
-      opacity:0.78;
-      transform: scale(1.10);
-      pointer-events:none;
-    }
-    .random-thumb::after{
-      content:"";
-      position:absolute;
-      inset:0;
-
-      /* overlay moins dark */
-      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.10), transparent 55%),
-                  linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.18));
-      pointer-events:none;
-    }
-    .random-q{
-      position:relative;
-      z-index:2;
-      font-family:"Arial Black",Impact,sans-serif;
-      font-size:46px;
-      color:rgba(255,255,255,0.90);
-      text-shadow: 0 12px 30px rgba(0,0,0,0.55);
-      line-height:1;
-    }
-
-    .random-meta{ min-width:0; }
     .random-action{
       font-weight:900;
       font-size:14px;
@@ -378,36 +448,21 @@
       transition: filter .12s ease;
     }
     .random-action:hover{ filter:brightness(1.08); }
-    .random-hint{
-      margin-top:6px;
-      font-size:12px;
-      color:rgba(255,255,255,0.60);
-    }
-
-    /* ✅ la ligne déplacée comme sur ton image */
-    .random-stats{
-      margin-top:6px;
-      font-size:12px;
-      color:rgba(255,255,255,0.72);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
 
     .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; justify-content:center; }
     .small-btn{
-      font-family: Arial,sans-serif; font-weight:700; font-size:14px;
-      padding:10px 14px; border-radius:12px;
-      border:2px solid rgba(255,255,255,0.18);
-      background:rgba(0,0,0,0.25); color:#fff;
+      font-weight:850; font-size:14px;
+      padding:10px 14px; border-radius:14px;
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(0,0,0,0.22); color:#fff;
       cursor:pointer; transition:filter .12s ease, transform .12s ease;
     }
-    .small-btn:hover{ filter:brightness(1.08); }
+    .small-btn:hover{ filter:brightness(1.10); }
     .small-btn:active{ transform:translateY(1px); }
 
     /* Toast */
     .toast-wrap{
-      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      position:fixed; left:50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform:translateX(-50%);
       z-index:10000; display:flex; flex-direction:column; gap:10px;
       pointer-events:none;
     }
@@ -422,7 +477,7 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       color:rgba(255,255,255,0.90);
-      font-weight:800;
+      font-weight:900;
       text-align:center;
       animation: toastIn 180ms ease both;
     }
@@ -459,14 +514,16 @@
       object-fit:cover; background:rgba(255,255,255,0.05);
     }
     .history-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
-    .history-title{ color:rgba(255,255,255,0.95); font-weight:800; font-size:14px; line-height:1.2; }
+    .history-title{ color:rgba(255,255,255,0.95); font-weight:900; font-size:14px; line-height:1.2; }
     .history-id{ font-family:monospace; color:rgba(255,255,255,0.8); font-size:12px; }
     .history-link{ color:#ff4d4d; text-decoration:none; word-break:break-all; font-size:13px; }
     .history-link:hover{ text-decoration:underline; }
 
     @media (max-width:768px){
-      .logo-app{ font-size:26px; top:16px; }
-      .logo-accent{ height:22px; }
+      .topbar{ top: calc(8px + env(safe-area-inset-top)); }
+      .brand-mark{ width:42px; height:42px; }
+      .brand-title{ font-size:17px; }
+      .app{ padding-top: calc(90px + env(safe-area-inset-top)); }
       .scroll{ max-height:58vh; padding-bottom:115px; }
       .modal-card{ max-height:84vh; }
       .modal-list{ max-height:calc(84vh - 130px); }
@@ -474,29 +531,24 @@
       .thumb{ width:96px; height:72px; }
       .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
       .latest-thumb, .random-thumb{ width:140px; height:78px; }
-      .random-q{ font-size:42px; }
     }
 
     /* ✅ iOS STABLE */
     @supports (-webkit-touch-callout: none) {
-      .menu-card, .menu-item, .channel-item, .toast, .modal-card{
+      .topbar, .menu-card, .menu-item, .channel-item, .toast, .modal-card{
         -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
       }
-
+      .topbar{
+        background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;
+      }
       .menu-card{
         background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;
         box-shadow: 0 18px 55px rgba(0,0,0,0.35) !important;
       }
-      .menu-item{
-        background: rgba(255,255,255,0.14) !important;
-      }
-      .channel-item{
-        background: rgba(255,255,255,0.12) !important;
-      }
-      .toast{
-        background: rgba(15,5,6,0.92) !important;
-      }
+      .menu-item{ background: rgba(255,255,255,0.14) !important; }
+      .channel-item{ background: rgba(255,255,255,0.12) !important; }
+      .toast{ background: rgba(15,5,6,0.92) !important; }
     }
   </style>
 </head>
@@ -504,50 +556,89 @@
 <body>
   <div class="bg-glow"></div>
 
-  <div class="logo-app">
-    <span class="logo-yt">YouTube</span>
-    <span class="logo-accent"></span>
-    <span class="logo-rd">Random</span>
-  </div>
+  <!-- ✅ Top bar (remplace le logo flottant + supprime l'espace vide) -->
+  <header class="topbar" aria-label="YouTube Random">
+    <div class="brand">
+      <div class="brand-left">
+        <div class="brand-mark" aria-hidden="true">
+          <!-- Play icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M8 5.5v13l11-6.5L8 5.5z"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">
+            <span class="yt">YouTube</span><span class="sep"></span><span class="rd">Random</span>
+          </div>
+          <div class="brand-sub">Choisis une chaîne, puis lance une vidéo au hasard</div>
+        </div>
+      </div>
+      <div class="brand-chip" title="Mode appli">
+        <span class="dot"></span>
+        <span>Mobile-first</span>
+      </div>
+    </div>
+  </header>
 
   <div class="app">
 
     <!-- PAGE MENU -->
     <section id="page-home" class="page active">
       <div class="menu-card">
+
+        <div class="home-hero">
+          <h1>Menu</h1>
+          <p>Une interface simple, pensée comme une appli. Tout se joue dans <b>Chaînes</b> : dernière vidéo + random (sans shorts).</p>
+        </div>
+
         <div class="menu-list">
 
-          <div class="menu-item" data-go="page-channels">
+          <div class="menu-item" data-go="page-channels" role="button" aria-label="Aller vers Chaînes">
             <div class="menu-left">
-              <div class="icon i-red">👤</div>
+              <div class="icon" aria-hidden="true">
+                <!-- Users icon -->
+                <svg viewBox="0 0 24 24">
+                  <path d="M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11zm-8 0c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.95 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                </svg>
+              </div>
               <div class="menu-text">
                 <div class="t1">Chaînes</div>
                 <div class="t2">Sélectionner un youtubeur</div>
               </div>
             </div>
-            <div class="chev">›</div>
+            <div class="chev" aria-hidden="true">›</div>
           </div>
 
-          <div class="menu-item" data-go="page-favs">
+          <div class="menu-item" data-go="page-favs" role="button" aria-label="Aller vers Favoris">
             <div class="menu-left">
-              <div class="icon i-gold">⭐</div>
+              <div class="icon" aria-hidden="true">
+                <!-- Star icon -->
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+              </div>
               <div class="menu-text">
                 <div class="t1">Favoris</div>
                 <div class="t2">Tes chaînes favorites</div>
               </div>
             </div>
-            <div class="chev">›</div>
+            <div class="chev" aria-hidden="true">›</div>
           </div>
 
-          <div class="menu-item" data-go="page-help">
+          <div class="menu-item" data-go="page-help" role="button" aria-label="Aller vers Comment ça marche ?">
             <div class="menu-left">
-              <div class="icon i-blue">?</div>
+              <div class="icon" aria-hidden="true">
+                <!-- Help icon -->
+                <svg viewBox="0 0 24 24">
+                  <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
+                </svg>
+              </div>
               <div class="menu-text">
                 <div class="t1">Comment ça marche ?</div>
                 <div class="t2">Explication rapide</div>
               </div>
             </div>
-            <div class="chev">›</div>
+            <div class="chev" aria-hidden="true">›</div>
           </div>
 
         </div>
@@ -730,7 +821,7 @@
 
     /* ========= UTILS ========= */
     function isoDurationToSeconds(iso){
-      const m = String(iso||"").match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+      const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
       return (+(m?.[1]||0))*3600 + (+(m?.[2]||0))*60 + (+(m?.[3]||0));
     }
     async function fetchJson(url){
@@ -858,13 +949,6 @@
       localStorage.setItem(k.META, JSON.stringify(metaMap));
       localStorage.setItem(k.TS, JSON.stringify(meta));
       return meta;
-    }
-
-    function clearCache(ch){
-      const k = keysFor(ch);
-      localStorage.removeItem(k.IDS);
-      localStorage.removeItem(k.META);
-      localStorage.removeItem(k.TS);
     }
 
     function removeFromCache(ch, videoId){
@@ -1022,7 +1106,11 @@
         pruned_to: prunedPoolIds.length
       });
 
-      return { poolIds: prunedPoolIds, metaMap: built.metaMap, meta: { ts: Date.now(), count: prunedPoolIds.length } };
+      return {
+        poolIds: prunedPoolIds,
+        metaMap: built.metaMap,
+        meta: { ts: Date.now(), count: prunedPoolIds.length }
+      };
     }
 
     /* ========= PICK ========= */
@@ -1046,7 +1134,7 @@
     const ENTRY_FUZE_RANDOM = {
       entryId: "entry_fuze_random_50",
       title: "Fuze III",
-      subtitlePrefix: "Fuze III / Fiouse",
+      subtitlePrefix: "• Fuze III / Fiouse",
       avatarChannelId: CHANNEL_FUZE3_ID,
       type: "group_random",
       group: [CH_FUZE3, CH_FIOUSE]
@@ -1056,7 +1144,7 @@
       return {
         entryId: `entry_${key}`,
         title,
-        subtitlePrefix: yearsLabel, // ex: "Inoxtag (5 ans)"
+        subtitlePrefix: `• ${yearsLabel}`,
         avatarChannelId,
         type: "single_random",
         channel
@@ -1073,7 +1161,7 @@
       makeSingleEntry("mastu",    "Mastu",             CH_MASTU,    CHANNEL_MASTU_ID,    "Mastu (5 ans)")
     ];
 
-    /* ========= LAUNCH RANDOM (uniquement via bloc "random" de l'accordéon) ========= */
+    /* ========= LAUNCH RANDOM (seulement via bloc dans accordéon) ========= */
     async function launchEntry(entry){
       if(isPicking) return;
       isPicking = true;
@@ -1103,31 +1191,18 @@
       }
     }
 
-    /* ========= STATS LINE (SOUS LE NOM) =========
-       ✅ On garde seulement un truc court + Rebuild (comme sur ton image) */
-    function shortLineForEntry(entry){
-      const timeLeft = (entry.type === "group_random")
-        ? rebuildTimeLeftForGroup(entry.group)
-        : rebuildTimeLeftForGroup([entry.channel]);
-
-      return `• ${entry.subtitlePrefix} • Rebuild : ${timeLeft}`;
-    }
-
-    /* ✅ Ligne déplacée dans "Vidéo aléatoire" */
-    function movedStatsForEntry(entry){
+    /* ========= STATS LINE ========= */
+    function statsLineForEntry(entry){
       if(entry.type === "group_random"){
         const remaining = remainingCountFor(entry.group[0]) + remainingCountFor(entry.group[1]);
         const seen = seenCountFor(entry.group[0]) + seenCountFor(entry.group[1]);
-        return `${entry.subtitlePrefix} • Vidéos dispo : ${remaining} • Déjà vues : ${seen}`;
+        const timeLeft = rebuildTimeLeftForGroup(entry.group);
+        return `Vidéos dispo : ${remaining} • Déjà vues : ${seen} • Rebuild : ${timeLeft}`;
       } else {
         const remaining = remainingCountFor(entry.channel);
         const seen = seenCountFor(entry.channel);
-
-        // On essaye d’afficher seulement "(5 ans)" comme sur ton screenshot
-        const m = String(entry.subtitlePrefix||"").match(/\([^)]*\)/);
-        const yearsOnly = m ? m[0] : entry.subtitlePrefix; // fallback
-
-        return `${yearsOnly} / Vidéos dispo : ${remaining} • Déjà vues : ${seen}`;
+        const timeLeft = rebuildTimeLeftForGroup([entry.channel]);
+        return `Vidéos dispo : ${remaining} • Déjà vues : ${seen} • Rebuild : ${timeLeft}`;
       }
     }
 
@@ -1136,9 +1211,8 @@
        ========================= */
     const LATEST_TTL_MS = 6 * 60 * 60 * 1000;
 
-    // v3 pour éviter collision avec tes anciens essais
-    function latestKey(channelId){ return `yt_latest_${channelId}_v3`; }
-    function latestTsKey(channelId){ return `yt_latest_${channelId}_ts_v3`; }
+    function latestKey(channelId){ return `yt_latest_${channelId}_v2`; }
+    function latestTsKey(channelId){ return `yt_latest_${channelId}_ts_v2`; }
 
     function loadLatest(channelId){
       try{
@@ -1169,7 +1243,7 @@
     async function fetchLatestVideo(channelId){
       const uploadsId = await getUploadsPlaylistId(channelId);
 
-      const N = 10; // plus tu mets haut, plus c'est robuste si shorts à la suite
+      const N = 10;
       const url =
         `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}`+
         `&maxResults=${N}&key=${apiKey}`;
@@ -1187,19 +1261,17 @@
         `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${ids.join(",")}&key=${apiKey}`;
       const vData = await fetchJson(vUrl);
 
-      const byId = new Map();
-      for(const v of (vData.items || [])) byId.set(v.id, v);
-
-      for(const id of ids){
-        const v = byId.get(id);
+      for(const v of (vData.items || [])){
+        const id = v?.id;
         const iso = v?.contentDetails?.duration;
-        if(!iso) continue;
+        if(!id || !iso) continue;
 
         const sec = isoDurationToSeconds(iso);
-        if(sec < MIN_SECONDS) continue; // ✅ exclut shorts
+        if(sec < MIN_SECONDS) continue; // ✅ pas de short
 
         const sn = v?.snippet || {};
         const thumbs = sn?.thumbnails || {};
+
         const thumb =
           thumbs?.maxres?.url ||
           thumbs?.standard?.url ||
@@ -1230,34 +1302,6 @@
       return Array.from(set);
     }
 
-    /* =========================
-       ✅ THUMB MYSTÈRE : depuis cache pool
-       ========================= */
-    function pickMysteryThumbUrlForEntry(entry){
-      const tryFromChannel = (ch)=>{
-        const cached = loadCache(ch);
-        if(!cached?.poolIds?.length) return "";
-        const ids = cached.poolIds;
-        for(let i=0;i<10;i++){
-          const id = ids[Math.floor(Math.random()*ids.length)];
-          const meta = cached.metaMap?.[id];
-          const thumb = meta?.[1] || "";
-          if(thumb) return thumb;
-        }
-        return "";
-      };
-
-      if(entry.type === "group_random"){
-        const a = tryFromChannel(entry.group[0]);
-        if(a) return a;
-        const b = tryFromChannel(entry.group[1]);
-        if(b) return b;
-        return "";
-      } else {
-        return tryFromChannel(entry.channel);
-      }
-    }
-
     /* ========= ACCORDEON UI ========= */
     const channelsListEl = document.getElementById("channels-list");
     const favoritesListEl = document.getElementById("favorites-list");
@@ -1271,14 +1315,16 @@
       expandEl.style.maxHeight = expandEl.scrollHeight + "px";
     }
 
-    async function fillAccordion(entry, expandInner, card, expand){
+    async function fillLatestUI(entry, expandInner, card, expand){
       const channelId = entry.avatarChannelId;
-
-      expandInner.innerHTML = `<div class="latest-loading">Chargement…</div>`;
-      setExpandHeight(card, expand);
+      expandInner.innerHTML = `<div class="latest-loading">Chargement de la dernière vidéo…</div>`;
 
       try{
         const latest = await ensureLatest(channelId);
+        const openLatest = (e)=>{
+          e.stopPropagation();
+          openYouTubePreferApp(latest.videoId);
+        };
 
         const wrap = document.createElement("div");
 
@@ -1295,6 +1341,7 @@
         img.className = "latest-thumb";
         img.alt = "Miniature dernière vidéo";
         if(latest.thumb) img.src = latest.thumb;
+        img.addEventListener("click", openLatest);
 
         const meta = document.createElement("div");
         meta.className = "latest-meta";
@@ -1302,19 +1349,11 @@
         const title = document.createElement("div");
         title.className = "latest-video-title";
         title.textContent = latest.title || "(Sans titre)";
+        title.addEventListener("click", openLatest);
 
         const hint = document.createElement("div");
         hint.className = "latest-hint";
         hint.textContent = "Clique sur la miniature ou le titre pour ouvrir la vidéo.";
-
-        const openLatest = (e)=>{
-          e.stopPropagation();
-          openYouTubePreferApp(latest.videoId);
-        };
-        img.addEventListener("click", openLatest);
-        title.addEventListener("click", openLatest);
-
-        img.addEventListener("load", ()=> setExpandHeight(card, expand));
 
         meta.appendChild(title);
         meta.appendChild(hint);
@@ -1336,22 +1375,6 @@
         rthumb.className = "random-thumb";
         rthumb.title = "Lancer une vidéo random";
 
-        const mysteryUrl = pickMysteryThumbUrlForEntry(entry);
-        if(mysteryUrl){
-          const blurImg = document.createElement("img");
-          blurImg.className = "random-blur";
-          blurImg.alt = "Mystère";
-          blurImg.loading = "lazy";
-          blurImg.src = mysteryUrl;
-          blurImg.addEventListener("load", ()=> setExpandHeight(card, expand));
-          rthumb.appendChild(blurImg);
-        }
-
-        const q = document.createElement("div");
-        q.className = "random-q";
-        q.textContent = "?";
-        rthumb.appendChild(q);
-
         const rmeta = document.createElement("div");
         rmeta.className = "random-meta";
 
@@ -1363,11 +1386,6 @@
         rhint.className = "random-hint";
         rhint.textContent = "Tu ne sais pas sur quoi tu vas tomber 😄";
 
-        /* ✅ ligne déplacée ici (comme sur ton image) */
-        const rstats = document.createElement("div");
-        rstats.className = "random-stats";
-        rstats.textContent = movedStatsForEntry(entry);
-
         const doRandom = (e)=>{
           e.stopPropagation();
           launchEntry(entry);
@@ -1378,20 +1396,20 @@
 
         rmeta.appendChild(raction);
         rmeta.appendChild(rhint);
-        rmeta.appendChild(rstats);
 
         rrow.appendChild(rthumb);
         rrow.appendChild(rmeta);
+
         wrap.appendChild(rrow);
 
         expandInner.innerHTML = "";
         expandInner.appendChild(wrap);
 
+        // recalcul hauteur
         setExpandHeight(card, expand);
 
       }catch(err){
-        console.error(err);
-        expandInner.innerHTML = `<div class="latest-error">Impossible de charger (API / quota / réseau).</div>`;
+        expandInner.innerHTML = `<div class="latest-error">Impossible de charger la dernière vidéo (API / quota / réseau).</div>`;
         setExpandHeight(card, expand);
       }
     }
@@ -1411,15 +1429,17 @@
 
       const willOpen = !card.classList.contains("open");
 
+      // close others in same list (plus propre)
       const container = card.parentElement;
       closeAllAccordions(container);
 
       card.classList.toggle("open", willOpen);
 
       if(willOpen){
-        fillAccordion(entry, expandInner, card, expand);
-      } else {
-        expandInner.innerHTML = "";
+        if(!expandInner.dataset.filled){
+          fillLatestUI(entry, expandInner, card, expand);
+          expandInner.dataset.filled = "1";
+        }
       }
 
       setExpandHeight(card, expand);
@@ -1453,7 +1473,7 @@
 
       const sub = document.createElement("div");
       sub.className = "channel-sub";
-      sub.textContent = shortLineForEntry(entry); // ✅ version courte
+      sub.textContent = `${entry.subtitlePrefix} / ${statsLineForEntry(entry)}`;
 
       text.appendChild(name);
       text.appendChild(sub);
@@ -1502,10 +1522,10 @@
       card.appendChild(main);
       card.appendChild(expand);
 
-      // ✅ clic carte = ouvrir/fermer (ne lance plus de vidéo)
+      // ✅ clic carte = ouvrir/fermer (plus de random direct)
       card.addEventListener("click", ()=> toggleAccordion(card));
 
-      // clic chevron
+      // clic chevron = pareil
       chevBtn.addEventListener("click", (e)=>{
         e.stopPropagation();
         toggleAccordion(card);
