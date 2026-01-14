@@ -162,21 +162,9 @@
       overflow:hidden;
     }
 
-    .home-hero{
-      padding: 12px 4px 14px 4px;
-    }
-    .home-hero h1{
-      margin:0;
-      font-size: 20px;
-      letter-spacing: .2px;
-      font-weight: 950;
-    }
-    .home-hero p{
-      margin: 6px 0 0 0;
-      font-size: 13px;
-      color: rgba(255,255,255,0.70);
-      line-height: 1.35;
-    }
+    .home-hero{ padding: 12px 4px 14px 4px; }
+    .home-hero h1{ margin:0; font-size: 20px; letter-spacing: .2px; font-weight: 950; }
+    .home-hero p{ margin: 6px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.70); line-height: 1.35; }
 
     .menu-list{ display:flex; flex-direction:column; gap:10px; }
 
@@ -208,6 +196,7 @@
     .menu-item[data-go="page-favs"] .icon{ outline: 2px solid rgba(255,210,74,0.35); }
     .menu-item[data-go="page-help"] .icon{ outline: 2px solid rgba(93,167,255,0.28); }
     .menu-item[data-go="page-history"] .icon{ outline: 2px solid rgba(255,255,255,0.18); }
+    .menu-item[data-go="page-options"] .icon{ outline: 2px solid rgba(140,255,190,0.20); }
 
     .menu-text{ min-width:0; }
     .menu-text .t1{
@@ -429,17 +418,8 @@
       text-overflow:ellipsis;
     }
 
-    .latest-loading{
-      font-size:12px;
-      color:rgba(255,255,255,0.65);
-      padding:10px 0;
-    }
-    .latest-error{
-      font-size:12px;
-      color:rgba(255,120,120,0.95);
-      padding:10px 0;
-      font-weight:800;
-    }
+    .latest-loading{ font-size:12px; color:rgba(255,255,255,0.65); padding:10px 0; }
+    .latest-error{ font-size:12px; color:rgba(255,120,120,0.95); padding:10px 0; font-weight:800; }
 
     .random-thumb{
       position:relative;
@@ -469,7 +449,6 @@
     .random-thumb:hover{ filter:brightness(1.06); }
     .random-thumb:active{ transform:translateY(1px); }
 
-    /* ✅ Miniature mystère : moins floue */
     .mystery-img{
       position:absolute;
       inset:0;
@@ -513,9 +492,7 @@
     .small-btn:active{ transform:translateY(1px); }
 
     /* ===== HISTORIQUE ===== */
-    .seg-wrap{
-      display:flex; gap:10px; margin:8px 0 12px 0; flex-wrap:wrap;
-    }
+    .seg-wrap{ display:flex; gap:10px; margin:8px 0 12px 0; flex-wrap:wrap; }
     .seg-btn{
       flex:0 0 auto;
       padding:10px 12px;
@@ -546,12 +523,7 @@
       outline:none;
     }
 
-    .history-topline{
-      margin-top:6px;
-      color:rgba(255,255,255,0.70);
-      font-size:13px;
-      line-height:1.35;
-    }
+    .history-topline{ margin-top:6px; color:rgba(255,255,255,0.70); font-size:13px; line-height:1.35; }
 
     .history-list{
       margin-top:12px;
@@ -631,17 +603,8 @@
       padding: 16px;
       text-align:center;
     }
-    .overlay-title{
-      font-weight:950;
-      font-size:16px;
-      margin: 2px 0 8px 0;
-    }
-    .overlay-sub{
-      color: rgba(255,255,255,0.70);
-      font-size: 13px;
-      line-height:1.4;
-      margin: 0 0 12px 0;
-    }
+    .overlay-title{ font-weight:950; font-size:16px; margin: 2px 0 8px 0; }
+    .overlay-sub{ color: rgba(255,255,255,0.70); font-size: 13px; line-height:1.4; margin: 0 0 12px 0; }
     .spinner{
       width:44px; height:44px;
       margin: 8px auto 10px auto;
@@ -651,6 +614,126 @@
       animation: spin 0.9s linear infinite;
     }
     @keyframes spin{ to{ transform: rotate(360deg); } }
+
+    /* ✅ MODAL PLAYER (YouTube IFrame API) */
+    .player-modal{
+      position:fixed;
+      inset:0;
+      z-index:12000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      background: rgba(0,0,0,0.62);
+    }
+    .player-modal.show{ display:flex; }
+
+    .player-card{
+      width: min(860px, 96vw);
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(15,5,6,0.92);
+      box-shadow: 0 22px 70px rgba(0,0,0,0.65);
+      overflow:hidden;
+    }
+    .player-head{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 12px 12px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .player-title{
+      font-weight:950;
+      font-size: 13px;
+      color: rgba(255,255,255,0.86);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .player-actions{ display:flex; gap:10px; }
+    .player-btn{
+      font-weight:950;
+      font-size:13px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.22);
+      color:#fff;
+      cursor:pointer;
+      transition: filter .12s ease, transform .12s ease;
+      user-select:none;
+    }
+    .player-btn:hover{ filter:brightness(1.08); }
+    .player-btn:active{ transform: translateY(1px); }
+
+    .player-body{ padding: 12px; }
+    .player-frame{
+      width:100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.25);
+    }
+    #yt-player{ width:100%; height:100%; }
+    .player-foot{
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
+      padding: 10px 12px 12px 12px;
+      color: rgba(255,255,255,0.70);
+      font-size:12px;
+    }
+
+    /* ✅ OPTIONS UI (switch) */
+    .opt-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.18);
+    }
+    .opt-left{ min-width:0; }
+    .opt-title{ font-weight:950; font-size:14px; }
+    .opt-desc{
+      margin-top:4px;
+      font-size:12px;
+      color: rgba(255,255,255,0.68);
+      line-height:1.35;
+    }
+    .switch{
+      width: 52px;
+      height: 30px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.22);
+      position:relative;
+      cursor:pointer;
+      flex:0 0 auto;
+      transition: filter .12s ease;
+      user-select:none;
+    }
+    .switch:hover{ filter:brightness(1.08); }
+    .switch::after{
+      content:"";
+      position:absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+      transition: transform .16s ease;
+    }
+    .switch.on{
+      background: rgba(255,46,46,0.28);
+      border-color: rgba(255,46,46,0.35);
+      box-shadow: 0 0 0 2px rgba(255,46,46,0.10) inset;
+    }
+    .switch.on::after{
+      transform: translateX(22px);
+      background: rgba(255,255,255,0.92);
+    }
 
     @media (max-width:768px){
       .topbar{ top: calc(8px + env(safe-area-inset-top)); }
@@ -663,11 +746,12 @@
       .thumb{ width:96px; height:72px; }
       .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
       .history-list{ max-height:60vh; }
+      .player-card{ width: min(760px, 96vw); }
     }
 
     /* ✅ iOS STABLE */
     @supports (-webkit-touch-callout: none) {
-      .topbar, .menu-card, .menu-item, .channel-item, .toast{
+      .topbar, .menu-card, .menu-item, .channel-item, .toast, .player-card{
         -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
       }
@@ -680,6 +764,7 @@
       .channel-item{ background: rgba(255,255,255,0.12) !important; }
       .toast{ background: rgba(15,5,6,0.92) !important; }
       .history-item{ background: rgba(255,255,255,0.10) !important; }
+      .player-card{ background: rgba(15,5,6,0.95) !important; }
     }
   </style>
 </head>
@@ -710,9 +795,7 @@
   </header>
 
   <div class="app">
-
-    <!-- PAGE MENU -->
-    <section id="page-home" class="page active">
+  <section id="page-home" class="page active">
       <div class="menu-card">
 
         <div class="home-hero">
@@ -773,6 +856,23 @@
             </div>
           </div>
 
+          <div class="menu-item" data-go="page-options" role="button" aria-label="Aller vers Options">
+            <div class="menu-left">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.5.5,0,0,0,.12-.63l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.28,7.28,0,0,0-1.63-.94l-.38-2.65A.5.5,0,0,0,13.79,2H10.21a.5.5,0,0,0-.49.42L9.34,5.07a7.28,7.28,0,0,0-1.63.94l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.63L4.86,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.75,14.59a.5.5,0,0,0-.12.63l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.28,7.28,0,0,0,1.63.94l.38,2.65a.5.5,0,0,0,.49.42h3.58a.5.5,0,0,0,.49-.42l.38-2.65a7.28,7.28,0,0,0,1.63-.94l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.63ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/>
+                </svg>
+              </div>
+              <div class="menu-text">
+                <div class="t1">Options</div>
+                <div class="t2">Lecteur intégré, etc.</div>
+              </div>
+            </div>
+            <div class="chev" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
+            </div>
+          </div>
+
           <div class="menu-item" data-go="page-help" role="button" aria-label="Aller vers Comment ça marche ?">
             <div class="menu-left">
               <div class="icon" aria-hidden="true">
@@ -805,15 +905,12 @@
       </div>
 
       <div class="menu-card">
-
-        <!-- ✅ Recherche + Tri -->
         <div class="channels-toolbar">
           <div class="search" title="Rechercher une chaîne">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 5L20.5 19l-5-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
             <input id="channels-search" type="text" placeholder="Rechercher une chaîne…" />
           </div>
 
-          <!-- ✅ Tri : seulement ceux demandés -->
           <select id="channels-sort" class="sort" title="Trier">
             <option value="default">Tri : Par défaut</option>
             <option value="az">Tri : A → Z</option>
@@ -874,10 +971,38 @@
         </div>
 
         <div id="hist-topline" class="history-topline"></div>
-
         <div id="history-list" class="history-list"></div>
 
         <div class="footer">YouTube Random Video — Historique</div>
+      </div>
+    </section>
+
+    <!-- PAGE OPTIONS -->
+    <section id="page-options" class="page">
+      <div class="page-top">
+        <button class="back-btn" data-back="page-home">← Retour</button>
+        <div class="page-title">Options</div>
+        <div style="width:92px;"></div>
+      </div>
+
+      <div class="menu-card">
+        <div class="home-hero" style="padding-top:6px;">
+          <h1 style="font-size:18px;">Options</h1>
+          <p style="margin-top:6px;">Personnalise l’expérience. Par défaut, le lecteur intégré est activé.</p>
+        </div>
+
+        <div class="opt-row">
+          <div class="opt-left">
+            <div class="opt-title">Lecteur intégré</div>
+            <div class="opt-desc">
+              Si activé : la vidéo se lance dans l’appli (modal) + bouton “Prochaine random”.<br>
+              Si désactivé : ouverture dans l’app YouTube / navigateur (comme avant).
+            </div>
+          </div>
+          <div id="opt-embed-switch" class="switch" role="switch" aria-checked="true" tabindex="0" title="Activer/Désactiver"></div>
+        </div>
+
+        <div class="footer">YouTube Random Video — Options</div>
       </div>
     </section>
 
@@ -898,17 +1023,18 @@
           • L’étoile <b>★</b> ajoute/retire la chaîne des Favoris.<br>
           • <b>Rebuild caches</b> = rebuild pools random (48h).<br>
           • <b>Rebuild dernières vidéos</b> = force la MAJ des dernières vidéos (cache 6h).<br>
-          • Sur téléphone : ouverture tente l’app YouTube, sinon navigateur.
+          • Sur téléphone : ouverture tente l’app YouTube, sinon navigateur.<br>
+          • Option “Lecteur intégré” : lecture dans l’appli + “Prochaine random”.
         </div>
       </div>
     </section>
 
-  </div>
+  </div><!-- /app -->
 
   <!-- TOAST -->
   <div id="toast-wrap" class="toast-wrap"></div>
 
-  <!-- ✅ OVERLAY -->
+  <!-- OVERLAY -->
   <div id="overlay" class="overlay" aria-hidden="true">
     <div class="overlay-card">
       <div class="spinner" aria-hidden="true"></div>
@@ -917,7 +1043,36 @@
     </div>
   </div>
 
+  <!-- MODAL PLAYER (IFrame API) -->
+  <div id="player-modal" class="player-modal" aria-hidden="true">
+    <div class="player-card" role="dialog" aria-modal="true" aria-label="Lecteur vidéo">
+      <div class="player-head">
+        <div id="player-title" class="player-title">Lecture…</div>
+        <div class="player-actions">
+          <button id="player-next" class="player-btn" type="button">⏭️ Prochaine random</button>
+          <button id="player-open" class="player-btn" type="button">↗ Ouvrir YouTube</button>
+          <button id="player-close" class="player-btn" type="button">✖ Fermer</button>
+        </div>
+      </div>
+
+      <div class="player-body">
+        <div class="player-frame">
+          <div id="yt-player"></div>
+        </div>
+      </div>
+
+      <div class="player-foot">
+        <div id="player-foot-left">Lecteur intégré • IFrame API</div>
+        <div id="player-foot-right"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    /* =========================================================
+       JS CLEAN — 1 seul système Options + 1 seul Player
+       ========================================================= */
+
     /* ========= NAVIGATION ========= */
     function showPage(id){
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -926,6 +1081,7 @@
       if(id === "page-favs") renderFavorites();
       if(id === "page-channels") renderChannels();
       if(id === "page-history") renderHistoryPage();
+      if(id === "page-options") renderOptionsUI();
     }
 
     document.addEventListener("click", (e)=>{
@@ -987,8 +1143,163 @@
       }, 900);
     }
 
+    /* ========= OPTIONS (Lecteur intégré) ========= */
+    const OPTS_KEY = "yt_options_v1";
+    const DEFAULT_OPTS = { embedPlayer: true };
+
+    function loadOptions(){
+      try{
+        const raw = localStorage.getItem(OPTS_KEY);
+        const obj = raw ? JSON.parse(raw) : {};
+        return { ...DEFAULT_OPTS, ...(obj || {}) };
+      }catch{
+        return { ...DEFAULT_OPTS };
+      }
+    }
+    function saveOptions(opts){
+      try{ localStorage.setItem(OPTS_KEY, JSON.stringify(opts)); }catch{}
+    }
+    function setOption(key, value){
+      const o = loadOptions();
+      o[key] = value;
+      saveOptions(o);
+      return o;
+    }
+    function isEmbedEnabled(){
+      return !!loadOptions().embedPlayer;
+    }
+
+    const embedSwitchEl = document.getElementById("opt-embed-switch");
+    function applySwitchUI(){
+      if(!embedSwitchEl) return;
+      const on = isEmbedEnabled();
+      embedSwitchEl.classList.toggle("on", on);
+      embedSwitchEl.setAttribute("aria-checked", on ? "true" : "false");
+    }
+    function renderOptionsUI(){
+      applySwitchUI();
+    }
+    function toggleEmbed(){
+      const now = !isEmbedEnabled();
+      setOption("embedPlayer", now);
+      applySwitchUI();
+      toast(now ? "Lecteur intégré : activé ✅" : "Lecteur intégré : désactivé ✅");
+    }
+    if(embedSwitchEl){
+      embedSwitchEl.addEventListener("click", toggleEmbed);
+      embedSwitchEl.addEventListener("keydown", (e)=>{
+        if(e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          toggleEmbed();
+        }
+      });
+    }
+
+    /* ========= MODAL PLAYER + IFrame API ========= */
+    const playerModal = document.getElementById("player-modal");
+    const playerTitleEl = document.getElementById("player-title");
+    const playerFootRight = document.getElementById("player-foot-right");
+    const playerBtnClose = document.getElementById("player-close");
+    const playerBtnNext  = document.getElementById("player-next");
+    const playerBtnOpen  = document.getElementById("player-open");
+
+    let ytPlayer = null;
+    let ytApiReady = false;
+    let pendingVideoId = null;
+
+    // contexte "random"
+    let currentEntry = null;
+    let currentChosenCh = null;
+    let currentVideoId = null;
+
+    function ensureYouTubeIframeApi(){
+      if(window.__yt_iframe_api_loading) return;
+      window.__yt_iframe_api_loading = true;
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
+    }
+
+    window.onYouTubeIframeAPIReady = function(){
+      ytApiReady = true;
+      if(pendingVideoId){
+        createOrLoadPlayer(pendingVideoId);
+        pendingVideoId = null;
+      }
+    };
+
+    function createOrLoadPlayer(videoId){
+      if(!ytApiReady){
+        pendingVideoId = videoId;
+        ensureYouTubeIframeApi();
+        return;
+      }
+
+      if(ytPlayer){
+        ytPlayer.loadVideoById(videoId);
+        return;
+      }
+
+      ytPlayer = new YT.Player("yt-player", {
+        videoId,
+        playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1 },
+        events: {
+          onReady: (ev)=> { try{ ev.target.playVideo(); }catch{} },
+          onStateChange: (ev)=>{
+            if(ev.data === YT.PlayerState.ENDED){
+              playerNextRandom();
+            }
+          },
+          onError: ()=>{
+            toast("Lecteur : erreur. Ouverture YouTube…");
+            if(currentVideoId) openYouTubePreferApp(currentVideoId);
+          }
+        }
+      });
+    }
+
+    function openPlayerModal(){
+      playerModal.classList.add("show");
+      playerModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+    function closePlayerModal(){
+      playerModal.classList.remove("show");
+      playerModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "hidden";
+      try{ ytPlayer && ytPlayer.stopVideo(); }catch{}
+    }
+
+    playerBtnClose.addEventListener("click", closePlayerModal);
+    playerModal.addEventListener("click", (e)=>{ if(e.target === playerModal) closePlayerModal(); });
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape" && playerModal.classList.contains("show")) closePlayerModal();
+    });
+
+    playerBtnOpen.addEventListener("click", ()=>{
+      if(currentVideoId) openYouTubePreferApp(currentVideoId);
+    });
+
+    async function playerNextRandom(){
+      if(!currentEntry){
+        toast("Impossible : pas de contexte random.");
+        return;
+      }
+      await launchEntry(currentEntry, { forceEmbed: true });
+    }
+    playerBtnNext.addEventListener("click", playerNextRandom);
+
+    function playInModal(videoId, titleText){
+      currentVideoId = videoId;
+      playerTitleEl.textContent = titleText || "Lecture…";
+      playerFootRight.textContent = `ID : ${videoId}`;
+      openPlayerModal();
+      ensureYouTubeIframeApi();
+      createOrLoadPlayer(videoId);
+    }
+
     /* ========= CONFIG ========= */
-    const apiKey = "AIzaSyBVx63xYeRm34oQIsCigJozDp9hIoRLhxo"; // <-- Mets ta clé ici
+    const apiKey = "AIzaSyBVx63xYeRm34oQIsCigJozDp9hIoRLhxo"; // <-- Ta clé
 
     function normalizeChannelId(id){
       const s = String(id || "").trim();
@@ -1004,7 +1315,7 @@
     const CHANNEL_MEC_ID     = normalizeChannelId("UCDPK_MTu3uTUFJXRVcTJcEw");
     const CHANNEL_INOXTAG_ID = normalizeChannelId("UCL9aTJb0ur4sovxcppAopEw");
     const CHANNEL_JOYCA_ID   = normalizeChannelId("UCow2IGnug1l3Xazkrc5jM_Q");
-    const CHANNEL_MASTU_ID   = normalizeChannelId("AhaFPP6v3WCfK5Tjao0B7A");
+    const CHANNEL_MASTU_ID   = normalizeChannelId("AhaFPP6v3WCfK5Tjao0B7A"); // (si ça bug, mets le vrai UC...)
 
     const CHANNEL_LEGEND_ID  = normalizeChannelId("UCIh7PDUAP226Pa_NtjN9Jqw");
     const CHANNEL_DJILSI_ID  = normalizeChannelId("UCEUZRSYr1a2hnBfnpWslFeQ");
@@ -1152,7 +1463,6 @@
         localStorage.setItem(subsTsKey(channelId), String(Date.now()));
       }catch{}
     }
-
     async function fetchSubs(channelId){
       const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${apiKey}`;
       const data = await fetchJson(url);
@@ -1162,7 +1472,6 @@
       saveSubs(channelId, n);
       return n;
     }
-
     async function ensureSubs(channelId){
       const cached = loadSubs(channelId);
       if(cached !== null) return cached;
@@ -1375,14 +1684,12 @@
       return { poolIds, metaMap };
     }
 
-    /* ========= BUILD POOL (✅ NOTIF REBUILD + OVERLAY) ========= */
     async function buildPoolForChannel(ch, force=false){
       if(!force){
         const cached = loadCache(ch);
         if(cached) return cached;
       }
 
-      // ✅ notif claire
       toast(`Rebuild ${ch.name}…`);
       showOverlay(`Rebuild en cours : ${ch.name}`, "Création du cache (anti-shorts) — ça peut prendre un moment…");
 
@@ -1394,27 +1701,25 @@
 
         if(!built.poolIds.length) throw new Error(`Pool vide pour ${ch.name} (beaucoup de shorts ?).`);
 
+        const uniquePool = Array.from(new Set(built.poolIds));
+
         const seenSet = new Set(loadSeenList(ch));
-        const prunedPoolIds = built.poolIds.filter(id => !seenSet.has(id));
+        const prunedPoolIds = uniquePool.filter(id => !seenSet.has(id));
 
         saveCache(ch, prunedPoolIds, built.metaMap, {
           raw: ids.length,
           pruned_from: built.poolIds.length,
+          unique_from: uniquePool.length,
           pruned_to: prunedPoolIds.length
         });
 
         toast(`✅ Rebuild terminé : ${ch.name}`);
-        return {
-          poolIds: prunedPoolIds,
-          metaMap: built.metaMap,
-          meta: { ts: Date.now(), count: prunedPoolIds.length }
-        };
+        return { poolIds: prunedPoolIds, metaMap: built.metaMap, meta: { ts: Date.now(), count: prunedPoolIds.length } };
       } finally {
         hideOverlay();
       }
     }
 
-    /* ========= PICK ========= */
     function pickFromPool(ch, poolIds){
       if(!poolIds || poolIds.length === 0){
         throw new Error(`Plus de vidéos dispo pour ${ch.name}. Fais un rebuild.`);
@@ -1443,14 +1748,7 @@
     };
 
     function makeSingleEntry(key, title, channel, avatarChannelId){
-      return {
-        entryId: `entry_${key}`,
-        title,
-        yearsText: title,
-        avatarChannelId,
-        type: "single_random",
-        channel
-      };
+      return { entryId: `entry_${key}`, title, yearsText: title, avatarChannelId, type: "single_random", channel };
     }
 
     const ENTRIES = [
@@ -1469,28 +1767,36 @@
     ];
 
     /* ========= LAUNCH RANDOM ========= */
-    async function launchEntry(entry){
+    async function launchEntry(entry, opts = {}){
       if(isPicking) return;
       isPicking = true;
 
       try{
+        const embed = (typeof opts.forceEmbed === "boolean") ? opts.forceEmbed : isEmbedEnabled();
+        currentEntry = entry;
+
+        let chosenCh = null;
         if(entry.type === "group_random"){
-          const chosen = (Math.random() < 0.5) ? entry.group[0] : entry.group[1];
-          const built = await buildPoolForChannel(chosen, false);
-          const vid = pickFromPool(chosen, built.poolIds);
-          removeFromCache(chosen, vid);
-          openYouTubePreferApp(vid);
+          chosenCh = (Math.random() < 0.5) ? entry.group[0] : entry.group[1];
         } else {
-          const ch = entry.channel;
-          const built = await buildPoolForChannel(ch, false);
-          const vid = pickFromPool(ch, built.poolIds);
-          removeFromCache(ch, vid);
-          openYouTubePreferApp(vid);
+          chosenCh = entry.channel;
         }
+        currentChosenCh = chosenCh;
+
+        const built = await buildPoolForChannel(chosenCh, false);
+        const vid = pickFromPool(chosenCh, built.poolIds);
+        removeFromCache(chosenCh, vid);
+
+        const meta = built?.metaMap?.[vid];
+        const vidTitle = meta?.[0] || `${entry.title} — vidéo random`;
+
+        if(embed) playInModal(vid, vidTitle);
+        else openYouTubePreferApp(vid);
 
         renderChannels();
         renderFavorites();
         if(document.getElementById("page-history")?.classList.contains("active")) renderHistoryPage();
+
       }catch(e){
         console.error(e);
         toast("Erreur : " + (e.message || e));
@@ -1658,9 +1964,11 @@
 
       try{
         const latest = await ensureLatest(channelId);
+
         const openLatest = (e)=>{
           e.stopPropagation();
-          openYouTubePreferApp(latest.videoId);
+          if(isEmbedEnabled()) playInModal(latest.videoId, latest.title || "Dernière vidéo");
+          else openYouTubePreferApp(latest.videoId);
         };
 
         const wrap = document.createElement("div");
@@ -1689,7 +1997,9 @@
 
         const hint = document.createElement("div");
         hint.className = "latest-hint";
-        hint.textContent = "Clique sur la miniature ou le titre pour ouvrir la vidéo.";
+        hint.textContent = isEmbedEnabled()
+          ? "Clique pour lire dans l’appli (lecteur intégré)."
+          : "Clique pour ouvrir sur YouTube.";
 
         meta.appendChild(title);
         meta.appendChild(hint);
@@ -1940,7 +2250,6 @@
         }
       }
 
-      // default
       return arr;
     }
 
@@ -2173,14 +2482,8 @@
       else renderHistoryChannel();
     }
 
-    histModeGlobalBtn.addEventListener("click", ()=>{
-      histMode = "global";
-      renderHistoryPage();
-    });
-    histModeChannelBtn.addEventListener("click", ()=>{
-      histMode = "channel";
-      renderHistoryPage();
-    });
+    histModeGlobalBtn.addEventListener("click", ()=>{ histMode = "global"; renderHistoryPage(); });
+    histModeChannelBtn.addEventListener("click", ()=>{ histMode = "channel"; renderHistoryPage(); });
     histSelect.addEventListener("change", renderHistoryPage);
 
     histCopyBtn.addEventListener("click", async ()=>{
@@ -2264,10 +2567,12 @@
 
     /* ========= BOOT ========= */
     (function boot(){
+      renderOptionsUI();
       renderChannels();
       renderFavorites();
       buildChannelSelect();
     })();
+
   </script>
 </body>
 </html>
