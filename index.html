@@ -709,7 +709,7 @@
       position:relative;
       cursor:pointer;
       flex:0 0 auto;
-      transition: filter .12s ease;
+      transition: filter .12s ease, opacity .12s ease;
       user-select:none;
     }
     .switch:hover{ filter:brightness(1.08); }
@@ -733,6 +733,12 @@
     .switch.on::after{
       transform: translateX(22px);
       background: rgba(255,255,255,0.92);
+    }
+    /* ✅ nouveau : switch désactivé en mode local file:// */
+    .switch.disabled{
+      opacity: .45;
+      pointer-events: none;
+      filter: none !important;
     }
 
     @media (max-width:768px){
@@ -795,9 +801,8 @@
   </header>
 
   <div class="app">
-  <section id="page-home" class="page active">
+    <section id="page-home" class="page active">
       <div class="menu-card">
-
         <div class="home-hero">
           <h1>Menu</h1>
           <p>Interface pensée comme une appli. Dans <b>Chaînes</b> : dernière vidéo + random (sans shorts).</p>
@@ -994,7 +999,7 @@
         <div class="opt-row">
           <div class="opt-left">
             <div class="opt-title">Lecteur intégré</div>
-            <div class="opt-desc">
+            <div class="opt-desc" id="opt-embed-desc">
               Si activé : la vidéo se lance dans l’appli (modal) + bouton “Prochaine random”.<br>
               Si désactivé : ouverture dans l’app YouTube / navigateur (comme avant).
             </div>
@@ -1070,8 +1075,11 @@
 
   <script>
     /* =========================================================
-       JS CLEAN — 1 seul système Options + 1 seul Player
+       JS CLEAN — Fix local file:// + ouverture YouTube + preload API
        ========================================================= */
+
+    const IS_FILE = (location.protocol === "file:");
+    const IS_HTTPS = (location.protocol === "https:" || location.protocol === "http:");
 
     /* ========= NAVIGATION ========= */
     function showPage(id){
@@ -1118,7 +1126,11 @@
       overlay.setAttribute("aria-hidden", "true");
     }
 
-    /* ========= OPEN YT (APP FIRST, FALLBACK WEB) ========= */
+    /* ========= OPEN YT (FAST) =========
+       ✅ Remplace l'ancienne méthode iframe caché
+       -> tente app (mobile) puis fallback web très rapide
+       -> annule le fallback si la page devient hidden
+    */
     function openYouTubePreferApp(videoId){
       const webUrl = `https://www.youtube.com/watch?v=${videoId}`;
       const appUrl = `youtube://watch?v=${videoId}`;
@@ -1129,18 +1141,33 @@
         return;
       }
 
-      const start = Date.now();
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appUrl;
-      document.body.appendChild(iframe);
+      let didHide = false;
+      const onVis = ()=>{
+        if(document.visibilityState === "hidden"){
+          didHide = true; // l'app YouTube a pris la main
+        }
+      };
+      document.addEventListener("visibilitychange", onVis, { passive:true });
 
-      setTimeout(() => {
-        try{ document.body.removeChild(iframe); }catch{}
-        if(document.visibilityState === "visible" && (Date.now() - start) < 2500){
+      // tente d'ouvrir l'app
+      try{ window.location.href = appUrl; }catch{}
+
+      // fallback web très court (évite la lenteur de la 1ère vidéo)
+      const t = setTimeout(()=>{
+        document.removeEventListener("visibilitychange", onVis);
+        if(!didHide){
+          // fallback web
           window.location.href = webUrl;
         }
-      }, 900);
+      }, 450);
+
+      // sécurité : si on cache la page après, on stoppe le fallback
+      setTimeout(()=>{
+        if(didHide){
+          clearTimeout(t);
+          document.removeEventListener("visibilitychange", onVis);
+        }
+      }, 800);
     }
 
     /* ========= OPTIONS (Lecteur intégré) ========= */
@@ -1165,26 +1192,54 @@
       saveOptions(o);
       return o;
     }
+
+    // ✅ IMPORTANT: en file:// on force embed OFF (sinon erreur 153 / écran noir)
     function isEmbedEnabled(){
+      if(IS_FILE) return false;
       return !!loadOptions().embedPlayer;
     }
 
     const embedSwitchEl = document.getElementById("opt-embed-switch");
+    const embedDescEl = document.getElementById("opt-embed-desc");
+
     function applySwitchUI(){
       if(!embedSwitchEl) return;
+
       const on = isEmbedEnabled();
       embedSwitchEl.classList.toggle("on", on);
       embedSwitchEl.setAttribute("aria-checked", on ? "true" : "false");
+
+      if(IS_FILE){
+        embedSwitchEl.classList.add("disabled");
+        if(embedDescEl){
+          embedDescEl.innerHTML =
+            `⚠️ <b>Mode local (file://)</b> : YouTube bloque souvent l’IFrame Player (erreur 153).<br>`+
+            `Le lecteur intégré est donc <b>désactivé automatiquement</b> ici.<br>`+
+            `➡️ Pour tester le lecteur : ouvre la page via <b>GitHub Pages</b> ou un <b>petit serveur local</b> (http://localhost).`;
+        }
+      }else{
+        embedSwitchEl.classList.remove("disabled");
+      }
     }
+
     function renderOptionsUI(){
       applySwitchUI();
     }
+
     function toggleEmbed(){
+      if(IS_FILE){
+        toast("En local (file://), le lecteur intégré est désactivé (erreur 153).");
+        return;
+      }
       const now = !isEmbedEnabled();
       setOption("embedPlayer", now);
       applySwitchUI();
       toast(now ? "Lecteur intégré : activé ✅" : "Lecteur intégré : désactivé ✅");
+
+      // ✅ précharge l’API si on vient d’activer (accélère la 1ère lecture)
+      if(now) ensureYouTubeIframeApi(true);
     }
+
     if(embedSwitchEl){
       embedSwitchEl.addEventListener("click", toggleEmbed);
       embedSwitchEl.addEventListener("keydown", (e)=>{
@@ -1212,8 +1267,9 @@
     let currentChosenCh = null;
     let currentVideoId = null;
 
-    function ensureYouTubeIframeApi(){
-      if(window.__yt_iframe_api_loading) return;
+    function ensureYouTubeIframeApi(force=false){
+      if(IS_FILE) return; // ✅ jamais en file://
+      if(window.__yt_iframe_api_loading && !force) return;
       window.__yt_iframe_api_loading = true;
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
@@ -1229,6 +1285,12 @@
     };
 
     function createOrLoadPlayer(videoId){
+      if(IS_FILE){
+        toast("Lecteur intégré indisponible en mode local (file://). Ouverture YouTube…");
+        openYouTubePreferApp(videoId);
+        return;
+      }
+
       if(!ytApiReady){
         pendingVideoId = videoId;
         ensureYouTubeIframeApi();
@@ -1240,9 +1302,17 @@
         return;
       }
 
+      const origin = (IS_HTTPS && location.origin) ? location.origin : undefined;
+
       ytPlayer = new YT.Player("yt-player", {
         videoId,
-        playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1 },
+        playerVars: {
+          autoplay: 1,
+          rel: 0,
+          modestbranding: 1,
+          playsinline: 1,
+          ...(origin ? { origin } : {})
+        },
         events: {
           onReady: (ev)=> { try{ ev.target.playVideo(); }catch{} },
           onStateChange: (ev)=>{
@@ -1250,7 +1320,7 @@
               playerNextRandom();
             }
           },
-          onError: ()=>{
+          onError: ()=> {
             toast("Lecteur : erreur. Ouverture YouTube…");
             if(currentVideoId) openYouTubePreferApp(currentVideoId);
           }
@@ -1618,7 +1688,7 @@
       let pageToken = "";
       const all = [];
 
-      for(let page=0; page<MAX_PAGES; page++){
+      for(let page=0; page<200; page++){
         const url =
           `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails`+
           `&playlistId=${uploadsPlaylistId}&maxResults=50`+
@@ -1640,7 +1710,7 @@
           if(ms < cutoffMs){ reachedOld = true; break; }
 
           all.push(vid);
-          if(all.length >= MAX_VIDEOS){ reachedOld = true; break; }
+          if(all.length >= 6000){ reachedOld = true; break; }
         }
 
         if(reachedOld) break;
@@ -2571,6 +2641,16 @@
       renderChannels();
       renderFavorites();
       buildChannelSelect();
+
+      // ✅ accelère la 1ère lecture en modal (précharge l’API si embed ON et pas en local file://)
+      if(isEmbedEnabled()){
+        // petit delay pour ne pas bloquer le rendu
+        setTimeout(()=> ensureYouTubeIframeApi(true), 250);
+      }
+
+      if(IS_FILE){
+        toast("Mode local (file://) : lecteur intégré désactivé (erreur 153).");
+      }
     })();
 
   </script>
