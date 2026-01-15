@@ -1074,7 +1074,8 @@
   </div>
 
   <script>
-    /* =========================================================
+
+     /* =========================================================
        JS CLEAN — Fix local file:// + ouverture YouTube + preload API
        ========================================================= */
 
@@ -1126,11 +1127,7 @@
       overlay.setAttribute("aria-hidden", "true");
     }
 
-    /* ========= OPEN YT (FAST) =========
-       ✅ Remplace l'ancienne méthode iframe caché
-       -> tente app (mobile) puis fallback web très rapide
-       -> annule le fallback si la page devient hidden
-    */
+    /* ========= OPEN YT (FAST) ========= */
     function openYouTubePreferApp(videoId){
       const webUrl = `https://www.youtube.com/watch?v=${videoId}`;
       const appUrl = `youtube://watch?v=${videoId}`;
@@ -1144,24 +1141,20 @@
       let didHide = false;
       const onVis = ()=>{
         if(document.visibilityState === "hidden"){
-          didHide = true; // l'app YouTube a pris la main
+          didHide = true;
         }
       };
       document.addEventListener("visibilitychange", onVis, { passive:true });
 
-      // tente d'ouvrir l'app
       try{ window.location.href = appUrl; }catch{}
 
-      // fallback web très court (évite la lenteur de la 1ère vidéo)
       const t = setTimeout(()=>{
         document.removeEventListener("visibilitychange", onVis);
         if(!didHide){
-          // fallback web
           window.location.href = webUrl;
         }
       }, 450);
 
-      // sécurité : si on cache la page après, on stoppe le fallback
       setTimeout(()=>{
         if(didHide){
           clearTimeout(t);
@@ -1193,7 +1186,6 @@
       return o;
     }
 
-    // ✅ IMPORTANT: en file:// on force embed OFF (sinon erreur 153 / écran noir)
     function isEmbedEnabled(){
       if(IS_FILE) return false;
       return !!loadOptions().embedPlayer;
@@ -1235,8 +1227,6 @@
       setOption("embedPlayer", now);
       applySwitchUI();
       toast(now ? "Lecteur intégré : activé ✅" : "Lecteur intégré : désactivé ✅");
-
-      // ✅ précharge l’API si on vient d’activer (accélère la 1ère lecture)
       if(now) ensureYouTubeIframeApi(true);
     }
 
@@ -1262,13 +1252,12 @@
     let ytApiReady = false;
     let pendingVideoId = null;
 
-    // contexte "random"
     let currentEntry = null;
     let currentChosenCh = null;
     let currentVideoId = null;
 
     function ensureYouTubeIframeApi(force=false){
-      if(IS_FILE) return; // ✅ jamais en file://
+      if(IS_FILE) return;
       if(window.__yt_iframe_api_loading && !force) return;
       window.__yt_iframe_api_loading = true;
       const tag = document.createElement("script");
@@ -1371,11 +1360,18 @@
     /* ========= CONFIG ========= */
     const apiKey = "AIzaSyBVx63xYeRm34oQIsCigJozDp9hIoRLhxo"; // <-- Ta clé
 
+    // ✅ + robuste (gère UC-..., espaces, guillemets, etc.)
     function normalizeChannelId(id){
-      const s = String(id || "").trim();
-      if(s.startsWith("UC")) return s;
-      if(s.length === 22) return "UC" + s;
-      return s;
+         const s = String(id || "").trim();
+
+         // déjà un vrai UC-ID valide
+         if(/^UC[a-zA-Z0-9_-]{22}$/.test(s)) return s;
+
+         // tentative ancienne ID sans UC
+         if(/^[a-zA-Z0-9_-]{22}$/.test(s)) return "UC" + s;
+
+         console.warn("Channel ID invalide :", s);
+         return s;
     }
 
     const CHANNEL_FUZE3_ID   = normalizeChannelId("UCfznY5SlSoZoXN0-kBPtCdg");
@@ -1385,13 +1381,27 @@
     const CHANNEL_MEC_ID     = normalizeChannelId("UCDPK_MTu3uTUFJXRVcTJcEw");
     const CHANNEL_INOXTAG_ID = normalizeChannelId("UCL9aTJb0ur4sovxcppAopEw");
     const CHANNEL_JOYCA_ID   = normalizeChannelId("UCow2IGnug1l3Xazkrc5jM_Q");
-    const CHANNEL_MASTU_ID   = normalizeChannelId("AhaFPP6v3WCfK5Tjao0B7A"); // (si ça bug, mets le vrai UC...)
+    const CHANNEL_MASTU_ID   = normalizeChannelId("AhaFPP6v3WCfK5Tjao0B7A"); // ⚠️ si ça bug, mets le vrai UC...
 
     const CHANNEL_LEGEND_ID  = normalizeChannelId("UCIh7PDUAP226Pa_NtjN9Jqw");
     const CHANNEL_DJILSI_ID  = normalizeChannelId("UCEUZRSYr1a2hnBfnpWslFeQ");
     const CHANNEL_SYLVAIN_ID = normalizeChannelId("UCd26XTdCltsEpyvZmmGW9Aw");
     const CHANNEL_WANKIL_ID  = normalizeChannelId("UCYGjxo5ifuhnmvhPvCc3DJQ");
     const CHANNEL_GOTAGA_ID  = normalizeChannelId("UCwDeagCMN0rTg5-r3s9AINA");
+
+    /* ✅ AJOUTS (nouveaux youtubeurs) */
+    const CHANNEL_AYWEN_ID        = normalizeChannelId("UCZo7D6E3ejS7KpsmpfVRRzw");
+    const CHANNEL_ANYME_ID        = normalizeChannelId("UCGfI2yGzrs45oQjL8FnOhjg");
+    const CHANNEL_CYRILSTUDIO_ID  = normalizeChannelId("UC1MBcoEUxNAMMUWHyoGBIaA");
+    const CHANNEL_CYRIL_ID        = normalizeChannelId("UC-4M8AN08hw39nn2v91VuMQ");
+    const CHANNEL_DRNOZMAN_ID     = normalizeChannelId("UCWnfDPdZw6A23UtuBpYBbAg");
+    const CHANNEL_TRASH_ID        = normalizeChannelId("UCfGfdZuYifBYb1fmZcL1JBQ");
+    const CHANNEL_MISTERV_ID      = normalizeChannelId("UCSKh1ItRYQ5znkz_9REApwQ");
+    const CHANNEL_MRBEAST_ID      = normalizeChannelId("UCX6OQ3DkcsbYNE6H8uQQuVA");
+    const CHANNEL_FABIENOLICARD_ID= normalizeChannelId("UCTafEJoRl5myC8A50plIrng");
+    const CHANNEL_SOFYAN_ID       = normalizeChannelId("UCGWoTWsXJi1UtCjOiBHIsfw");
+    const CHANNEL_NOTABENE_ID     = normalizeChannelId("UCrbbgYjbrXVYRM_iRGEDqFw");
+    const CHANNEL_BAZARDUGRENIER_ID=normalizeChannelId("UC_yP2DpIgs5Y1uWC0T03Chw");
 
     const MIN_SECONDS = 61;
     const LATEST_MIN_SECONDS = 181;
@@ -1415,9 +1425,28 @@
     const CH_WANKIL   = { key:"wankil",   name:"Wankil Studio - Laink et Terracid", id:CHANNEL_WANKIL_ID, cutoffType:"yearsBack", yearsBack:5 };
     const CH_GOTAGA   = { key:"gotaga",   name:"GOTAGA",   id:CHANNEL_GOTAGA_ID,  cutoffType:"yearsBack", yearsBack:5 };
 
+    /* ✅ NOUVEAUX CH (avec 5 ans / 7 ans) */
+    const CH_AYWEN        = { key:"aywen",        name:"AYWEN",            id:CHANNEL_AYWEN_ID,         cutoffType:"yearsBack", yearsBack:5 };
+    const CH_ANYME        = { key:"anyme",        name:"ANYME",            id:CHANNEL_ANYME_ID,         cutoffType:"yearsBack", yearsBack:5 };
+    const CH_CYRILSTUDIO  = { key:"cyrilstudio",  name:"CYRIL Studio",     id:CHANNEL_CYRILSTUDIO_ID,   cutoffType:"yearsBack", yearsBack:5 };
+    const CH_CYRIL        = { key:"cyril",        name:"CYRIL",            id:CHANNEL_CYRIL_ID,         cutoffType:"yearsBack", yearsBack:5 };
+    const CH_DRNOZMAN     = { key:"drnozman",     name:"DR NOZMAN",        id:CHANNEL_DRNOZMAN_ID,      cutoffType:"yearsBack", yearsBack:5 };
+    const CH_TRASH        = { key:"trash",        name:"TRASH",            id:CHANNEL_TRASH_ID,         cutoffType:"yearsBack", yearsBack:7 };
+    const CH_MISTERV      = { key:"misterv",      name:"MISTER V",         id:CHANNEL_MISTERV_ID,       cutoffType:"yearsBack", yearsBack:7 };
+    const CH_MRBEAST      = { key:"mrbeast",      name:"MR BEAST",         id:CHANNEL_MRBEAST_ID,       cutoffType:"yearsBack", yearsBack:7 };
+    const CH_FABIENOLICARD= { key:"fabienolicard",name:"FABIEN OLICARD",   id:CHANNEL_FABIENOLICARD_ID, cutoffType:"yearsBack", yearsBack:7 };
+    const CH_SOFYAN       = { key:"sofyan",       name:"SOFYAN",           id:CHANNEL_SOFYAN_ID,        cutoffType:"yearsBack", yearsBack:5 };
+    const CH_NOTABENE     = { key:"notabene",     name:"NOTA BENE",        id:CHANNEL_NOTABENE_ID,      cutoffType:"yearsBack", yearsBack:7 };
+    const CH_BAZARDUGRENIER= { key:"bazardugrenier",name:"BAZAR DU GRENIER",id:CHANNEL_BAZARDUGRENIER_ID,cutoffType:"yearsBack", yearsBack:5 };
+
     const CHANNELS_ALL = [
       CH_FUZE3, CH_FIOUSE, CH_AMIXEM, CH_SQUEEZIE, CH_MEC, CH_INOXTAG, CH_JOYCA, CH_MASTU,
-      CH_LEGEND, CH_DJILSI, CH_SYLVAIN, CH_WANKIL, CH_GOTAGA
+      CH_LEGEND, CH_DJILSI, CH_SYLVAIN, CH_WANKIL, CH_GOTAGA,
+
+      /* ✅ AJOUTS */
+      CH_AYWEN, CH_ANYME, CH_CYRILSTUDIO, CH_CYRIL, CH_DRNOZMAN,
+      CH_TRASH, CH_MISTERV, CH_MRBEAST, CH_FABIENOLICARD,
+      CH_SOFYAN, CH_NOTABENE, CH_BAZARDUGRENIER
     ];
 
     let isPicking = false;
@@ -1829,11 +1858,26 @@
       makeSingleEntry("inoxtag",  "Inoxtag",           CH_INOXTAG,  CHANNEL_INOXTAG_ID),
       makeSingleEntry("joyca",    "Joyca",             CH_JOYCA,    CHANNEL_JOYCA_ID),
       makeSingleEntry("mastu",    "Mastu",             CH_MASTU,    CHANNEL_MASTU_ID),
+
       makeSingleEntry("legend",   "LEGEND",            CH_LEGEND,   CHANNEL_LEGEND_ID),
       makeSingleEntry("djilsi",   "DJILSI",            CH_DJILSI,   CHANNEL_DJILSI_ID),
       makeSingleEntry("sylvain",  "SYLVAIN LYVE",      CH_SYLVAIN,  CHANNEL_SYLVAIN_ID),
       makeSingleEntry("wankil",   "Wankil Studio - Laink et Terracid", CH_WANKIL, CHANNEL_WANKIL_ID),
       makeSingleEntry("gotaga",   "GOTAGA",            CH_GOTAGA,   CHANNEL_GOTAGA_ID),
+
+      /* ✅ AJOUTS */
+      makeSingleEntry("aywen",         "AYWEN",             CH_AYWEN,          CHANNEL_AYWEN_ID),
+      makeSingleEntry("anyme",         "ANYME",             CH_ANYME,          CHANNEL_ANYME_ID),
+      makeSingleEntry("cyrilstudio",   "CYRIL Studio",      CH_CYRILSTUDIO,    CHANNEL_CYRILSTUDIO_ID),
+      makeSingleEntry("cyril",         "CYRIL",             CH_CYRIL,          CHANNEL_CYRIL_ID),
+      makeSingleEntry("drnozman",      "DR NOZMAN",         CH_DRNOZMAN,       CHANNEL_DRNOZMAN_ID),
+      makeSingleEntry("trash",         "TRASH",             CH_TRASH,          CHANNEL_TRASH_ID),
+      makeSingleEntry("misterv",       "MISTER V",          CH_MISTERV,        CHANNEL_MISTERV_ID),
+      makeSingleEntry("mrbeast",       "MR BEAST",          CH_MRBEAST,        CHANNEL_MRBEAST_ID),
+      makeSingleEntry("fabienolicard", "FABIEN OLICARD",    CH_FABIENOLICARD,  CHANNEL_FABIENOLICARD_ID),
+      makeSingleEntry("sofyan",        "SOFYAN",            CH_SOFYAN,         CHANNEL_SOFYAN_ID),
+      makeSingleEntry("notabene",      "NOTA BENE",         CH_NOTABENE,       CHANNEL_NOTABENE_ID),
+      makeSingleEntry("bazardugrenier","BAZAR DU GRENIER",  CH_BAZARDUGRENIER, CHANNEL_BAZARDUGRENIER_ID),
     ];
 
     /* ========= LAUNCH RANDOM ========= */
@@ -2012,7 +2056,7 @@
       return Array.from(set);
     }
 
-    /* ========= ACCORDEON UI ========= */
+     /* ========= ACCORDEON UI ========= */
     const channelsListEl = document.getElementById("channels-list");
     const favoritesListEl = document.getElementById("favorites-list");
     const favoritesEmptyEl = document.getElementById("favorites-empty");
@@ -2642,9 +2686,7 @@
       renderFavorites();
       buildChannelSelect();
 
-      // ✅ accelère la 1ère lecture en modal (précharge l’API si embed ON et pas en local file://)
       if(isEmbedEnabled()){
-        // petit delay pour ne pas bloquer le rendu
         setTimeout(()=> ensureYouTubeIframeApi(true), 250);
       }
 
