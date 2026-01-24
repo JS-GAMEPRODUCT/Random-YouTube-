@@ -1998,7 +1998,7 @@
     async function fetchLatestVideo(channelId){
       const uploadsId = await getUploadsPlaylistId(channelId);
 
-      const N = 12;
+      const N = 25;
       const url =
         `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}`+
         `&maxResults=${N}&key=${apiKey}`;
