@@ -1,453 +1,1005 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="crimson">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <title>YouTube Random Video — V0.1</title>
+  <meta name="theme-color" content="#0c0c14">
+  <title>RandomTube — Ta dose de hasard</title>
 
   <style>
+    /* ============================================================
+       DESIGN SYSTEM — RandomTube V2 · thèmes dynamiques
+       ============================================================ */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
+
     :root{
-      --bg1:#3a0f12; --bg2:#1b0709; --bg3:#0e0405;
-      --stroke: rgba(255,255,255,0.14);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.65);
-      --shadow: 0 18px 55px rgba(0,0,0,0.45);
-      --accent:#ff2e2e;
-      --gold:#ffd24a;
+      /* triplets RGB du thème (accent 1 → 3) */
+      --a1: 255 75 62;
+      --a2: 255 46 99;
+      --a3: 214 31 87;
+
+      --bg0:#07070c;
+      --bg1:#0c0c14;
+
+      --surface: rgba(255,255,255,0.045);
+      --surface-2: rgba(255,255,255,0.075);
+      --surface-3: rgba(255,255,255,0.11);
+      --ink: rgba(0,0,0,0.28);
+
+      --stroke: rgba(255,255,255,0.09);
+      --stroke-2: rgba(255,255,255,0.16);
+
+      --text:#f5f5fa;
+      --muted: rgba(235,235,250,0.62);
+      --muted-2: rgba(235,235,250,0.40);
+
+      --accent: rgb(var(--a2));
+      --grad-accent: linear-gradient(135deg, rgb(var(--a1)) 0%, rgb(var(--a2)) 60%, rgb(var(--a3)) 100%);
+      --grad-accent-soft: linear-gradient(135deg, rgb(var(--a1) / 20%), rgb(var(--a2) / 14%));
+      --gold:#ffcf5c;
+      --blue:#5da7ff;
+      --green:#4ade9e;
+
+      --shadow-lg: 0 24px 70px rgba(0,0,0,0.55);
+      --shadow-md: 0 14px 40px rgba(0,0,0,0.40);
+      --shadow-accent: 0 10px 32px rgb(var(--a2) / 35%);
+
+      --r-xl: 26px;
+      --r-lg: 20px;
+      --r-md: 16px;
+      --r-sm: 12px;
+
+      --font-display: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
       color-scheme: dark;
     }
+
+    /* ---- Thèmes ---- */
+    [data-theme="crimson"]{ --a1: 255 75 62;  --a2: 255 46 99;  --a3: 214 31 87; }
+    [data-theme="sunset"] { --a1: 255 122 24; --a2: 255 61 84;  --a3: 224 36 94; }
+    [data-theme="violet"] { --a1: 167 108 250;--a2: 217 70 239; --a3: 124 58 237; }
+    [data-theme="ocean"]  { --a1: 56 189 248; --a2: 99 102 241; --a3: 59 78 222; }
+    [data-theme="emerald"]{ --a1: 52 211 153; --a2: 16 185 129; --a3: 5 150 105; }
+    [data-theme="gold"]   { --a1: 251 191 36; --a2: 249 115 22; --a3: 234 88 12; }
 
     *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
     html, body { height:100%; }
     body{
       margin:0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: var(--font-body);
       color: var(--text);
-      background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
+      background:
+        radial-gradient(1200px 800px at 85% -10%, rgb(var(--a2) / 10%), transparent 60%),
+        radial-gradient(1000px 700px at -10% 110%, rgb(var(--a1) / 8%), transparent 60%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 100%);
       overflow:hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
+    ::selection{ background: rgb(var(--a2) / 45%); color:#fff; }
+
+    /* ---- Fond animé ---- */
     .bg-glow{
-      position:fixed; inset:-25%;
-      background:
-        radial-gradient(circle at 18% 18%, rgba(255,46,46,0.22), transparent 56%),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.10), transparent 55%),
-        radial-gradient(circle at 65% 80%, rgba(255,46,46,0.12), transparent 58%),
-        radial-gradient(circle at 25% 85%, rgba(255,255,255,0.06), transparent 55%);
-      filter: blur(10px);
+      position:fixed; inset:0;
       pointer-events:none;
       z-index:0;
+      overflow:hidden;
+    }
+    .bg-glow::before,
+    .bg-glow::after{
+      content:"";
+      position:absolute;
+      width:60vmax; height:60vmax;
+      border-radius:50%;
+      filter: blur(90px);
+      opacity:.55;
+      will-change: transform;
+    }
+    .bg-glow::before{
+      top:-28vmax; left:-18vmax;
+      background: radial-gradient(circle, rgb(var(--a1) / 20%), transparent 62%);
+      animation: blobA 26s ease-in-out infinite alternate;
+    }
+    .bg-glow::after{
+      bottom:-30vmax; right:-16vmax;
+      background: radial-gradient(circle, rgb(var(--a3) / 15%), rgb(var(--a2) / 10%) 45%, transparent 66%);
+      animation: blobB 32s ease-in-out infinite alternate;
+    }
+    @keyframes blobA{
+      from{ transform: translate(0,0) scale(1); }
+      to{   transform: translate(9vmax, 6vmax) scale(1.15); }
+    }
+    @keyframes blobB{
+      from{ transform: translate(0,0) scale(1.05); }
+      to{   transform: translate(-8vmax,-7vmax) scale(0.95); }
+    }
+    .bg-glow .grain{
+      position:absolute; inset:0;
+      background-image: radial-gradient(rgba(255,255,255,0.028) 1px, transparent 1.4px);
+      background-size: 26px 26px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,.7), rgba(0,0,0,.25));
+      -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.7), rgba(0,0,0,.25));
     }
 
-    /* ===== TOP BAR ===== */
+    @media (prefers-reduced-motion: reduce){
+      *, *::before, *::after{ animation-duration:.001s !important; transition-duration:.001s !important; }
+    }
+
+    /* ============================================================
+       TOP BAR
+       ============================================================ */
     .topbar{
       position:fixed;
-      top: calc(10px + env(safe-area-inset-top));
+      top: calc(12px + env(safe-area-inset-top));
       left: 50%;
       transform: translateX(-50%);
       width: min(720px, 94vw);
       z-index:50;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
-      box-shadow: 0 18px 55px rgba(0,0,0,0.35);
-      padding: 12px 14px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--r-xl);
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.07);
+      padding: 12px 16px;
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
     }
 
-    .brand{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-    }
-    .brand-left{ display:flex; align-items:center; gap:10px; min-width:0; }
+    .brand{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .brand-left{ display:flex; align-items:center; gap:12px; min-width:0; }
+
     .brand-mark{
-      width:44px; height:44px; border-radius:14px;
+      width:46px; height:46px; border-radius:15px;
       display:flex; align-items:center; justify-content:center;
-      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.18), transparent 55%),
-                  linear-gradient(180deg, rgba(255,46,46,0.38), rgba(0,0,0,0.10));
-      border: 1px solid rgba(255,255,255,0.14);
-      box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+      background: var(--grad-accent);
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow: var(--shadow-accent), inset 0 1px 0 rgba(255,255,255,0.35);
       flex:0 0 auto;
+      position:relative;
+      overflow:hidden;
     }
-    .brand-mark svg{ width:22px; height:22px; fill:#fff; opacity:.95; }
+    .brand-mark::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+      transform: translateX(-120%);
+      animation: shine 5s ease-in-out infinite;
+    }
+    @keyframes shine{
+      0%, 72%{ transform: translateX(-120%); }
+      86%{ transform: translateX(120%); }
+      100%{ transform: translateX(120%); }
+    }
+    .brand-mark svg{ width:20px; height:20px; fill:#fff; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35)); }
+
     .brand-text{ min-width:0; }
     .brand-title{
-      font-family: "Arial Black", Impact, sans-serif;
-      letter-spacing: .6px;
-      font-size: 18px;
+      font-family: var(--font-display);
+      font-weight:700;
+      letter-spacing: -0.02em;
+      font-size: 19px;
       line-height: 1.1;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-    .brand-title .yt{ color:#fff; text-shadow:0 0 10px rgba(255,255,255,0.12); }
-    .brand-title .sep{
-      display:inline-block; width:6px; height:16px; margin:0 6px -2px 6px;
-      background: linear-gradient(#ff3b3b,#b31217);
-      border-radius: 3px;
+    .brand-title .yt{ color:#fff; }
+    .brand-title .rd{
+      background: var(--grad-accent);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      font-weight:700;
     }
-    .brand-title .rd{ color: var(--accent); text-shadow:0 0 14px rgba(255,0,0,0.38); }
-    .brand-title .vd{ color: rgba(255,255,255,0.92); text-shadow:0 0 10px rgba(255,255,255,0.10); }
     .brand-sub{
-      margin-top:2px;
+      margin-top:3px;
       font-size: 12px;
-      color: rgba(255,255,255,0.66);
+      font-weight:500;
+      color: var(--muted);
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
+
     .brand-chip{
       flex:0 0 auto;
       display:flex; align-items:center; gap:8px;
-      padding: 8px 10px;
+      padding: 8px 13px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.16);
-      color: rgba(255,255,255,0.80);
-      font-size: 12px;
-      font-weight: 900;
+      border: 1px solid var(--stroke-2);
+      background: rgba(0,0,0,0.28);
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing:.04em;
       user-select:none;
     }
     .brand-chip .dot{
       width:8px; height:8px; border-radius:50%;
-      background: rgba(255,46,46,0.9);
-      box-shadow: 0 0 14px rgba(255,46,46,0.45);
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgb(var(--a2) / 55%);
+      animation: pulse 2.4s ease-out infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow: 0 0 0 0 rgb(var(--a2) / 55%); }
+      70%{ box-shadow: 0 0 0 9px rgb(var(--a2) / 0%); }
+      100%{ box-shadow: 0 0 0 0 rgb(var(--a2) / 0%); }
     }
 
-    /* App layout */
+    /* ============================================================
+       TAB BAR (navigation appli)
+       ============================================================ */
+    .tabbar{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      width: min(540px, 94vw);
+      z-index:60;
+      display:flex;
+      gap:4px;
+      padding:8px;
+      border-radius:26px;
+      border:1px solid var(--stroke-2);
+      background: rgba(13,12,19,0.78);
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+    .tab-btn{
+      flex:1 1 0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+      padding:9px 4px 8px 4px;
+      border:none;
+      background:transparent;
+      border-radius:18px;
+      cursor:pointer;
+      color: var(--muted-2);
+      font-family: var(--font-body);
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:.03em;
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+      user-select:none;
+    }
+    .tab-btn svg{ width:21px; height:21px; fill:currentColor; transition: transform .18s ease, fill .18s ease; }
+    .tab-btn:hover{ color: var(--muted); }
+    .tab-btn:active{ transform: scale(.94); }
+    .tab-btn.active{
+      color:#fff;
+      background: var(--grad-accent-soft);
+      box-shadow: inset 0 0 0 1px rgb(var(--a2) / 25%);
+    }
+    .tab-btn.active svg{
+      fill: rgb(var(--a1));
+      filter: drop-shadow(0 0 8px rgb(var(--a2) / 55%));
+      transform: translateY(-1px) scale(1.08);
+    }
+
+    /* ============================================================
+       LAYOUT / PAGES
+       ============================================================ */
     .app{
       position:relative; z-index:1;
-      width:100%; height:100vh;
+      width:100%; height:100vh; height:100dvh;
       display:flex; align-items:flex-start; justify-content:center;
-      padding: calc(92px + env(safe-area-inset-top)) 16px 24px 16px;
+      padding: calc(96px + env(safe-area-inset-top)) 16px calc(102px + env(safe-area-inset-bottom)) 16px;
       overflow:hidden;
     }
 
     .page{
       width:min(720px, 94vw);
-      max-height: calc(100vh - 130px - env(safe-area-inset-top));
+      max-height:100%;
+      overflow-y:auto;
+      scrollbar-width:none;
       display:none;
-      animation: fadeIn 180ms ease both;
+      animation: pageIn .32s cubic-bezier(.21,.9,.35,1) both;
+      padding:2px;
     }
+    .page::-webkit-scrollbar{ width:0; height:0; }
     .page.active{ display:block; }
-    @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+    @keyframes pageIn{
+      from{ opacity:0; transform:translateY(14px) scale(.985); }
+      to{ opacity:1; transform:translateY(0) scale(1); }
+    }
 
     .page-top{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      margin: 6px 4px 12px 4px;
+      margin: 4px 4px 14px 4px;
     }
     .back-btn{
       display:inline-flex; align-items:center; gap:8px;
-      cursor:pointer; border:none;
-      background:rgba(0,0,0,0.20);
-      color:#fff; font-weight:950;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.12);
-      transition: filter .12s ease, transform .12s ease;
+      cursor:pointer;
+      background: var(--surface-2);
+      color:#fff; font-weight:700; font-size:13.5px;
+      font-family: var(--font-body);
+      padding:10px 15px 10px 12px;
+      border-radius:999px;
+      border:1px solid var(--stroke-2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: background .16s ease, border-color .16s ease, transform .16s ease;
     }
-    .back-btn:hover{ filter:brightness(1.10); }
-    .back-btn:active{ transform:translateY(1px); }
+    .back-btn:hover{ background: var(--surface-3); border-color: rgba(255,255,255,0.26); transform: translateX(-2px); }
+    .back-btn:active{ transform: scale(.97); }
+    .back-btn svg{ width:15px; height:15px; fill:none; stroke:#fff; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
 
     .page-title{
-      font-family:"Arial Black",Impact,sans-serif;
-      letter-spacing:.5px; font-size:16px; opacity:0.95;
+      font-family: var(--font-display);
+      font-weight:700;
+      letter-spacing:-0.01em;
+      font-size:16px;
+      color: var(--text);
     }
 
+    /* ============================================================
+       CARTE PRINCIPALE
+       ============================================================ */
     .menu-card{
-      border-radius:24px;
-      border:1px solid rgba(255,255,255,0.13);
-      background: rgba(255,255,255,0.07);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding:16px;
+      border-radius: var(--r-xl);
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.028));
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.06);
+      backdrop-filter: blur(22px) saturate(1.35);
+      -webkit-backdrop-filter: blur(22px) saturate(1.35);
+      padding:18px;
       overflow:hidden;
     }
 
-    .home-hero{ padding: 12px 4px 14px 4px; }
-    .home-hero h1{ margin:0; font-size: 20px; letter-spacing: .2px; font-weight: 950; }
-    .home-hero p{ margin: 6px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.70); line-height: 1.35; }
+    .home-hero{ padding: 8px 6px 16px 6px; }
+    .home-hero h1{
+      margin:0;
+      font-family: var(--font-display);
+      font-size: 24px;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+    }
+    .home-hero h1 .grad{
+      background: var(--grad-accent);
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent;
+    }
+    .home-hero p{
+      margin: 8px 0 0 0;
+      font-size: 13.5px;
+      font-weight:500;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .home-hero b{ color: var(--text); font-weight:700; }
 
+    /* ============================================================
+       SURPRISE TOTALE (hero CTA)
+       ============================================================ */
+    .surprise-row{
+      display:flex;
+      gap:10px;
+      align-items:stretch;
+      margin: 2px 0 14px 0;
+    }
+    .surprise-btn{
+      position:relative;
+      flex:1 1 auto;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:15px 18px;
+      border-radius: var(--r-lg);
+      border:1px solid rgb(var(--a2) / 45%);
+      background: var(--grad-accent);
+      color:#fff;
+      cursor:pointer;
+      box-shadow: var(--shadow-accent), inset 0 1px 0 rgba(255,255,255,0.30);
+      overflow:hidden;
+      text-align:left;
+      font-family: var(--font-body);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+    .surprise-btn::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,0.28) 50%, transparent 68%);
+      transform: translateX(-130%);
+      animation: shine 4.2s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .surprise-btn:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 18px 44px rgb(var(--a2) / 48%), inset 0 1px 0 rgba(255,255,255,0.30);
+      filter: brightness(1.05);
+    }
+    .surprise-btn:active{ transform: translateY(0) scale(.98); }
+    .surprise-icon{
+      width:44px; height:44px;
+      border-radius:14px;
+      background: rgba(255,255,255,0.18);
+      border:1px solid rgba(255,255,255,0.28);
+      display:flex; align-items:center; justify-content:center;
+      flex:0 0 auto;
+    }
+    .surprise-icon svg{ width:22px; height:22px; fill:#fff; }
+    .surprise-txt{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+    .surprise-txt .st1{
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:16.5px;
+      letter-spacing:-0.01em;
+    }
+    .surprise-txt .st2{
+      font-size:11.5px;
+      font-weight:600;
+      color: rgba(255,255,255,0.82);
+    }
+    .surprise-dice{
+      margin-left:auto;
+      font-size:26px;
+      flex:0 0 auto;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+      animation: diceWiggle 3.4s ease-in-out infinite;
+    }
+    @keyframes diceWiggle{
+      0%, 78%, 100%{ transform: rotate(0); }
+      84%{ transform: rotate(-16deg) scale(1.1); }
+      90%{ transform: rotate(12deg) scale(1.08); }
+      96%{ transform: rotate(-5deg); }
+    }
+
+    .favs-chip{
+      flex:0 0 auto;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+      padding:0 15px;
+      border-radius: var(--r-lg);
+      border:1px solid var(--stroke-2);
+      background: var(--surface-2);
+      color: var(--muted);
+      cursor:pointer;
+      font-family: var(--font-body);
+      font-size:10.5px;
+      font-weight:700;
+      transition: border-color .16s ease, background .16s ease, color .16s ease, transform .16s ease;
+      user-select:none;
+    }
+    .favs-chip .fc-star{ font-size:17px; line-height:1; }
+    .favs-chip:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.28); }
+    .favs-chip:active{ transform: scale(.96); }
+    .favs-chip.active{
+      border-color: rgba(255,207,92,0.55);
+      background: rgba(255,207,92,0.10);
+      color: var(--gold);
+      box-shadow: 0 0 18px rgba(255,207,92,0.14);
+    }
+
+    /* ============================================================
+       STAT CHIPS
+       ============================================================ */
+    .stat-chips{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:10px;
+      margin-bottom:16px;
+    }
+    .stat-chips.stats4{ grid-template-columns:repeat(2, 1fr); margin-bottom:18px; }
+    .stat-chip{
+      padding:13px 8px 11px 8px;
+      border-radius: var(--r-md);
+      border:1px solid var(--stroke);
+      background: var(--surface);
+      text-align:center;
+      transition: background .16s ease, border-color .16s ease;
+    }
+    .stat-chip:hover{ background: var(--surface-2); border-color: var(--stroke-2); }
+    .stat-chip b{
+      display:block;
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:21px;
+      letter-spacing:-0.02em;
+      background: var(--grad-accent);
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent;
+      line-height:1.15;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .stat-chip b.small{ font-size:14px; padding-top:4px; }
+    .stat-chip span{
+      display:block;
+      margin-top:4px;
+      font-size:10px;
+      font-weight:700;
+      color: var(--muted-2);
+      text-transform:uppercase;
+      letter-spacing:.07em;
+    }
+
+    /* ============================================================
+       À REGARDER PLUS TARD
+       ============================================================ */
+    .wl-block{ margin-bottom:16px; }
+    .wl-row{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      padding-bottom:8px;
+      scroll-snap-type:x proximity;
+    }
+    .wl-row::-webkit-scrollbar{ height:6px; }
+    .wl-row::-webkit-scrollbar-track{ background:transparent; }
+    .wl-row::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.14); border-radius:99px; }
+    .wl-card{
+      position:relative;
+      flex:0 0 168px;
+      scroll-snap-align:start;
+      border-radius: var(--r-md);
+      border:1px solid var(--stroke);
+      background: var(--surface);
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .wl-card:hover{
+      transform: translateY(-3px);
+      border-color: var(--stroke-2);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+    }
+    .wl-card:active{ transform: scale(.98); }
+    .wl-thumb{
+      width:100%; height:94px;
+      object-fit:cover;
+      display:block;
+      background:#000;
+    }
+    .wl-title{
+      padding:8px 10px 10px 10px;
+      font-size:11.5px;
+      font-weight:650;
+      line-height:1.35;
+      color: var(--text);
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      min-height:41px;
+    }
+    .wl-remove{
+      position:absolute;
+      top:6px; right:6px;
+      width:24px; height:24px;
+      border-radius:8px;
+      background: rgba(0,0,0,0.68);
+      border:1px solid rgba(255,255,255,0.22);
+      color:#fff;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      font-size:11px;
+      font-weight:800;
+      transition: background .14s ease, transform .14s ease;
+    }
+    .wl-remove:hover{ background: rgba(220,40,60,0.85); transform: scale(1.1); }
+
+    /* ============================================================
+       MENU (accueil)
+       ============================================================ */
     .menu-list{ display:flex; flex-direction:column; gap:10px; }
 
     .menu-item{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:12px 12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,0.12);
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+      padding:13px 14px;
+      border-radius: var(--r-lg);
+      border:1px solid var(--stroke);
+      background: var(--surface);
       cursor:pointer;
-      transition: filter .12s ease, transform .12s ease;
+      position:relative;
+      transition: background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+      animation: itemIn .4s cubic-bezier(.21,.9,.35,1) both;
     }
-    .menu-item:hover{ filter:brightness(1.08); }
-    .menu-item:active{ transform:translateY(1px); }
+    .menu-item:nth-child(1){ animation-delay:.03s; }
+    .menu-item:nth-child(2){ animation-delay:.07s; }
+    @keyframes itemIn{
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+    .menu-item:hover{
+      background: var(--surface-2);
+      border-color: var(--stroke-2);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
+    }
+    .menu-item:active{ transform: translateY(0) scale(.99); }
 
-    .menu-left{ display:flex; align-items:center; gap:12px; min-width:0; }
+    .menu-left{ display:flex; align-items:center; gap:13px; min-width:0; }
 
     .icon{
-      width:44px; height:44px; border-radius:14px;
+      width:46px; height:46px; border-radius:14px;
       display:flex; align-items:center; justify-content:center;
-      background: rgba(0,0,0,0.18);
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 10px 22px rgba(0,0,0,0.28);
+      background: var(--ink);
+      border: 1px solid var(--stroke);
       flex:0 0 auto;
+      transition: transform .18s ease;
     }
-    .icon svg{ width:22px; height:22px; fill: rgba(255,255,255,0.92); }
+    .menu-item:hover .icon{ transform: scale(1.06) rotate(-3deg); }
+    .icon svg{ width:21px; height:21px; fill: rgba(255,255,255,0.92); }
 
-    .menu-item[data-go="page-channels"] .icon{ outline: 2px solid rgba(255,46,46,0.35); }
-    .menu-item[data-go="page-favs"] .icon{ outline: 2px solid rgba(255,210,74,0.35); }
-    .menu-item[data-go="page-help"] .icon{ outline: 2px solid rgba(93,167,255,0.28); }
-    .menu-item[data-go="page-history"] .icon{ outline: 2px solid rgba(255,255,255,0.18); }
-    .menu-item[data-go="page-options"] .icon{ outline: 2px solid rgba(140,255,190,0.20); }
+    .menu-item[data-go="page-stats"] .icon{
+      background: linear-gradient(135deg, rgba(93,167,255,0.22), rgba(93,120,255,0.10));
+      border-color: rgba(93,167,255,0.32);
+    }
+    .menu-item[data-go="page-stats"] .icon svg{ fill: var(--blue); }
+
+    .menu-item[data-go="page-help"] .icon{
+      background: linear-gradient(135deg, rgba(200,140,255,0.20), rgba(150,100,255,0.08));
+      border-color: rgba(190,140,255,0.30);
+    }
+    .menu-item[data-go="page-help"] .icon svg{ fill:#c99cff; }
 
     .menu-text{ min-width:0; }
     .menu-text .t1{
-      font-size:16px; font-weight:950; color:rgba(255,255,255,0.93);
+      font-size:15px; font-weight:750; color: var(--text);
+      letter-spacing:-0.01em;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
     .menu-text .t2{
-      margin-top:2px; font-size:12.5px; color:rgba(255,255,255,0.62);
+      margin-top:3px; font-size:12.5px; font-weight:500; color: var(--muted);
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
     .chev{
-      width:32px; height:32px; border-radius:12px;
+      width:32px; height:32px; border-radius:11px;
       display:flex; align-items:center; justify-content:center;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.14);
+      border:1px solid var(--stroke);
+      background: var(--ink);
       flex:0 0 auto;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
     }
-    .chev svg{ width:16px; height:16px; fill: rgba(255,255,255,0.72); }
+    .menu-item:hover .chev{
+      transform: translateX(3px);
+      background: var(--grad-accent);
+      border-color: transparent;
+    }
+    .chev svg{ width:15px; height:15px; fill: rgba(255,255,255,0.72); }
+    .menu-item:hover .chev svg{ fill:#fff; }
 
     .footer{
-      margin-top:12px;
+      margin-top:14px;
       text-align:center;
-      color:rgba(255,255,255,0.55);
-      font-size:12px;
+      color: var(--muted-2);
+      font-size:11.5px;
+      font-weight:600;
+      letter-spacing:.05em;
+      text-transform:uppercase;
     }
     .hidden{ display:none !important; }
 
+    /* ---- Zones scrollables ---- */
     .scroll{
-      max-height:60vh;
+      max-height:56vh;
       overflow:auto;
-      padding-right:4px;
-      padding-bottom:105px;
+      padding-right:6px;
+      padding-bottom:20px;
       overscroll-behavior: contain;
     }
-    .scroll::-webkit-scrollbar{ width:10px; }
-    .scroll::-webkit-scrollbar-thumb{
-      background: rgba(255,255,255,0.16);
-      border-radius:10px;
-      border:2px solid rgba(0,0,0,0.15);
+    .scroll::-webkit-scrollbar,
+    .history-list::-webkit-scrollbar{ width:7px; }
+    .scroll::-webkit-scrollbar-track,
+    .history-list::-webkit-scrollbar-track{ background:transparent; }
+    .scroll::-webkit-scrollbar-thumb,
+    .history-list::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,0.14);
+      border-radius:99px;
     }
+    .scroll::-webkit-scrollbar-thumb:hover,
+    .history-list::-webkit-scrollbar-thumb:hover{ background: rgba(255,255,255,0.26); }
 
-    /* ✅ TOOLBAR CHAÎNES (recherche + tri) */
+    /* ============================================================
+       TOOLBAR CHAÎNES
+       ============================================================ */
     .channels-toolbar{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       align-items:center;
       justify-content:space-between;
-      margin: 0 0 12px 0;
+      margin: 0 0 14px 0;
     }
     .search{
       flex: 1 1 260px;
       display:flex;
       gap:10px;
       align-items:center;
-      padding:10px 12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.18);
+      padding:11px 14px;
+      border-radius: var(--r-md);
+      border:1px solid var(--stroke);
+      background: var(--ink);
+      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
     }
-    .search svg{ width:18px; height:18px; fill: rgba(255,255,255,0.72); flex:0 0 auto; }
+    .search:focus-within{
+      border-color: rgb(var(--a2) / 55%);
+      box-shadow: 0 0 0 3px rgb(var(--a2) / 15%);
+      background: rgba(0,0,0,0.36);
+    }
+    .search svg{ width:17px; height:17px; fill: var(--muted); flex:0 0 auto; transition: fill .16s ease; }
+    .search:focus-within svg{ fill: rgb(var(--a1)); }
     .search input{
       width:100%;
       border:none;
       outline:none;
       background:transparent;
       color:#fff;
-      font-weight:900;
+      font-family: var(--font-body);
+      font-weight:600;
       font-size:14px;
     }
-    .search input::placeholder{ color: rgba(255,255,255,0.45); font-weight:800; }
+    .search input::placeholder{ color: var(--muted-2); font-weight:500; }
 
     .sort{
       flex:0 0 auto;
-      padding:10px 12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.18);
+      padding:11px 36px 11px 14px;
+      border-radius: var(--r-md);
+      border:1px solid var(--stroke);
+      background: var(--ink);
       color:#fff;
-      font-weight:950;
+      font-family: var(--font-body);
+      font-weight:650;
+      font-size:13px;
       outline:none;
       cursor:pointer;
+      appearance:none;
+      -webkit-appearance:none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%23ffffff' stroke-opacity='.65' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position: right 13px center;
+      transition: border-color .16s ease, box-shadow .16s ease;
     }
+    .sort:hover{ border-color: var(--stroke-2); }
+    .sort:focus-visible{ border-color: rgb(var(--a2) / 55%); box-shadow: 0 0 0 3px rgb(var(--a2) / 15%); }
+    .sort option{ background:#14141c; color:#fff; }
 
-    /* =========================
-       ✅ CHANNEL CARD + ACCORDION
-       ========================= */
+    /* ============================================================
+       CARTES CHAÎNES + ACCORDÉON
+       ============================================================ */
     .channel-item{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--r-lg);
+      border:1px solid var(--stroke);
+      background: var(--surface);
       cursor:pointer;
-      transition: filter .12s ease, transform .12s ease;
-      margin-bottom:12px;
+      transition: background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+      margin-bottom:10px;
       overflow:hidden;
+      animation: itemIn .34s cubic-bezier(.21,.9,.35,1) both;
     }
-    .channel-item:hover{ filter:brightness(1.08); }
-    .channel-item:active{ transform:translateY(1px); }
+    .channel-item:hover{
+      background: var(--surface-2);
+      border-color: var(--stroke-2);
+      transform: translateY(-1px);
+    }
+    .channel-item:active{ transform: translateY(0); }
+    .channel-item.open{
+      background: var(--surface-2);
+      border-color: rgb(var(--a2) / 38%);
+      box-shadow: 0 18px 44px rgba(0,0,0,0.40), 0 0 0 1px rgb(var(--a2) / 10%);
+    }
 
     .channel-main{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:14px 14px;
+      padding:13px 14px;
     }
 
-    .channel-left{ display:flex; align-items:center; gap:14px; min-width:0; flex:1 1 auto; }
+    .channel-left{ display:flex; align-items:center; gap:13px; min-width:0; flex:1 1 auto; }
 
     .channel-avatar{
       width:52px; height:52px; border-radius:50%;
       object-fit:cover;
-      border:2px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
+      border:2px solid rgba(255,255,255,0.16);
+      background: var(--surface-2);
       flex:0 0 auto;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      transition: border-color .18s ease, transform .18s ease;
+    }
+    .channel-item:hover .channel-avatar,
+    .channel-item.open .channel-avatar{
+      border-color: rgb(var(--a2) / 65%);
+      transform: scale(1.04);
     }
 
     .channel-fallback{
       width:52px; height:52px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      font-family:"Arial Black",Impact,sans-serif; font-size:18px; color:#fff;
-      background: linear-gradient(#c4161c,#9e1216);
-      border:2px solid #7a0e12;
-      box-shadow: 0 10px 18px rgba(0,0,0,0.35);
-      text-shadow: 1px 1px 0 #5a0b0e;
+      font-family: var(--font-display); font-weight:700; font-size:19px; color:#fff;
+      background: var(--grad-accent);
+      border:2px solid rgba(255,255,255,0.18);
+      box-shadow: 0 8px 20px rgb(var(--a3) / 35%);
       flex:0 0 auto;
     }
 
     .channel-text{ min-width:0; flex:1 1 auto; }
     .channel-name{
-      font-size:18px; font-weight:900; color:#fff; letter-spacing:.3px;
+      font-size:15.5px; font-weight:750; color:#fff; letter-spacing:-0.01em;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
     .channel-sub{
-      font-size:12px; color:rgba(255,255,255,0.70); margin-top:4px;
+      font-size:12px; font-weight:500; color: var(--muted); margin-top:4px;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
-    .channel-right{ display:flex; align-items:center; gap:10px; flex:0 0 auto; }
+    .channel-right{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
 
     .star-btn, .chev-btn{
-      width:34px; height:34px; border-radius:12px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.16);
+      width:36px; height:36px; border-radius:12px;
+      border:1px solid var(--stroke);
+      background: var(--ink);
       display:flex; align-items:center; justify-content:center;
       cursor:pointer;
-      transition: filter .12s ease, transform .12s ease;
+      transition: background .16s ease, border-color .16s ease, transform .16s ease;
       user-select:none;
       flex:0 0 auto;
     }
-    .star-btn:hover, .chev-btn:hover{ filter:brightness(1.08); }
-    .star-btn:active, .chev-btn:active{ transform:translateY(1px); }
+    .star-btn:hover, .chev-btn:hover{
+      background: var(--surface-3);
+      border-color: var(--stroke-2);
+      transform: scale(1.08);
+    }
+    .star-btn:active, .chev-btn:active{ transform: scale(.94); }
 
-    .star{ font-size:18px; line-height:1; color: rgba(255,255,255,0.55); }
-    .star.fav{ color: var(--gold); text-shadow: 0 0 10px rgba(255,210,74,0.35); }
+    .star{ font-size:17px; line-height:1; color: rgba(255,255,255,0.38); transition: color .16s ease, text-shadow .16s ease, transform .16s ease; }
+    .star.fav{
+      color: var(--gold);
+      text-shadow: 0 0 14px rgba(255,207,92,0.55);
+      animation: starPop .3s cubic-bezier(.2,1.6,.4,1);
+    }
+    @keyframes starPop{
+      0%{ transform:scale(.5); }
+      70%{ transform:scale(1.25); }
+      100%{ transform:scale(1); }
+    }
 
-    .chev-btn svg{ width:16px; height:16px; fill: rgba(255,255,255,0.72); transition: transform .18s ease; }
-    .channel-item.open .chev-btn svg{ transform: rotate(90deg); }
+    .chev-btn svg{ width:15px; height:15px; fill: rgba(255,255,255,0.72); transition: transform .22s cubic-bezier(.4,0,.2,1); }
+    .channel-item.open .chev-btn svg{ transform: rotate(90deg); fill:#fff; }
+    .channel-item.open .chev-btn{
+      background: var(--grad-accent);
+      border-color:transparent;
+    }
 
     .channel-expand{
       max-height:0;
       overflow:hidden;
-      transition: max-height .22s ease;
-      border-top: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.12);
+      transition: max-height .28s cubic-bezier(.4,0,.2,1);
+      border-top: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.20);
     }
-    .expand-inner{ padding:12px 14px 14px 14px; }
+    .expand-inner{ padding:14px 15px 15px 15px; }
 
     .latest-title, .random-title{
-      font-weight:900;
-      color:rgba(255,255,255,0.90);
-      font-size:13px;
+      font-weight:750;
+      color: var(--text);
+      font-size:11.5px;
+      letter-spacing:.09em;
+      text-transform:uppercase;
       margin-bottom:10px;
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
-    .random-title{ margin:14px 0 10px 0; }
+    .latest-title::before, .random-title::before{
+      content:"";
+      width:5px; height:16px;
+      border-radius:99px;
+      background: var(--grad-accent);
+      box-shadow: 0 0 10px rgb(var(--a2) / 50%);
+    }
+    .random-title{ margin:16px 0 10px 0; }
+    .random-title::before{ background: linear-gradient(180deg, var(--gold), #ff9d3c); box-shadow: 0 0 10px rgba(255,190,80,0.45); }
 
-    .latest-row, .random-row{ display:flex; gap:12px; align-items:flex-start; }
+    .latest-row, .random-row{ display:flex; gap:13px; align-items:flex-start; }
 
     .latest-thumb{
-      width:160px; height:90px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,0.14);
+      width:164px; height:92px;
+      border-radius: var(--r-sm);
+      border:1px solid var(--stroke-2);
       object-fit:cover;
-      background: rgba(255,255,255,0.06);
+      background: var(--surface-2);
       cursor:pointer;
       flex:0 0 auto;
-      transition: filter .12s ease, transform .12s ease;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.40);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
-    .latest-thumb:hover{ filter:brightness(1.06); }
-    .latest-thumb:active{ transform:translateY(1px); }
+    .latest-thumb:hover{
+      transform: scale(1.03);
+      border-color: rgba(255,255,255,0.32);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.5);
+    }
+    .latest-thumb:active{ transform: scale(.99); }
 
     .latest-meta, .random-meta{ min-width:0; }
 
     .latest-video-title{
-      font-weight:900;
-      font-size:14px;
-      color:rgba(255,255,255,0.92);
-      line-height:1.25;
+      font-weight:700;
+      font-size:13.5px;
+      color: var(--text);
+      line-height:1.35;
       cursor:pointer;
       display:-webkit-box;
       -webkit-line-clamp:3;
       -webkit-box-orient:vertical;
       overflow:hidden;
-      transition: filter .12s ease;
+      transition: color .14s ease;
     }
-    .latest-video-title:hover{ filter:brightness(1.08); }
+    .latest-video-title:hover{ color: rgb(var(--a1)); }
 
     .latest-hint, .random-hint, .random-stats{
-      margin-top:6px;
+      margin-top:7px;
       font-size:12px;
-      color:rgba(255,255,255,0.60);
+      font-weight:500;
+      color: var(--muted);
     }
     .random-stats{
-      margin-top:6px;
-      color:rgba(255,255,255,0.68);
-      font-weight:800;
+      color: var(--muted);
+      font-weight:650;
+      font-size:11.5px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
 
-    .latest-loading{ font-size:12px; color:rgba(255,255,255,0.65); padding:10px 0; }
-    .latest-error{ font-size:12px; color:rgba(255,120,120,0.95); padding:10px 0; font-weight:800; }
+    .latest-loading{
+      font-size:12.5px; color: var(--muted); padding:12px 0;
+      display:flex; align-items:center; gap:10px; font-weight:600;
+    }
+    .latest-loading::before{
+      content:"";
+      width:16px; height:16px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,0.15);
+      border-top-color: var(--accent);
+      animation: spin .8s linear infinite;
+      flex:0 0 auto;
+    }
+    .latest-error{ font-size:12.5px; color:#ff8a8a; padding:12px 0; font-weight:650; }
 
+    /* ---- Vignette mystère ---- */
     .random-thumb{
       position:relative;
       overflow:hidden;
-      width:160px; height:90px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,0.14);
+      width:164px; height:92px;
+      border-radius: var(--r-sm);
+      border:1px solid rgb(var(--a2) / 35%);
       background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.14), transparent 55%),
-        linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.32));
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.10), transparent 55%),
+        linear-gradient(135deg, rgb(var(--a1) / 20%), rgb(var(--a3) / 30%));
       display:flex;
       align-items:center;
       justify-content:center;
       cursor:pointer;
       flex:0 0 auto;
-      transition: filter .12s ease, transform .12s ease;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.40);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
+    .random-thumb:hover{
+      transform: scale(1.03);
+      border-color: rgb(var(--a2) / 65%);
+      box-shadow: 0 14px 34px rgb(var(--a3) / 50%);
+    }
+    .random-thumb:active{ transform: scale(.99); }
     .random-thumb::before{
       position:relative;
-      z-index:2;
+      z-index:3;
       content:"?";
-      font-family:"Arial Black",Impact,sans-serif;
-      font-size:46px;
-      color:rgba(255,255,255,0.85);
-      text-shadow: 0 10px 30px rgba(0,0,0,0.45);
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:44px;
+      color:#fff;
+      text-shadow: 0 6px 26px rgba(0,0,0,0.65), 0 0 24px rgb(var(--a2) / 55%);
+      animation: floatQ 3.2s ease-in-out infinite;
     }
-    .random-thumb:hover{ filter:brightness(1.06); }
-    .random-thumb:active{ transform:translateY(1px); }
+    @keyframes floatQ{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-4px); }
+    }
 
     .mystery-img{
       position:absolute;
@@ -455,9 +1007,9 @@
       width:100%;
       height:100%;
       object-fit:cover;
-      filter: blur(6px) saturate(1.00) brightness(0.92);
-      transform: scale(1.10);
-      opacity:0.92;
+      filter: blur(8px) saturate(1.1) brightness(0.75);
+      transform: scale(1.12);
+      opacity:0.9;
       z-index:1;
       pointer-events:none;
     }
@@ -465,157 +1017,444 @@
       content:"";
       position:absolute;
       inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.00), rgba(0,0,0,0.20));
-      z-index:1;
+      background: linear-gradient(180deg, rgba(10,5,10,0.05), rgba(10,5,15,0.45));
+      z-index:2;
       pointer-events:none;
     }
 
+    /* ---- CTA random ---- */
     .random-action{
-      font-weight:900;
-      font-size:14px;
-      color:rgba(255,255,255,0.92);
-      line-height:1.25;
-      cursor:pointer;
-      transition: filter .12s ease;
-    }
-    .random-action:hover{ filter:brightness(1.08); }
-
-    .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; justify-content:center; }
-    .small-btn{
-      font-weight:900; font-size:14px;
-      padding:10px 14px; border-radius:14px;
-      border:1px solid rgba(255,255,255,0.16);
-      background:rgba(0,0,0,0.22); color:#fff;
-      cursor:pointer; transition:filter .12s ease, transform .12s ease;
-    }
-    .small-btn:hover{ filter:brightness(1.10); }
-    .small-btn:active{ transform:translateY(1px); }
-
-    /* ===== HISTORIQUE ===== */
-    .seg-wrap{ display:flex; gap:10px; margin:8px 0 12px 0; flex-wrap:wrap; }
-    .seg-btn{
-      flex:0 0 auto;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.18);
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      font-weight:750;
+      font-size:13.5px;
       color:#fff;
-      font-weight:950;
+      line-height:1;
       cursor:pointer;
-      transition: filter .12s ease, transform .12s ease;
+      padding:11px 16px;
+      border-radius:999px;
+      background: var(--grad-accent);
+      box-shadow: var(--shadow-accent), inset 0 1px 0 rgba(255,255,255,0.30);
+      transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
       user-select:none;
     }
-    .seg-btn:hover{ filter:brightness(1.08); }
-    .seg-btn:active{ transform:translateY(1px); }
+    .random-action::before{
+      content:"";
+      width:0; height:0;
+      border-left:9px solid #fff;
+      border-top:5.5px solid transparent;
+      border-bottom:5.5px solid transparent;
+      flex:0 0 auto;
+    }
+    .random-action:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgb(var(--a2) / 45%), inset 0 1px 0 rgba(255,255,255,0.30);
+      filter: brightness(1.06);
+    }
+    .random-action:active{ transform: translateY(0) scale(.97); }
+
+    /* ============================================================
+       BOUTONS GÉNÉRIQUES
+       ============================================================ */
+    .row{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; justify-content:center; }
+
+    .small-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-family: var(--font-body);
+      font-weight:700; font-size:13px;
+      padding:11px 16px;
+      border-radius:999px;
+      border:1px solid var(--stroke-2);
+      background: var(--surface-2);
+      color:#fff;
+      cursor:pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background .16s ease, border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+    .small-btn svg{ width:15px; height:15px; fill:none; stroke: rgba(255,255,255,0.85); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+    .small-btn:hover{
+      background: var(--surface-3);
+      border-color: rgba(255,255,255,0.30);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+    .small-btn:active{ transform: translateY(0) scale(.97); }
+
+    button:focus-visible, .switch:focus-visible, .sort:focus-visible, input:focus-visible{
+      outline: 2px solid rgb(var(--a2) / 70%);
+      outline-offset: 2px;
+    }
+
+    /* ============================================================
+       HISTORIQUE
+       ============================================================ */
+    .seg-wrap{
+      display:inline-flex;
+      gap:4px;
+      margin:6px 0 14px 0;
+      padding:4px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background: var(--ink);
+    }
+    .seg-btn{
+      flex:0 0 auto;
+      padding:9px 16px;
+      border-radius:999px;
+      border:1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+      user-select:none;
+    }
+    .seg-btn:hover{ color:#fff; }
     .seg-btn.active{
-      border-color: rgba(255,46,46,0.35);
-      box-shadow: 0 0 0 2px rgba(255,46,46,0.12) inset;
+      background: var(--grad-accent);
+      color:#fff;
+      box-shadow: 0 6px 18px rgb(var(--a2) / 35%);
     }
 
     .select{
       width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.18);
+      padding:12px 40px 12px 14px;
+      border-radius: var(--r-md);
+      border:1px solid var(--stroke);
+      background-color: var(--ink);
       color:#fff;
-      font-weight:900;
+      font-family: var(--font-body);
+      font-weight:650;
+      font-size:14px;
       outline:none;
+      cursor:pointer;
+      appearance:none;
+      -webkit-appearance:none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%23ffffff' stroke-opacity='.65' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position: right 14px center;
+      transition: border-color .16s ease, box-shadow .16s ease;
     }
+    .select:hover{ border-color: var(--stroke-2); }
+    .select:focus-visible{ border-color: rgb(var(--a2) / 55%); box-shadow: 0 0 0 3px rgb(var(--a2) / 15%); }
+    .select option{ background:#14141c; color:#fff; }
 
-    .history-topline{ margin-top:6px; color:rgba(255,255,255,0.70); font-size:13px; line-height:1.35; }
+    .history-topline{ margin-top:8px; color: var(--muted); font-size:13px; font-weight:600; line-height:1.4; }
 
     .history-list{
       margin-top:12px;
       overflow:auto;
-      max-height:56vh;
-      padding-right:4px;
+      max-height:48vh;
+      padding-right:6px;
       overscroll-behavior: contain;
-    }
-    .history-list::-webkit-scrollbar{ width:10px; }
-    .history-list::-webkit-scrollbar-thumb{
-      background: rgba(255,255,255,0.16);
-      border-radius:10px;
-      border:2px solid rgba(0,0,0,0.15);
     }
 
     .history-item{
       display:grid;
       grid-template-columns:120px 1fr auto;
-      gap:10px; align-items:center;
-      padding:10px; border-radius:14px; margin-bottom:10px;
-      background: rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.10);
+      gap:12px; align-items:center;
+      padding:11px; border-radius: var(--r-md); margin-bottom:10px;
+      background: var(--surface);
+      border:1px solid var(--stroke);
+      transition: background .16s ease, border-color .16s ease;
     }
+    .history-item:hover{ background: var(--surface-2); border-color: var(--stroke-2); }
     .thumb{
-      width:120px; height:90px; border-radius:12px;
-      border:1px solid rgba(255,255,255,0.12);
-      object-fit:cover; background:rgba(255,255,255,0.05);
+      width:120px; height:74px; border-radius:10px;
+      border:1px solid var(--stroke);
+      object-fit:cover; background: var(--surface-2);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
     }
-    .history-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
-    .history-title{ color:rgba(255,255,255,0.95); font-weight:900; font-size:14px; line-height:1.2; }
-    .history-id{ font-family:monospace; color:rgba(255,255,255,0.80); font-size:12px; }
-    .history-link{ color:#ff4d4d; text-decoration:none; word-break:break-all; font-size:13px; }
+    .history-left{ display:flex; flex-direction:column; gap:5px; min-width:0; }
+    .history-title{ color: var(--text); font-weight:700; font-size:13.5px; line-height:1.3; }
+    .history-id{ font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--muted); font-size:11px; }
+    .history-link{ color: rgb(var(--a1)); text-decoration:none; word-break:break-all; font-size:12px; font-weight:500; }
     .history-link:hover{ text-decoration:underline; }
 
-    /* Toast */
+    /* ============================================================
+       STATISTIQUES
+       ============================================================ */
+    .stats-bars{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:2px;
+    }
+    .sbar-row{
+      display:grid;
+      grid-template-columns: 32px 1fr 36px;
+      gap:11px;
+      align-items:center;
+    }
+    .sbar-ava{
+      width:32px; height:32px; border-radius:50%;
+      object-fit:cover;
+      border:1px solid var(--stroke-2);
+      background: var(--surface-2);
+    }
+    .sbar-fb{
+      width:32px; height:32px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-family: var(--font-display); font-weight:700; font-size:13px; color:#fff;
+      background: var(--grad-accent);
+    }
+    .sbar-mid{ min-width:0; }
+    .sbar-name{
+      font-size:12px; font-weight:700; color: var(--text);
+      margin-bottom:5px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .sbar-track{
+      height:8px;
+      border-radius:99px;
+      background: rgba(255,255,255,0.07);
+      overflow:hidden;
+    }
+    .sbar-fill{
+      height:100%;
+      border-radius:99px;
+      background: var(--grad-accent);
+      box-shadow: 0 0 10px rgb(var(--a2) / 50%);
+      transition: width .7s cubic-bezier(.2,.9,.3,1);
+    }
+    .sbar-count{
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:13px;
+      text-align:right;
+      color: var(--muted);
+    }
+    .stats-empty{
+      color: var(--muted);
+      font-weight:600;
+      font-size:13px;
+      padding:14px 4px;
+      text-align:center;
+    }
+
+    .days-chart{
+      display:flex;
+      gap:8px;
+      align-items:flex-end;
+      margin-top:10px;
+      padding: 0 2px 4px 2px;
+    }
+    .day-col{
+      flex:1 1 0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      min-width:0;
+    }
+    .day-val{ font-size:10.5px; font-weight:800; color: var(--muted); }
+    .day-bar{
+      width:100%;
+      max-width:34px;
+      border-radius:8px 8px 5px 5px;
+      background: var(--grad-accent);
+      box-shadow: 0 4px 14px rgb(var(--a2) / 30%);
+      min-height:4px;
+    }
+    .day-bar.zero{ background: rgba(255,255,255,0.08); box-shadow:none; }
+    .day-lbl{ font-size:9.5px; font-weight:700; color: var(--muted-2); text-transform:uppercase; letter-spacing:.05em; }
+
+    /* ============================================================
+       TOAST
+       ============================================================ */
     .toast-wrap{
       position:fixed; left:50%;
-      bottom: calc(18px + env(safe-area-inset-bottom));
+      bottom: calc(94px + env(safe-area-inset-bottom));
       transform:translateX(-50%);
-      z-index:10000; display:flex; flex-direction:column; gap:10px;
+      z-index:14000; display:flex; flex-direction:column; gap:10px;
       pointer-events:none;
     }
     .toast{
       pointer-events:none;
-      min-width: min(520px, 92vw);
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(15,5,6,0.88);
-      box-shadow: 0 18px 45px rgba(0,0,0,0.45);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color:rgba(255,255,255,0.90);
-      font-weight:950;
+      min-width: min(440px, 90vw);
+      max-width: 92vw;
+      padding:13px 18px;
+      border-radius: var(--r-md);
+      border:1px solid rgba(255,255,255,0.13);
+      background: rgba(16,14,20,0.90);
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.07);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: var(--text);
+      font-weight:650;
+      font-size:13.5px;
       text-align:center;
-      animation: toastIn 180ms ease both;
+      position:relative;
+      overflow:hidden;
+      transition: opacity .3s ease, transform .3s ease;
+      animation: toastIn .3s cubic-bezier(.21,1.2,.4,1) both;
     }
-    @keyframes toastIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+    .toast::before{
+      content:"";
+      position:absolute;
+      left:0; top:0; bottom:0;
+      width:3.5px;
+      background: var(--grad-accent);
+    }
+    .toast.toast-success::before{ background: linear-gradient(180deg, #34d399, #10b981); }
+    .toast.toast-error::before{ background: linear-gradient(180deg, #f87171, #ef4444); }
+    @keyframes toastIn{
+      from{ opacity:0; transform:translateY(16px) scale(.96); }
+      to{ opacity:1; transform:translateY(0) scale(1); }
+    }
 
-    /* ✅ OVERLAY (rebuild / tri abonnés) */
+    /* ============================================================
+       OVERLAY (chargement)
+       ============================================================ */
     .overlay{
       position:fixed; inset:0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(5,5,10,0.68);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       z-index:9999;
       display:none;
       align-items:center;
       justify-content:center;
       padding: 18px;
     }
-    .overlay.show{ display:flex; }
+    .overlay.show{ display:flex; animation: fadeBg .2s ease both; }
+    @keyframes fadeBg{ from{opacity:0;} to{opacity:1;} }
     .overlay-card{
-      width: min(520px, 92vw);
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(15,5,6,0.92);
-      box-shadow: 0 22px 60px rgba(0,0,0,0.55);
-      padding: 16px;
+      width: min(440px, 92vw);
+      border-radius: var(--r-xl);
+      border:1px solid var(--stroke-2);
+      background: linear-gradient(180deg, rgba(30,26,36,0.96), rgba(18,15,24,0.96));
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 26px 22px;
       text-align:center;
+      animation: pageIn .28s cubic-bezier(.21,.9,.35,1) both;
     }
-    .overlay-title{ font-weight:950; font-size:16px; margin: 2px 0 8px 0; }
-    .overlay-sub{ color: rgba(255,255,255,0.70); font-size: 13px; line-height:1.4; margin: 0 0 12px 0; }
+    .overlay-title{ font-family: var(--font-display); font-weight:700; font-size:17px; margin: 4px 0 6px 0; letter-spacing:-0.01em; }
+    .overlay-sub{ color: var(--muted); font-size: 13px; font-weight:500; line-height:1.5; margin: 0; }
     .spinner{
-      width:44px; height:44px;
-      margin: 8px auto 10px auto;
+      width:48px; height:48px;
+      margin: 4px auto 14px auto;
       border-radius:50%;
-      border:4px solid rgba(255,255,255,0.18);
-      border-top-color: rgba(255,46,46,0.90);
-      animation: spin 0.9s linear infinite;
+      background:
+        conic-gradient(from 0deg, transparent 0%, rgb(var(--a1)) 30%, rgb(var(--a2)) 60%, transparent 62%);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+      animation: spin 0.85s linear infinite;
     }
     @keyframes spin{ to{ transform: rotate(360deg); } }
 
-    /* ✅ MODAL PLAYER (YouTube IFrame API) */
+    /* ============================================================
+       ROULETTE DE TIRAGE (slot machine)
+       ============================================================ */
+    .slot-overlay{
+      position:fixed; inset:0;
+      z-index:11000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background: rgba(4,4,10,0.84);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      cursor:pointer;
+    }
+    .slot-overlay.show{ display:flex; animation: fadeBg .18s ease both; }
+    .slot-card{
+      position:relative;
+      text-align:center;
+      padding: 30px 42px 26px 42px;
+      border-radius: 30px;
+      border:1px solid var(--stroke-2);
+      background: linear-gradient(180deg, rgba(30,26,38,0.96), rgba(16,14,22,0.96));
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.08);
+      min-width: min(340px, 88vw);
+      overflow:visible;
+    }
+    .slot-eyebrow{
+      font-size:10.5px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color: var(--muted-2);
+      font-weight:800;
+      margin-bottom:20px;
+    }
+    .slot-stage{
+      position:relative;
+      width:112px; height:112px;
+      margin:0 auto;
+    }
+    .slot-ava, .slot-fallback{
+      position:absolute; inset:0;
+      width:112px; height:112px;
+      border-radius:50%;
+    }
+    .slot-ava{
+      object-fit:cover;
+      border:3px solid rgb(var(--a2) / 70%);
+      box-shadow: 0 0 42px rgb(var(--a2) / 45%);
+    }
+    .slot-fallback{
+      display:flex; align-items:center; justify-content:center;
+      font-family: var(--font-display); font-weight:700; font-size:42px; color:#fff;
+      background: var(--grad-accent);
+      border:3px solid rgba(255,255,255,0.25);
+      box-shadow: 0 0 42px rgb(var(--a2) / 45%);
+    }
+    .slot-stage.tick .slot-ava,
+    .slot-stage.tick .slot-fallback{
+      animation: slotTick .16s ease;
+    }
+    @keyframes slotTick{
+      0%{ transform: scale(.84); filter: brightness(1.5); }
+      100%{ transform: scale(1); filter: brightness(1); }
+    }
+    .slot-name{
+      margin-top:18px;
+      font-family: var(--font-display);
+      font-weight:700;
+      font-size:21px;
+      letter-spacing:-0.01em;
+      min-height:27px;
+      color: var(--text);
+    }
+    .slot-hint{
+      margin-top:10px;
+      font-size:11px;
+      font-weight:650;
+      color: var(--muted-2);
+    }
+    .slot-overlay.reveal .slot-name{
+      background: var(--grad-accent);
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent;
+      animation: revealPop .45s cubic-bezier(.2,1.5,.4,1);
+    }
+    .slot-overlay.reveal .slot-stage{
+      animation: revealPop .45s cubic-bezier(.2,1.5,.4,1);
+    }
+    @keyframes revealPop{
+      0%{ transform: scale(.72); }
+      60%{ transform: scale(1.14); }
+      100%{ transform: scale(1); }
+    }
+    .confetti{
+      position:absolute;
+      left:50%; top:50%;
+      width:8px; height:13px;
+      border-radius:2px;
+      pointer-events:none;
+      z-index:6;
+    }
+
+    /* ============================================================
+       MODAL PLAYER
+       ============================================================ */
     .player-modal{
       position:fixed;
       inset:0;
@@ -624,95 +1463,146 @@
       align-items:center;
       justify-content:center;
       padding: 16px;
-      background: rgba(0,0,0,0.62);
+      background: rgba(4,4,9,0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
-    .player-modal.show{ display:flex; }
+    .player-modal.show{ display:flex; animation: fadeBg .2s ease both; }
 
     .player-card{
-      width: min(860px, 96vw);
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(15,5,6,0.92);
-      box-shadow: 0 22px 70px rgba(0,0,0,0.65);
+      width: min(880px, 96vw);
+      border-radius: var(--r-xl);
+      border:1px solid var(--stroke-2);
+      background: linear-gradient(180deg, rgba(26,22,32,0.97), rgba(14,12,20,0.97));
+      box-shadow: 0 30px 90px rgba(0,0,0,0.75), 0 0 0 1px rgb(var(--a2) / 6%), inset 0 1px 0 rgba(255,255,255,0.08);
       overflow:hidden;
+      animation: playerIn .34s cubic-bezier(.21,1.1,.35,1) both;
+    }
+    @keyframes playerIn{
+      from{ opacity:0; transform: translateY(24px) scale(.96); }
+      to{ opacity:1; transform: translateY(0) scale(1); }
     }
     .player-head{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 12px 12px;
-      border-bottom:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding: 13px 16px;
+      border-bottom:1px solid var(--stroke);
+      background: rgba(0,0,0,0.24);
     }
     .player-title{
-      font-weight:950;
-      font-size: 13px;
-      color: rgba(255,255,255,0.86);
+      font-weight:700;
+      font-size: 13.5px;
+      color: var(--text);
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
     }
-    .player-actions{ display:flex; gap:10px; }
+    .player-title::before{
+      content:"";
+      width:9px; height:9px;
+      border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgb(var(--a2) / 80%);
+      flex:0 0 auto;
+      animation: pulse 2s ease-out infinite;
+    }
+    .player-actions{ display:flex; gap:8px; flex:0 0 auto; flex-wrap:wrap; justify-content:flex-end; }
     .player-btn{
-      font-weight:950;
-      font-size:13px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.22);
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      font-family: var(--font-body);
+      font-weight:700;
+      font-size:12.5px;
+      padding:9px 14px;
+      border-radius:999px;
+      border:1px solid var(--stroke-2);
+      background: var(--surface-2);
       color:#fff;
       cursor:pointer;
-      transition: filter .12s ease, transform .12s ease;
+      transition: background .16s ease, border-color .16s ease, transform .16s ease, box-shadow .16s ease, filter .16s ease;
       user-select:none;
+      white-space:nowrap;
     }
-    .player-btn:hover{ filter:brightness(1.08); }
-    .player-btn:active{ transform: translateY(1px); }
+    .player-btn svg{ width:14px; height:14px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+    .player-btn:hover{
+      background: var(--surface-3);
+      border-color: rgba(255,255,255,0.30);
+      transform: translateY(-1px);
+    }
+    .player-btn:active{ transform: scale(.96); }
+    #player-next{
+      background: var(--grad-accent);
+      border-color: transparent;
+      box-shadow: 0 8px 22px rgb(var(--a2) / 35%);
+    }
+    #player-next:hover{
+      filter: brightness(1.08);
+      box-shadow: 0 12px 28px rgb(var(--a2) / 45%);
+    }
 
-    .player-body{ padding: 12px; }
+    .player-body{ padding: 14px; }
     .player-frame{
       width:100%;
       aspect-ratio: 16 / 9;
-      border-radius: 16px;
+      border-radius: var(--r-md);
       overflow:hidden;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.25);
+      border:1px solid var(--stroke);
+      background: #000;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.5);
     }
     #yt-player{ width:100%; height:100%; }
     .player-foot{
       display:flex; gap:10px; align-items:center; justify-content:space-between;
-      padding: 10px 12px 12px 12px;
-      color: rgba(255,255,255,0.70);
-      font-size:12px;
+      padding: 4px 16px 14px 16px;
+      color: var(--muted-2);
+      font-size:11.5px;
+      font-weight:600;
+      letter-spacing:.03em;
     }
 
-    /* ✅ OPTIONS UI (switch) */
+    /* ============================================================
+       OPTIONS
+       ============================================================ */
     .opt-row{
       display:flex;
       align-items:center;
       justify-content:space-between;
+      gap:14px;
+      padding: 15px 15px;
+      border-radius: var(--r-lg);
+      border:1px solid var(--stroke);
+      background: var(--surface);
+      transition: background .16s ease, border-color .16s ease;
+    }
+    .opt-row:hover{ background: var(--surface-2); border-color: var(--stroke-2); }
+    .opt-row.opt-col{
+      flex-direction:column;
+      align-items:stretch;
       gap:12px;
-      padding: 12px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.18);
     }
     .opt-left{ min-width:0; }
-    .opt-title{ font-weight:950; font-size:14px; }
+    .opt-title{ font-weight:750; font-size:14.5px; letter-spacing:-0.01em; }
     .opt-desc{
-      margin-top:4px;
-      font-size:12px;
-      color: rgba(255,255,255,0.68);
-      line-height:1.35;
+      margin-top:6px;
+      font-size:12.5px;
+      font-weight:500;
+      color: var(--muted);
+      line-height:1.5;
     }
     .switch{
-      width: 52px;
-      height: 30px;
+      width: 54px;
+      height: 32px;
       border-radius: 999px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.22);
+      border:1px solid var(--stroke-2);
+      background: rgba(0,0,0,0.35);
       position:relative;
       cursor:pointer;
       flex:0 0 auto;
-      transition: filter .12s ease, opacity .12s ease;
+      transition: background .22s ease, border-color .22s ease, box-shadow .22s ease, opacity .16s ease;
       user-select:none;
     }
-    .switch:hover{ filter:brightness(1.08); }
     .switch::after{
       content:"";
       position:absolute;
@@ -721,64 +1611,558 @@
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.85);
-      box-shadow: 0 10px 22px rgba(0,0,0,0.35);
-      transition: transform .16s ease;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+      transition: transform .22s cubic-bezier(.3,1.3,.5,1), background .22s ease;
     }
     .switch.on{
-      background: rgba(255,46,46,0.28);
-      border-color: rgba(255,46,46,0.35);
-      box-shadow: 0 0 0 2px rgba(255,46,46,0.10) inset;
+      background: var(--grad-accent);
+      border-color: transparent;
+      box-shadow: 0 6px 20px rgb(var(--a2) / 40%);
     }
     .switch.on::after{
       transform: translateX(22px);
-      background: rgba(255,255,255,0.92);
     }
-    /* ✅ nouveau : switch désactivé en mode local file:// */
     .switch.disabled{
-      opacity: .45;
+      opacity: .40;
       pointer-events: none;
       filter: none !important;
     }
 
-    @media (max-width:768px){
-      .topbar{ top: calc(8px + env(safe-area-inset-top)); }
-      .brand-mark{ width:42px; height:42px; }
-      .brand-title{ font-size:17px; }
-      .app{ padding-top: calc(90px + env(safe-area-inset-top)); }
-      .scroll{ max-height:58vh; padding-bottom:115px; }
-      .latest-thumb, .random-thumb{ width:140px; height:78px; }
-      .history-item{ grid-template-columns:96px 1fr; grid-template-rows:auto auto; }
-      .thumb{ width:96px; height:72px; }
-      .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
-      .history-list{ max-height:60vh; }
-      .player-card{ width: min(760px, 96vw); }
+    /* ---- Sélecteur de thème ---- */
+    .swatches{ display:flex; gap:10px; flex-wrap:wrap; }
+    .swatch{
+      width:40px; height:40px;
+      border-radius:14px;
+      border:2px solid transparent;
+      cursor:pointer;
+      padding:0;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .swatch:hover{ transform: scale(1.12); }
+    .swatch:active{ transform: scale(.96); }
+    .swatch.selected{
+      border-color:#fff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.18), 0 8px 20px rgba(0,0,0,0.45);
+      transform: scale(1.06);
+    }
+    .swatch[data-theme="crimson"]{ background:linear-gradient(135deg,#ff4b3e,#ff2e63 60%,#d61f57); }
+    .swatch[data-theme="sunset"] { background:linear-gradient(135deg,#ff7a18,#ff3d54 60%,#e0245e); }
+    .swatch[data-theme="violet"] { background:linear-gradient(135deg,#a76cfa,#d946ef 60%,#7c3aed); }
+    .swatch[data-theme="ocean"]  { background:linear-gradient(135deg,#38bdf8,#6366f1 60%,#3b4ede); }
+    .swatch[data-theme="emerald"]{ background:linear-gradient(135deg,#34d399,#10b981 60%,#059669); }
+    .swatch[data-theme="gold"]   { background:linear-gradient(135deg,#fbbf24,#f97316 60%,#ea580c); }
+
+    /* ---- Aide ---- */
+    .help-list{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      color: var(--muted);
+      font-size:13px;
+      font-weight:500;
+      line-height:1.5;
+    }
+    .help-list b{ color: var(--text); font-weight:700; }
+    .help-item{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:10px 6px;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+    .help-item:last-child{ border-bottom:none; }
+    .help-num{
+      flex:0 0 auto;
+      width:24px; height:24px;
+      border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      background: var(--grad-accent-soft);
+      border:1px solid rgb(var(--a2) / 30%);
+      color: rgb(var(--a1));
+      font-weight:800;
+      font-size:11.5px;
+      margin-top:1px;
     }
 
-    /* ✅ iOS STABLE */
+    /* ---- Raccourcis clavier (kbd) ---- */
+    .kbd{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:22px;
+      height:22px;
+      padding:0 7px;
+      border-radius:7px;
+      background: rgba(255,255,255,0.10);
+      border:1px solid var(--stroke-2);
+      border-bottom-width:2px;
+      font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+      font-size:11px;
+      font-weight:700;
+      color: var(--text);
+      margin:0 1px;
+    }
+
+    /* ============================================================
+       DÉFI DU JOUR + SÉRIE
+       ============================================================ */
+    .daily-card{
+      display:flex;
+      align-items:center;
+      gap:13px;
+      padding:13px 14px;
+      margin-bottom:16px;
+      border-radius: var(--r-lg);
+      border:1px solid rgb(var(--a2) / 26%);
+      background:
+        radial-gradient(120% 140% at 0% 0%, rgb(var(--a1) / 14%), transparent 60%),
+        var(--surface);
+      cursor:pointer;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .daily-card:hover{
+      transform: translateY(-2px);
+      border-color: rgb(var(--a2) / 45%);
+      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
+    }
+    .daily-card:active{ transform: scale(.99); }
+    .daily-flame{
+      flex:0 0 auto;
+      width:48px; height:48px;
+      border-radius:14px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      background: linear-gradient(180deg, rgba(255,160,40,0.24), rgba(255,80,40,0.12));
+      border:1px solid rgba(255,150,50,0.34);
+      line-height:1;
+    }
+    .daily-flame .fl-emoji{ font-size:19px; }
+    .daily-flame .fl-num{ font-size:11px; font-weight:800; color:#ffd08a; margin-top:1px; }
+    .daily-mid{ min-width:0; flex:1 1 auto; }
+    .daily-eyebrow{
+      font-size:10px; font-weight:800; letter-spacing:.09em; text-transform:uppercase;
+      color: var(--muted-2); margin-bottom:3px;
+    }
+    .daily-name{
+      font-family: var(--font-display);
+      font-weight:700; font-size:16px; letter-spacing:-0.01em;
+      color: var(--text);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .daily-go{
+      flex:0 0 auto;
+      display:inline-flex; align-items:center; gap:7px;
+      padding:10px 16px;
+      border-radius:999px;
+      border:none;
+      background: var(--grad-accent);
+      color:#fff;
+      font-family: var(--font-body);
+      font-weight:750; font-size:13px;
+      cursor:pointer;
+      box-shadow: var(--shadow-accent);
+      transition: transform .16s ease, filter .16s ease;
+    }
+    .daily-go:hover{ transform: translateY(-1px); filter: brightness(1.06); }
+    .daily-go:active{ transform: scale(.96); }
+    .daily-done{
+      flex:0 0 auto;
+      font-size:22px;
+      filter: drop-shadow(0 0 10px rgba(74,222,158,0.5));
+    }
+
+    /* ============================================================
+       SUCCÈS / BADGES
+       ============================================================ */
+    .ach-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap:10px;
+      margin-top:4px;
+    }
+    .ach{
+      position:relative;
+      display:flex;
+      align-items:center;
+      gap:11px;
+      padding:11px 12px;
+      border-radius: var(--r-md);
+      border:1px solid var(--stroke);
+      background: var(--surface);
+      overflow:hidden;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+    }
+    .ach.unlocked{
+      border-color: rgb(var(--a2) / 40%);
+      background:
+        radial-gradient(120% 160% at 0% 0%, rgb(var(--a1) / 14%), transparent 55%),
+        var(--surface);
+    }
+    .ach.unlocked:hover{ transform: translateY(-2px); }
+    .ach-ic{
+      flex:0 0 auto;
+      width:38px; height:38px;
+      border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:19px;
+      background: rgba(255,255,255,0.06);
+      border:1px solid var(--stroke);
+      filter: grayscale(1) opacity(.5);
+      transition: filter .2s ease, box-shadow .2s ease;
+    }
+    .ach.unlocked .ach-ic{
+      filter:none;
+      background: var(--grad-accent-soft);
+      border-color: rgb(var(--a2) / 35%);
+      box-shadow: 0 0 16px rgb(var(--a2) / 28%);
+    }
+    .ach-tx{ min-width:0; }
+    .ach-nm{
+      font-size:12.5px; font-weight:750; color: var(--text);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .ach.locked .ach-nm{ color: var(--muted); }
+    .ach-ds{ font-size:10.5px; font-weight:500; color: var(--muted-2); margin-top:2px; line-height:1.25; }
+    .ach-prog{ margin: 6px 0 14px; }
+    .ach-prog-track{
+      height:8px; border-radius:99px; background: rgba(255,255,255,0.07); overflow:hidden;
+    }
+    .ach-prog-fill{
+      height:100%; border-radius:99px; background: var(--grad-accent);
+      box-shadow: 0 0 10px rgb(var(--a2) / 50%);
+      transition: width .7s cubic-bezier(.2,.9,.3,1);
+    }
+    .ach-prog-lbl{ font-size:11.5px; font-weight:650; color: var(--muted); margin-top:7px; text-align:center; }
+
+    /* Toast succès (spécial) */
+    .toast.toast-ach{
+      display:flex; align-items:center; gap:12px; text-align:left;
+      min-width: min(360px, 88vw);
+    }
+    .toast.toast-ach::before{ background: linear-gradient(180deg,#fbbf24,#f97316); }
+    .toast-ach .ta-ic{
+      font-size:24px; flex:0 0 auto;
+      animation: starPop .5s cubic-bezier(.2,1.6,.4,1);
+    }
+    .toast-ach .ta-t1{ font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color: var(--gold); }
+    .toast-ach .ta-t2{ font-size:13.5px; font-weight:700; color: var(--text); margin-top:1px; }
+
+    /* ============================================================
+       ONBOARDING (bienvenue)
+       ============================================================ */
+    .onb-overlay{
+      position:fixed; inset:0;
+      z-index:13000;
+      display:none;
+      align-items:center; justify-content:center;
+      padding:18px;
+      background: rgba(4,4,10,0.80);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .onb-overlay.show{ display:flex; animation: fadeBg .2s ease both; }
+    .onb-card{
+      width: min(460px, 92vw);
+      border-radius: 28px;
+      border:1px solid var(--stroke-2);
+      background: linear-gradient(180deg, rgba(30,26,38,0.97), rgba(16,14,22,0.97));
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 26px 24px 22px;
+      text-align:center;
+      animation: playerIn .38s cubic-bezier(.21,1.1,.35,1) both;
+    }
+    .onb-badge{
+      width:64px; height:64px; margin:0 auto 16px;
+      border-radius:20px;
+      display:flex; align-items:center; justify-content:center;
+      background: var(--grad-accent);
+      box-shadow: var(--shadow-accent);
+    }
+    .onb-badge svg{ width:32px; height:32px; fill:#fff; }
+    .onb-card h2{
+      font-family: var(--font-display);
+      font-weight:700; font-size:22px; letter-spacing:-0.02em;
+      margin:0 0 6px;
+    }
+    .onb-card h2 .grad{ background: var(--grad-accent); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .onb-sub{ color: var(--muted); font-size:13.5px; font-weight:500; line-height:1.5; margin:0 0 18px; }
+    .onb-feats{ display:flex; flex-direction:column; gap:10px; text-align:left; margin-bottom:20px; }
+    .onb-feat{ display:flex; align-items:center; gap:12px; }
+    .onb-feat .of-ic{
+      flex:0 0 auto; width:38px; height:38px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center; font-size:18px;
+      background: var(--grad-accent-soft); border:1px solid rgb(var(--a2) / 30%);
+    }
+    .onb-feat .of-tx{ font-size:13px; font-weight:600; color: var(--text); line-height:1.35; }
+    .onb-feat .of-tx b{ font-weight:750; }
+    .onb-start{
+      width:100%;
+      padding:14px;
+      border-radius:16px;
+      border:none;
+      background: var(--grad-accent);
+      color:#fff;
+      font-family: var(--font-body);
+      font-weight:750; font-size:15px;
+      cursor:pointer;
+      box-shadow: var(--shadow-accent);
+      transition: transform .16s ease, filter .16s ease;
+    }
+    .onb-start:hover{ transform: translateY(-2px); filter: brightness(1.06); }
+    .onb-start:active{ transform: scale(.98); }
+
+    /* ============================================================
+       MODE DUEL (⚔️)
+       ============================================================ */
+    .duel-btn{
+      flex:0 0 auto;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:3px;
+      padding:0 15px;
+      border-radius: var(--r-lg);
+      border:1px solid var(--stroke-2);
+      background: var(--surface-2);
+      color: var(--muted);
+      cursor:pointer;
+      font-family: var(--font-body);
+      font-size:10.5px; font-weight:700;
+      transition: border-color .16s ease, background .16s ease, color .16s ease, transform .16s ease;
+      user-select:none;
+    }
+    .duel-btn .db-ic{ font-size:17px; line-height:1; }
+    .duel-btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.28); color:#fff; }
+    .duel-btn:active{ transform: scale(.96); }
+
+    .duel-overlay{
+      position:fixed; inset:0;
+      z-index:11500;
+      display:none;
+      align-items:center; justify-content:center;
+      padding:18px;
+      background: rgba(4,4,10,0.84);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .duel-overlay.show{ display:flex; animation: fadeBg .18s ease both; }
+    .duel-card{
+      width: min(520px, 94vw);
+      border-radius: 28px;
+      border:1px solid var(--stroke-2);
+      background: linear-gradient(180deg, rgba(30,26,38,0.97), rgba(16,14,22,0.97));
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 24px 22px;
+      text-align:center;
+      animation: playerIn .34s cubic-bezier(.21,1.1,.35,1) both;
+    }
+    .duel-eyebrow{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color: var(--muted-2); font-weight:800; }
+    .duel-h{ font-family: var(--font-display); font-weight:700; font-size:20px; margin:6px 0 18px; letter-spacing:-0.01em; }
+    .duel-grid{ display:flex; align-items:stretch; gap:12px; }
+    .duel-side{
+      flex:1 1 0;
+      display:flex; flex-direction:column; align-items:center; gap:11px;
+      padding:18px 12px;
+      border-radius: var(--r-lg);
+      border:1px solid var(--stroke);
+      background: var(--surface);
+      cursor:pointer;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    .duel-side:hover{
+      transform: translateY(-3px);
+      border-color: rgb(var(--a2) / 55%);
+      box-shadow: 0 16px 40px rgb(var(--a3) / 35%);
+      background: var(--surface-2);
+    }
+    .duel-side:active{ transform: scale(.98); }
+    .duel-ava, .duel-fb{ width:72px; height:72px; border-radius:50%; }
+    .duel-ava{ object-fit:cover; border:2px solid rgb(var(--a2) / 55%); box-shadow: 0 0 26px rgb(var(--a2) / 35%); }
+    .duel-fb{
+      display:flex; align-items:center; justify-content:center;
+      font-family: var(--font-display); font-weight:700; font-size:28px; color:#fff;
+      background: var(--grad-accent); border:2px solid rgba(255,255,255,0.2);
+    }
+    .duel-nm{ font-size:14px; font-weight:750; color: var(--text); line-height:1.25; }
+    .duel-pick{ font-size:11px; font-weight:700; color: rgb(var(--a1)); text-transform:uppercase; letter-spacing:.06em; }
+    .duel-vs{
+      align-self:center;
+      font-family: var(--font-display); font-weight:700; font-size:15px;
+      color:#fff;
+      width:38px; height:38px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      background: var(--grad-accent);
+      box-shadow: var(--shadow-accent);
+      flex:0 0 auto;
+    }
+    .duel-actions{ display:flex; gap:10px; justify-content:center; margin-top:18px; }
+
+    /* ============================================================
+       PALETTE DE COMMANDES (⌘K)
+       ============================================================ */
+    .cmdk-overlay{
+      position:fixed; inset:0;
+      z-index:13500;
+      display:none;
+      align-items:flex-start; justify-content:center;
+      padding: 14vh 18px 18px;
+      background: rgba(4,4,10,0.66);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .cmdk-overlay.show{ display:flex; animation: fadeBg .16s ease both; }
+    .cmdk{
+      width: min(560px, 96vw);
+      max-height: 66vh;
+      display:flex; flex-direction:column;
+      border-radius: 20px;
+      border:1px solid var(--stroke-2);
+      background: linear-gradient(180deg, rgba(28,24,36,0.98), rgba(15,13,21,0.98));
+      box-shadow: 0 30px 90px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.08);
+      overflow:hidden;
+      animation: playerIn .26s cubic-bezier(.21,1.1,.35,1) both;
+    }
+    .cmdk-head{
+      display:flex; align-items:center; gap:11px;
+      padding:15px 16px;
+      border-bottom:1px solid var(--stroke);
+    }
+    .cmdk-head svg{ width:19px; height:19px; fill: var(--muted); flex:0 0 auto; }
+    .cmdk-head input{
+      flex:1 1 auto;
+      border:none; outline:none; background:transparent;
+      color:#fff; font-family: var(--font-body); font-weight:600; font-size:16px;
+    }
+    .cmdk-head input::placeholder{ color: var(--muted-2); font-weight:500; }
+    .cmdk-esc{
+      flex:0 0 auto; font-size:10px; font-weight:800; letter-spacing:.05em;
+      color: var(--muted-2);
+      border:1px solid var(--stroke-2); border-radius:7px; padding:4px 7px;
+    }
+    .cmdk-list{ overflow-y:auto; padding:8px; }
+    .cmdk-list::-webkit-scrollbar{ width:7px; }
+    .cmdk-list::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.14); border-radius:99px; }
+    .cmdk-item{
+      display:flex; align-items:center; gap:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      transition: background .12s ease;
+    }
+    .cmdk-item.active, .cmdk-item:hover{ background: var(--surface-2); }
+    .cmdk-item.active{ box-shadow: inset 0 0 0 1px rgb(var(--a2) / 35%); }
+    .cmdk-ava, .cmdk-fb{ width:34px; height:34px; border-radius:50%; flex:0 0 auto; }
+    .cmdk-ava{ object-fit:cover; border:1px solid var(--stroke-2); }
+    .cmdk-fb{
+      display:flex; align-items:center; justify-content:center;
+      font-family: var(--font-display); font-weight:700; font-size:13px; color:#fff;
+      background: var(--grad-accent);
+    }
+    .cmdk-tx{ flex:1 1 auto; min-width:0; }
+    .cmdk-nm{ font-size:13.5px; font-weight:700; color: var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .cmdk-sub{ font-size:11px; font-weight:500; color: var(--muted-2); margin-top:1px; }
+    .cmdk-go{
+      flex:0 0 auto; font-size:16px; color: rgb(var(--a1));
+      opacity:0; transition: opacity .12s ease;
+    }
+    .cmdk-item.active .cmdk-go, .cmdk-item:hover .cmdk-go{ opacity:1; }
+    .cmdk-empty{ padding:26px 16px; text-align:center; color: var(--muted); font-weight:600; font-size:13px; }
+    .cmdk-hint{
+      display:flex; gap:14px; align-items:center; justify-content:center;
+      padding:10px; border-top:1px solid var(--stroke);
+      font-size:10.5px; font-weight:600; color: var(--muted-2);
+    }
+
+    /* ============================================================
+       HEATMAP D'ACTIVITÉ
+       ============================================================ */
+    .heat-wrap{ margin-top:6px; }
+    .heat-grid{
+      display:grid;
+      grid-template-rows: repeat(7, 1fr);
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap:4px;
+    }
+    .heat-cell{
+      aspect-ratio:1/1;
+      border-radius:4px;
+      background: rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.04);
+    }
+    .heat-cell.l1{ background: rgb(var(--a2) / 28%); }
+    .heat-cell.l2{ background: rgb(var(--a2) / 50%); }
+    .heat-cell.l3{ background: rgb(var(--a2) / 74%); }
+    .heat-cell.l4{ background: rgb(var(--a1)); box-shadow: 0 0 8px rgb(var(--a2) / 55%); }
+    .heat-legend{
+      display:flex; align-items:center; justify-content:flex-end; gap:6px;
+      margin-top:10px; font-size:10.5px; font-weight:600; color: var(--muted-2);
+    }
+    .heat-legend .hl-box{ width:12px; height:12px; border-radius:3px; }
+
+    /* ---- Swatch couleur perso ---- */
+    .swatch.custom{
+      position:relative;
+      overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      background: conic-gradient(from 0deg, #ff4b3e, #ffcf5c, #4ade9e, #38bdf8, #a76cfa, #ff2e63, #ff4b3e);
+    }
+    .swatch.custom svg{ width:18px; height:18px; fill:#fff; filter: drop-shadow(0 1px 3px rgba(0,0,0,.6)); }
+    .swatch.custom input[type="color"]{
+      position:absolute; inset:0; opacity:0; cursor:pointer; border:none; padding:0;
+      width:100%; height:100%;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width:768px){
+      .topbar{ top: calc(8px + env(safe-area-inset-top)); padding:10px 12px; }
+      .brand-mark{ width:42px; height:42px; border-radius:13px; }
+      .brand-title{ font-size:17px; }
+      .brand-sub{ display:none; }
+      .app{ padding-top: calc(84px + env(safe-area-inset-top)); }
+      .menu-card{ padding:14px; }
+      .scroll{ max-height:none; }
+      .latest-thumb, .random-thumb{ width:138px; height:78px; }
+      .history-item{ grid-template-columns:96px 1fr; grid-template-rows:auto auto; }
+      .thumb{ width:96px; height:60px; }
+      .history-item .small-btn{ grid-column:1 / -1; justify-self:end; }
+      .history-list{ max-height:none; overflow:visible; }
+      .player-card{ width: min(760px, 96vw); }
+      .player-actions{ gap:6px; }
+      .player-btn{ padding:8px 11px; font-size:12px; }
+      .player-btn .btn-label{ display:none; }
+      .home-hero h1{ font-size:21px; }
+      .surprise-txt .st1{ font-size:15px; }
+      .surprise-dice{ display:none; }
+      .wl-card{ flex:0 0 148px; }
+      .wl-thumb{ height:83px; }
+      .tabbar{ width: min(96vw, 540px); }
+    }
+
+    /* ---- iOS : sans backdrop-filter ---- */
     @supports (-webkit-touch-callout: none) {
-      .topbar, .menu-card, .menu-item, .channel-item, .toast, .player-card{
+      .topbar, .menu-card, .menu-item, .channel-item, .toast, .player-card, .back-btn, .small-btn, .tabbar, .slot-card, .overlay-card{
         -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
       }
-      .topbar{ background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important; }
-      .menu-card{
-        background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;
-        box-shadow: 0 18px 55px rgba(0,0,0,0.35) !important;
-      }
-      .menu-item{ background: rgba(255,255,255,0.14) !important; }
-      .channel-item{ background: rgba(255,255,255,0.12) !important; }
-      .toast{ background: rgba(15,5,6,0.92) !important; }
-      .history-item{ background: rgba(255,255,255,0.10) !important; }
-      .player-card{ background: rgba(15,5,6,0.95) !important; }
+      .topbar{ background: linear-gradient(180deg, rgba(44,40,52,0.97), rgba(28,25,36,0.97)) !important; }
+      .tabbar{ background: rgba(17,15,24,0.97) !important; }
+      .menu-card{ background: linear-gradient(180deg, rgba(36,32,44,0.96), rgba(24,21,32,0.96)) !important; }
+      .menu-item{ background: rgba(255,255,255,0.09) !important; }
+      .channel-item{ background: rgba(255,255,255,0.08) !important; }
+      .toast{ background: rgba(18,15,24,0.97) !important; }
+      .history-item{ background: rgba(255,255,255,0.08) !important; }
+      .player-card{ background: linear-gradient(180deg, rgba(30,26,38,0.98), rgba(16,14,22,0.98)) !important; }
+      .slot-card, .overlay-card{ background: linear-gradient(180deg, rgba(32,28,40,0.98), rgba(18,15,24,0.98)) !important; }
+      .overlay, .player-modal, .slot-overlay{ -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
     }
   </style>
 </head>
 
 <body>
-  <div class="bg-glow"></div>
+  <div class="bg-glow" aria-hidden="true"><div class="grain"></div></div>
 
-  <header class="topbar" aria-label="YouTube Random Video">
+  <header class="topbar" aria-label="RandomTube">
     <div class="brand">
       <div class="brand-left">
         <div class="brand-mark" aria-hidden="true">
@@ -788,89 +2172,85 @@
         </div>
         <div class="brand-text">
           <div class="brand-title">
-            <span class="yt">YouTube</span><span class="sep"></span><span class="rd">Random</span> <span class="vd">Video</span>
+            <span class="yt">Random</span><span class="rd">Tube</span>
           </div>
-          <div class="brand-sub">Choisis une chaîne, puis lance une vidéo au hasard</div>
+          <div class="brand-sub">Ta dose de hasard, sans scroll infini</div>
         </div>
       </div>
       <div class="brand-chip" title="Version">
         <span class="dot"></span>
-        <span>V 0.1</span>
+        <span>V&nbsp;1.1</span>
       </div>
     </div>
   </header>
 
   <div class="app">
+
+    <!-- ======== PAGE ACCUEIL (dashboard) ======== -->
     <section id="page-home" class="page active">
       <div class="menu-card">
         <div class="home-hero">
-          <h1>Menu</h1>
-          <p>Interface pensée comme une appli. Dans <b>Chaînes</b> : dernière vidéo + random (sans shorts).</p>
+          <h1>Prêt pour <span class="grad">ta dose de hasard</span> ?</h1>
+          <p><b><span id="hero-count">24</span> youtubeurs</b>, des milliers de vidéos. Zéro shorts, zéro doublons — appuie sur le bouton et laisse la magie opérer.</p>
+        </div>
+
+        <div class="surprise-row">
+          <button id="surprise-btn" class="surprise-btn" type="button" aria-label="Lancer une surprise totale">
+            <span class="surprise-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+            </span>
+            <span class="surprise-txt">
+              <span class="st1">Surprise totale</span>
+              <span class="st2">Une chaîne au hasard · une vidéo au hasard</span>
+            </span>
+            <span class="surprise-dice" aria-hidden="true">🎲</span>
+          </button>
+          <button id="surprise-favs" class="favs-chip" type="button" title="Limiter la surprise à tes favoris">
+            <span class="fc-star">★</span>
+            <span>Favoris</span>
+          </button>
+          <button id="duel-btn" class="duel-btn" type="button" title="Mode Duel : choisis entre deux chaînes">
+            <span class="db-ic">⚔️</span>
+            <span>Duel</span>
+          </button>
+        </div>
+
+        <div class="stat-chips">
+          <div class="stat-chip"><b id="stat-watched">0</b><span>vidéos tirées</span></div>
+          <div class="stat-chip"><b id="stat-favs">0</b><span>favoris</span></div>
+          <div class="stat-chip"><b id="stat-later">0</b><span>à regarder</span></div>
+        </div>
+
+        <div id="daily-card" class="daily-card" role="button" aria-label="Défi du jour">
+          <div class="daily-flame" aria-hidden="true">
+            <span class="fl-emoji">🔥</span>
+            <span class="fl-num" id="streak-days">0</span>
+          </div>
+          <div class="daily-mid">
+            <div class="daily-eyebrow">Défi du jour</div>
+            <div class="daily-name" id="daily-name">—</div>
+          </div>
+          <button class="daily-go" id="daily-go" type="button">Tenter</button>
+          <span class="daily-done hidden" id="daily-done" title="Défi relevé aujourd’hui">✅</span>
+        </div>
+
+        <div id="watch-later-block" class="wl-block hidden">
+          <div class="latest-title" style="margin-bottom:10px;">À regarder plus tard</div>
+          <div id="watch-later-row" class="wl-row"></div>
         </div>
 
         <div class="menu-list">
 
-          <div class="menu-item" data-go="page-channels" role="button" aria-label="Aller vers Chaînes">
+          <div class="menu-item" data-go="page-stats" role="button" aria-label="Aller vers Statistiques">
             <div class="menu-left">
               <div class="icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24">
-                  <path d="M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11zm-8 0c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.95 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                  <path d="M5 9h3v11H5zM10.5 4h3v16h-3zM16 13h3v7h-3z"/>
                 </svg>
               </div>
               <div class="menu-text">
-                <div class="t1">Chaînes</div>
-                <div class="t2">Sélectionner un youtubeur</div>
-              </div>
-            </div>
-            <div class="chev" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
-            </div>
-          </div>
-
-          <div class="menu-item" data-go="page-favs" role="button" aria-label="Aller vers Favoris">
-            <div class="menu-left">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                </svg>
-              </div>
-              <div class="menu-text">
-                <div class="t1">Favoris</div>
-                <div class="t2">Tes chaînes favorites</div>
-              </div>
-            </div>
-            <div class="chev" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
-            </div>
-          </div>
-
-          <div class="menu-item" data-go="page-history" role="button" aria-label="Aller vers Historique">
-            <div class="menu-left">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M13 3a9 9 0 1 0 8.95 10h-2.02A7 7 0 1 1 13 5V2l4 4-4 4V7a5 5 0 1 0 5 6h2a7 7 0 1 1-7-10z"/>
-                </svg>
-              </div>
-              <div class="menu-text">
-                <div class="t1">Historique</div>
-                <div class="t2">Global ou par chaîne</div>
-              </div>
-            </div>
-            <div class="chev" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
-            </div>
-          </div>
-
-          <div class="menu-item" data-go="page-options" role="button" aria-label="Aller vers Options">
-            <div class="menu-left">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.5.5,0,0,0,.12-.63l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.28,7.28,0,0,0-1.63-.94l-.38-2.65A.5.5,0,0,0,13.79,2H10.21a.5.5,0,0,0-.49.42L9.34,5.07a7.28,7.28,0,0,0-1.63.94l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.63L4.86,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.75,14.59a.5.5,0,0,0-.12.63l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.28,7.28,0,0,0,1.63.94l.38,2.65a.5.5,0,0,0,.49.42h3.58a.5.5,0,0,0,.49-.42l.38-2.65a7.28,7.28,0,0,0,1.63-.94l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.63ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/>
-                </svg>
-              </div>
-              <div class="menu-text">
-                <div class="t1">Options</div>
-                <div class="t2">Lecteur intégré, etc.</div>
+                <div class="t1">Statistiques</div>
+                <div class="t2">Top chaînes, activité de la semaine</div>
               </div>
             </div>
             <div class="chev" aria-hidden="true">
@@ -887,7 +2267,7 @@
               </div>
               <div class="menu-text">
                 <div class="t1">Comment ça marche ?</div>
-                <div class="t2">Explication rapide</div>
+                <div class="t2">Le guide en 30 secondes</div>
               </div>
             </div>
             <div class="chev" aria-hidden="true">
@@ -897,19 +2277,18 @@
 
         </div>
 
-        <div class="footer">YouTube Random Video — Menu</div>
+        <div class="footer">RandomTube</div>
       </div>
     </section>
 
-    <!-- PAGE CHAÎNES -->
+    <!-- ======== PAGE CHAÎNES ======== -->
     <section id="page-channels" class="page">
-      <div class="page-top">
-        <button class="back-btn" data-back="page-home">← Retour</button>
-        <div class="page-title">Chaînes</div>
-        <div style="width:92px;"></div>
-      </div>
-
       <div class="menu-card">
+        <div class="home-hero" style="padding-top:2px; padding-bottom:14px;">
+          <h1 style="font-size:19px;">Chaînes</h1>
+          <p style="margin-top:6px;">Clique sur une carte pour voir la dernière vidéo et lancer un tirage aléatoire.</p>
+        </div>
+
         <div class="channels-toolbar">
           <div class="search" title="Rechercher une chaîne">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 5L20.5 19l-5-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
@@ -927,38 +2306,36 @@
         <div id="channels-list" class="scroll"></div>
 
         <div class="row">
-          <button id="rebuild-all-btn" class="small-btn">Rebuild caches</button>
-          <button id="rebuild-latest-btn" class="small-btn">Rebuild dernières vidéos</button>
+          <button id="rebuild-all-btn" class="small-btn">
+            <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>
+            Rebuild caches
+          </button>
+          <button id="rebuild-latest-btn" class="small-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3M21 12a9 9 0 1 1-9-9 9 9 0 0 1 9 9z"/></svg>
+            Rebuild dernières vidéos
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- PAGE FAVORIS -->
+    <!-- ======== PAGE FAVORIS ======== -->
     <section id="page-favs" class="page">
-      <div class="page-top">
-        <button class="back-btn" data-back="page-home">← Retour</button>
-        <div class="page-title">Favoris</div>
-        <div style="width:92px;"></div>
-      </div>
-
       <div class="menu-card">
+        <div class="home-hero" style="padding-top:2px; padding-bottom:14px;">
+          <h1 style="font-size:19px;">Favoris <span style="color:var(--gold);">★</span></h1>
+          <p style="margin-top:6px;">Tes chaînes épinglées. Combine avec le mode <b>Surprise + Favoris</b> de l’accueil !</p>
+        </div>
         <div id="favorites-list" class="scroll"></div>
-        <div id="favorites-empty" class="footer hidden">Aucun favori pour l’instant.</div>
+        <div id="favorites-empty" class="footer hidden">Aucun favori — appuie sur ★ dans Chaînes.</div>
       </div>
     </section>
 
-    <!-- PAGE HISTORIQUE -->
+    <!-- ======== PAGE HISTORIQUE ======== -->
     <section id="page-history" class="page">
-      <div class="page-top">
-        <button class="back-btn" data-back="page-home">← Retour</button>
-        <div class="page-title">Historique</div>
-        <div style="width:92px;"></div>
-      </div>
-
       <div class="menu-card">
-        <div class="home-hero" style="padding-top:6px;">
-          <h1 style="font-size:18px;">Historique</h1>
-          <p style="margin-top:6px;">Choisis <b>Global</b> (ordre réel) ou <b>Par chaîne</b> (filtrer + supprimer une chaîne).</p>
+        <div class="home-hero" style="padding-top:2px; padding-bottom:10px;">
+          <h1 style="font-size:19px;">Historique</h1>
+          <p style="margin-top:6px;">Vue <b>Globale</b> (ordre réel des tirages) ou <b>Par chaîne</b> (filtrer et nettoyer).</p>
         </div>
 
         <div class="seg-wrap">
@@ -970,71 +2347,268 @@
           <select id="hist-channel-select" class="select"></select>
         </div>
 
-        <div class="row" style="margin-top:12px;">
-          <button id="hist-copy" class="small-btn">Copier</button>
-          <button id="hist-clear" class="small-btn">Supprimer</button>
+        <div class="row" style="margin-top:12px; justify-content:flex-start;">
+          <button id="hist-copy" class="small-btn">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copier
+          </button>
+          <button id="hist-clear" class="small-btn">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+            Supprimer
+          </button>
         </div>
 
         <div id="hist-topline" class="history-topline"></div>
         <div id="history-list" class="history-list"></div>
 
-        <div class="footer">YouTube Random Video — Historique</div>
+        <div class="footer">RandomTube — Historique</div>
       </div>
     </section>
 
-    <!-- PAGE OPTIONS -->
-    <section id="page-options" class="page">
+    <!-- ======== PAGE STATISTIQUES ======== -->
+    <section id="page-stats" class="page">
       <div class="page-top">
-        <button class="back-btn" data-back="page-home">← Retour</button>
-        <div class="page-title">Options</div>
+        <button class="back-btn" data-back="page-home">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Retour
+        </button>
+        <div class="page-title">Statistiques</div>
         <div style="width:92px;"></div>
       </div>
 
       <div class="menu-card">
-        <div class="home-hero" style="padding-top:6px;">
-          <h1 style="font-size:18px;">Options</h1>
-          <p style="margin-top:6px;">Personnalise l’expérience. Par défaut, le lecteur intégré est activé.</p>
+        <div class="stat-chips stats4">
+          <div class="stat-chip"><b id="stats-total">0</b><span>vidéos tirées</span></div>
+          <div class="stat-chip"><b id="stats-week">0</b><span>cette semaine</span></div>
+          <div class="stat-chip"><b id="stats-explored">0/24</b><span>chaînes explorées</span></div>
+          <div class="stat-chip"><b id="stats-top" class="small">—</b><span>top chaîne</span></div>
+        </div>
+
+        <div class="latest-title" style="margin:4px 0 12px;">Top chaînes</div>
+        <div id="stats-bars" class="stats-bars"></div>
+
+        <div class="random-title" style="margin-top:20px;">Activité — 7 derniers jours</div>
+        <div id="stats-days" class="days-chart"></div>
+
+        <div class="latest-title" style="margin:22px 0 10px;">Ces 15 dernières semaines</div>
+        <div class="heat-wrap">
+          <div id="heat-grid" class="heat-grid"></div>
+          <div class="heat-legend">
+            <span>moins</span>
+            <span class="hl-box heat-cell"></span>
+            <span class="hl-box heat-cell l1"></span>
+            <span class="hl-box heat-cell l2"></span>
+            <span class="hl-box heat-cell l3"></span>
+            <span class="hl-box heat-cell l4"></span>
+            <span>plus</span>
+          </div>
+        </div>
+
+        <div class="latest-title" style="margin:22px 0 8px;">Succès</div>
+        <div class="ach-prog">
+          <div class="ach-prog-track"><div id="ach-prog-fill" class="ach-prog-fill" style="width:0%"></div></div>
+          <div id="ach-prog-lbl" class="ach-prog-lbl">0 / 0 débloqués</div>
+        </div>
+        <div id="ach-grid" class="ach-grid"></div>
+
+        <div class="footer">RandomTube — Statistiques</div>
+      </div>
+    </section>
+
+    <!-- ======== PAGE OPTIONS ======== -->
+    <section id="page-options" class="page">
+      <div class="menu-card">
+        <div class="home-hero" style="padding-top:2px; padding-bottom:12px;">
+          <h1 style="font-size:19px;">Options</h1>
+          <p style="margin-top:6px;">Personnalise ton expérience RandomTube.</p>
         </div>
 
         <div class="opt-row">
           <div class="opt-left">
             <div class="opt-title">Lecteur intégré</div>
             <div class="opt-desc" id="opt-embed-desc">
-              Si activé : la vidéo se lance dans l’appli (modal) + bouton “Prochaine random”.<br>
-              Si désactivé : ouverture dans l’app YouTube / navigateur (comme avant).
+              Si activé : la vidéo se lance dans l’appli (lecteur + bouton “Prochaine random”).<br>
+              Si désactivé : ouverture dans l’app YouTube ou le navigateur.
             </div>
           </div>
           <div id="opt-embed-switch" class="switch" role="switch" aria-checked="true" tabindex="0" title="Activer/Désactiver"></div>
         </div>
 
-        <div class="footer">YouTube Random Video — Options</div>
+        <div class="opt-row" style="margin-top:10px;">
+          <div class="opt-left">
+            <div class="opt-title">Animation de tirage</div>
+            <div class="opt-desc">La roulette de suspense (avec confettis 🎉) avant chaque Surprise totale.</div>
+          </div>
+          <div id="opt-slot-switch" class="switch on" role="switch" aria-checked="true" tabindex="0" title="Activer/Désactiver"></div>
+        </div>
+
+        <div class="opt-row" style="margin-top:10px;">
+          <div class="opt-left">
+            <div class="opt-title">Effets sonores</div>
+            <div class="opt-desc">Petits sons de tirage, révélation et clic (générés dans le navigateur).</div>
+          </div>
+          <div id="opt-sound-switch" class="switch" role="switch" aria-checked="false" tabindex="0" title="Activer/Désactiver"></div>
+        </div>
+
+        <div class="opt-row opt-col" style="margin-top:10px;">
+          <div class="opt-left">
+            <div class="opt-title">Thème de couleur</div>
+            <div class="opt-desc">Choisis l’ambiance de l’appli — appliqué instantanément, mémorisé pour la prochaine fois.</div>
+          </div>
+          <div class="swatches">
+            <button class="swatch" data-theme="crimson" title="Rouge passion" type="button" aria-label="Thème rouge"></button>
+            <button class="swatch" data-theme="sunset" title="Coucher de soleil" type="button" aria-label="Thème orange"></button>
+            <button class="swatch" data-theme="violet" title="Néon violet" type="button" aria-label="Thème violet"></button>
+            <button class="swatch" data-theme="ocean" title="Océan" type="button" aria-label="Thème bleu"></button>
+            <button class="swatch" data-theme="emerald" title="Émeraude" type="button" aria-label="Thème vert"></button>
+            <button class="swatch" data-theme="gold" title="Or" type="button" aria-label="Thème doré"></button>
+            <label class="swatch custom" data-theme="custom" title="Couleur personnalisée">
+              <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-.95-.5-1.3-.3-.35-.5-.8-.5-1.2 0-1.1.9-2 2-2h2.5A4.5 4.5 0 0 0 22 11 10 10 0 0 0 12 2zM6.5 13A1.5 1.5 0 1 1 8 11.5 1.5 1.5 0 0 1 6.5 13zm3-4A1.5 1.5 0 1 1 11 7.5 1.5 1.5 0 0 1 9.5 9zm5 0A1.5 1.5 0 1 1 16 7.5 1.5 1.5 0 0 1 14.5 9z"/></svg>
+              <input id="custom-color" type="color" value="#ff2e63" aria-label="Choisir une couleur personnalisée">
+            </label>
+          </div>
+        </div>
+
+        <div class="opt-row opt-col" style="margin-top:10px;">
+          <div class="opt-left">
+            <div class="opt-title">Sauvegarde des données</div>
+            <div class="opt-desc">Exporte tes favoris, historique, préférences et succès dans un fichier — ou restaure-les sur un autre appareil.</div>
+          </div>
+          <div class="row" style="margin-top:0; justify-content:flex-start;">
+            <button id="data-export" class="small-btn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+              Exporter
+            </button>
+            <button id="data-import" class="small-btn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M5 21h14"/></svg>
+              Importer
+            </button>
+            <input id="data-import-file" type="file" accept="application/json,.json" class="hidden" />
+          </div>
+        </div>
+
+        <div class="footer">RandomTube — Options</div>
       </div>
     </section>
 
-    <!-- PAGE HELP -->
+    <!-- ======== PAGE HELP ======== -->
     <section id="page-help" class="page">
       <div class="page-top">
-        <button class="back-btn" data-back="page-home">← Retour</button>
+        <button class="back-btn" data-back="page-home">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Retour
+        </button>
         <div class="page-title">Comment ça marche ?</div>
         <div style="width:92px;"></div>
       </div>
 
       <div class="menu-card">
-        <div style="color:rgba(255,255,255,0.74); font-size:13px; line-height:1.55;">
-          • Va dans <b>“Chaînes”</b>.<br>
-          • Clique sur une carte : ça ouvre le détail (dernier upload + random).<br>
-          • Clique sur <b>“Lance une vidéo random”</b> dans le détail pour lancer une vidéo (sans shorts).<br>
-          • <b>Fuze III</b> = tirage 50/50 entre Fuze III et Fiouse.<br>
-          • L’étoile <b>★</b> ajoute/retire la chaîne des Favoris.<br>
-          • <b>Rebuild caches</b> = rebuild pools random (48h).<br>
-          • <b>Rebuild dernières vidéos</b> = force la MAJ des dernières vidéos (cache 6h).<br>
-          • Sur téléphone : ouverture tente l’app YouTube, sinon navigateur.<br>
-          • Option “Lecteur intégré” : lecture dans l’appli + “Prochaine random”.
+        <div class="help-list">
+          <div class="help-item"><span class="help-num">1</span><span><b>Surprise totale</b> (accueil) : une chaîne au hasard, une vidéo au hasard — avec la roulette de suspense. Active le chip <b>★ Favoris</b> pour limiter le tirage à tes chaînes favorites.</span></div>
+          <div class="help-item"><span class="help-num">2</span><span>Dans <b>Chaînes</b>, clique sur une carte : dernière vidéo en ligne + tirage aléatoire (sans shorts, sans doublons).</span></div>
+          <div class="help-item"><span class="help-num">3</span><span><b>Fuze III</b> = tirage 50/50 entre Fuze III et Fiouse.</span></div>
+          <div class="help-item"><span class="help-num">4</span><span>Dans le lecteur : <b>Prochaine random</b> enchaîne, <b>Plus tard</b> met la vidéo de côté (elle apparaît sur l’accueil), <b>Partager</b> copie ou partage le lien.</span></div>
+          <div class="help-item"><span class="help-num">5</span><span>La page <b>Statistiques</b> montre ton top chaînes et ton activité de la semaine. L’étoile <b>★</b> gère tes favoris.</span></div>
+          <div class="help-item"><span class="help-num">6</span><span>Le <b>Défi du jour</b> te propose une chaîne différente chaque jour. Relève-le pour entretenir ta <b>série 🔥</b> et débloquer des <b>Succès</b> (page Statistiques).</span></div>
+          <div class="help-item"><span class="help-num">7</span><span><b>Rebuild caches</b> reconstruit les listes de vidéos (48h). <b>Rebuild dernières vidéos</b> force la mise à jour (6h). Dans <b>Options</b> : lecteur intégré, sons, thèmes et sauvegarde des données.</span></div>
+          <div class="help-item"><span class="help-num">8</span><span><b>Mode Duel ⚔️</b> (accueil ou <span class="kbd">D</span>) : deux chaînes s’affrontent, choisis celle que tu regardes. La <b>palette</b> <span class="kbd">⌘</span><span class="kbd">K</span> lance n’importe quelle chaîne en deux touches. Et dans <b>Options</b> : une <b>couleur 100% perso</b> + la <b>heatmap</b> d’activité en bas des stats.</span></div>
+          <div class="help-item"><span class="help-num">⌨</span><span><b>Raccourcis clavier</b> : <span class="kbd">S</span> surprise · <span class="kbd">D</span> duel · <span class="kbd">K</span> palette · <span class="kbd">/</span> recherche · <span class="kbd">1</span>-<span class="kbd">5</span> onglets · <span class="kbd">?</span> aide · <span class="kbd">Échap</span> fermer.</span></div>
         </div>
       </div>
     </section>
 
   </div><!-- /app -->
+
+  <!-- TAB BAR -->
+  <nav class="tabbar" aria-label="Navigation principale">
+    <button class="tab-btn active" data-go="page-home" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3l9-8z"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button class="tab-btn" data-go="page-channels" type="button">
+      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11zm-8 0c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.95 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      <span>Chaînes</span>
+    </button>
+    <button class="tab-btn" data-go="page-favs" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      <span>Favoris</span>
+    </button>
+    <button class="tab-btn" data-go="page-history" type="button">
+      <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 1 0 8.95 10h-2.02A7 7 0 1 1 13 5V2l4 4-4 4V7a5 5 0 1 0 5 6h2a7 7 0 1 1-7-10z"/></svg>
+      <span>Historique</span>
+    </button>
+    <button class="tab-btn" data-go="page-options" type="button">
+      <svg viewBox="0 0 24 24"><path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.5.5,0,0,0,.12-.63l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.28,7.28,0,0,0-1.63-.94l-.38-2.65A.5.5,0,0,0,13.79,2H10.21a.5.5,0,0,0-.49.42L9.34,5.07a7.28,7.28,0,0,0-1.63.94l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.63L4.86,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.75,14.59a.5.5,0,0,0-.12.63l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.28,7.28,0,0,0,1.63.94l.38,2.65a.5.5,0,0,0,.49.42h3.58a.5.5,0,0,0,.49-.42l.38-2.65a7.28,7.28,0,0,0,1.63-.94l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.63ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
+      <span>Options</span>
+    </button>
+  </nav>
+
+  <!-- ONBOARDING -->
+  <div id="onb-overlay" class="onb-overlay" aria-hidden="true">
+    <div class="onb-card" role="dialog" aria-modal="true" aria-label="Bienvenue">
+      <div class="onb-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5L8 5.5z"></path></svg>
+      </div>
+      <h2>Bienvenue sur <span class="grad">RandomTube</span></h2>
+      <p class="onb-sub">Fini le scroll infini. Redécouvre tes youtubeurs préférés, une vidéo au hasard à la fois.</p>
+      <div class="onb-feats">
+        <div class="onb-feat"><span class="of-ic">🎲</span><span class="of-tx"><b>Surprise totale</b> — une chaîne + une vidéo tirées au sort, avec roulette.</span></div>
+        <div class="onb-feat"><span class="of-ic">🔥</span><span class="of-tx"><b>Défi du jour &amp; série</b> — reviens chaque jour et débloque des succès.</span></div>
+        <div class="onb-feat"><span class="of-ic">🎨</span><span class="of-tx"><b>6 thèmes, stats, favoris</b> — l’appli s’adapte à toi.</span></div>
+      </div>
+      <button id="onb-start" class="onb-start" type="button">C’est parti 🚀</button>
+    </div>
+  </div>
+
+  <!-- MODE DUEL -->
+  <div id="duel-overlay" class="duel-overlay" aria-hidden="true">
+    <div class="duel-card" role="dialog" aria-modal="true" aria-label="Mode Duel">
+      <div class="duel-eyebrow">Mode Duel</div>
+      <div class="duel-h">Quelle chaîne tu regardes ? ⚔️</div>
+      <div class="duel-grid">
+        <div class="duel-side" id="duel-a">
+          <img class="duel-ava hidden" id="duel-a-ava" alt="">
+          <div class="duel-fb" id="duel-a-fb">?</div>
+          <div class="duel-nm" id="duel-a-nm">—</div>
+          <div class="duel-pick">Choisir</div>
+        </div>
+        <div class="duel-vs">VS</div>
+        <div class="duel-side" id="duel-b">
+          <img class="duel-ava hidden" id="duel-b-ava" alt="">
+          <div class="duel-fb" id="duel-b-fb">?</div>
+          <div class="duel-nm" id="duel-b-nm">—</div>
+          <div class="duel-pick">Choisir</div>
+        </div>
+      </div>
+      <div class="duel-actions">
+        <button id="duel-reroll" class="small-btn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>
+          Relancer
+        </button>
+        <button id="duel-close" class="small-btn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PALETTE DE COMMANDES -->
+  <div id="cmdk-overlay" class="cmdk-overlay" aria-hidden="true">
+    <div class="cmdk" role="dialog" aria-modal="true" aria-label="Recherche rapide">
+      <div class="cmdk-head">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 5L20.5 19l-5-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
+        <input id="cmdk-input" type="text" placeholder="Lancer une chaîne au hasard…" autocomplete="off" spellcheck="false">
+        <span class="cmdk-esc">ESC</span>
+      </div>
+      <div id="cmdk-list" class="cmdk-list"></div>
+      <div class="cmdk-hint">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> naviguer</span>
+        <span><span class="kbd">↵</span> lancer</span>
+        <span><span class="kbd">⌘</span><span class="kbd">K</span> ouvrir</span>
+      </div>
+    </div>
+  </div>
 
   <!-- TOAST -->
   <div id="toast-wrap" class="toast-wrap"></div>
@@ -1048,15 +2622,45 @@
     </div>
   </div>
 
+  <!-- ROULETTE DE TIRAGE -->
+  <div id="slot-overlay" class="slot-overlay" aria-hidden="true">
+    <div class="slot-card">
+      <div class="slot-eyebrow">Tirage en cours</div>
+      <div id="slot-stage" class="slot-stage">
+        <img id="slot-ava" class="slot-ava hidden" alt="">
+        <div id="slot-fb" class="slot-fallback">?</div>
+      </div>
+      <div id="slot-name" class="slot-name">…</div>
+      <div class="slot-hint">Touche l’écran pour passer</div>
+    </div>
+  </div>
+
   <!-- MODAL PLAYER (IFrame API) -->
   <div id="player-modal" class="player-modal" aria-hidden="true">
     <div class="player-card" role="dialog" aria-modal="true" aria-label="Lecteur vidéo">
       <div class="player-head">
         <div id="player-title" class="player-title">Lecture…</div>
         <div class="player-actions">
-          <button id="player-next" class="player-btn" type="button">⏭️ Prochaine random</button>
-          <button id="player-open" class="player-btn" type="button">↗ Ouvrir YouTube</button>
-          <button id="player-close" class="player-btn" type="button">✖ Fermer</button>
+          <button id="player-next" class="player-btn" type="button">
+            <svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4zM19 5v14"/></svg>
+            <span class="btn-label">Prochaine random</span>
+          </button>
+          <button id="player-later" class="player-btn" type="button" title="À regarder plus tard">
+            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><path d="M12 7v6M9 10h6"/></svg>
+            <span class="btn-label">Plus tard</span>
+          </button>
+          <button id="player-share" class="player-btn" type="button" title="Partager">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+            <span class="btn-label">Partager</span>
+          </button>
+          <button id="player-open" class="player-btn" type="button" title="Ouvrir sur YouTube">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+            <span class="btn-label">YouTube</span>
+          </button>
+          <button id="player-close" class="player-btn" type="button" title="Fermer">
+            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            <span class="btn-label">Fermer</span>
+          </button>
         </div>
       </div>
 
@@ -1067,7 +2671,7 @@
       </div>
 
       <div class="player-foot">
-        <div id="player-foot-left">Lecteur intégré • IFrame API</div>
+        <div id="player-foot-left">Lecteur intégré</div>
         <div id="player-foot-right"></div>
       </div>
     </div>
@@ -1087,10 +2691,15 @@
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       const el = document.getElementById(id);
       if(el) el.classList.add("active");
+      document.querySelectorAll(".tab-btn").forEach(b=>{
+        b.classList.toggle("active", b.dataset.go === id);
+      });
+      if(id === "page-home") renderHomeDashboard();
       if(id === "page-favs") renderFavorites();
       if(id === "page-channels") renderChannels();
       if(id === "page-history") renderHistoryPage();
       if(id === "page-options") renderOptionsUI();
+      if(id === "page-stats") renderStatsPage();
     }
 
     document.addEventListener("click", (e)=>{
@@ -1102,13 +2711,18 @@
 
     /* ========= TOAST ========= */
     const toastWrap = document.getElementById("toast-wrap");
-    function toast(msg){
+    function toast(msg, type){
+      if(!type){
+        if(/✅|⭐|👍|🎉|terminé|copié|activé|appliqué|ajoutée/i.test(msg)) type = "success";
+        else if(/erreur|impossible|⚠️/i.test(msg)) type = "error";
+        else type = "info";
+      }
       const el = document.createElement("div");
-      el.className = "toast";
+      el.className = "toast toast-" + type;
       el.textContent = msg;
       toastWrap.appendChild(el);
-      setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(8px)"; }, 1500);
-      setTimeout(()=>{ el.remove(); }, 1900);
+      setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(8px)"; }, 1600);
+      setTimeout(()=>{ el.remove(); }, 2000);
     }
 
     /* ========= OVERLAY ========= */
@@ -1216,6 +2830,7 @@
 
     function renderOptionsUI(){
       applySwitchUI();
+      renderExtraOptions();
     }
 
     function toggleEmbed(){
@@ -1884,6 +3499,7 @@
     async function launchEntry(entry, opts = {}){
       if(isPicking) return;
       isPicking = true;
+      try{ navigator.vibrate && navigator.vibrate(12); }catch{}
 
       try{
         const embed = (typeof opts.forceEmbed === "boolean") ? opts.forceEmbed : isEmbedEnabled();
@@ -1907,8 +3523,10 @@
         if(embed) playInModal(vid, vidTitle);
         else openYouTubePreferApp(vid);
 
+        onVideoLaunched();
         renderChannels();
         renderFavorites();
+        renderHomeDashboard();
         if(document.getElementById("page-history")?.classList.contains("active")) renderHistoryPage();
 
       }catch(e){
@@ -2269,7 +3887,10 @@
         e.stopPropagation();
         const on = toggleFav(entry.entryId);
         star.classList.toggle("fav", on);
+        playSound("click");
         renderFavorites();
+        renderHomeDashboard();
+        if(on) checkAchievements(false);
       });
 
       const chevBtn = document.createElement("div");
@@ -2679,19 +4300,1042 @@
       }
     });
 
+    /* =========================================================
+       ✨ V2 — Thèmes, Surprise totale, Roulette, À regarder
+       plus tard, Dashboard, Statistiques, Partage
+       ========================================================= */
+
+    /* ---- Thèmes de couleur ---- */
+    const THEME_LIST = ["crimson","sunset","violet","ocean","emerald","gold"];
+
+    function currentTheme(){
+      const t = loadOptions().theme;
+      if(t === "custom") return "custom";
+      return THEME_LIST.includes(t) ? t : "crimson";
+    }
+
+    /* hex -> "r g b" et dérivation d'une palette à partir d'une couleur */
+    function hexToRgbTriplet(hex){
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex||"").trim());
+      if(!m) return "255 46 99";
+      return `${parseInt(m[1],16)} ${parseInt(m[2],16)} ${parseInt(m[3],16)}`;
+    }
+    function shiftHex(hex, dl){
+      const t = hexToRgbTriplet(hex).split(" ").map(Number);
+      const f = dl < 0 ? (1 + dl) : 1;
+      const g = dl > 0 ? dl : 0;
+      const c = t.map(v => Math.max(0, Math.min(255, Math.round(v * f + 255 * g))));
+      return `${c[0]} ${c[1]} ${c[2]}`;
+    }
+    function applyTheme(t){
+      const root = document.documentElement;
+      if(t === "custom"){
+        const hex = loadOptions().customColor || "#ff2e63";
+        root.setAttribute("data-theme", "custom");
+        root.style.setProperty("--a1", shiftHex(hex, 0.12));
+        root.style.setProperty("--a2", hexToRgbTriplet(hex));
+        root.style.setProperty("--a3", shiftHex(hex, -0.28));
+      }else{
+        root.style.removeProperty("--a1");
+        root.style.removeProperty("--a2");
+        root.style.removeProperty("--a3");
+        root.setAttribute("data-theme", t);
+      }
+    }
+
+    const swatchEls = Array.from(document.querySelectorAll(".swatch"));
+    const slotSwitchEl = document.getElementById("opt-slot-switch");
+    const soundSwitchEl = document.getElementById("opt-sound-switch");
+
+    function isSlotAnimEnabled(){
+      return loadOptions().slotAnim !== false;
+    }
+    function isSoundEnabled(){
+      return loadOptions().soundFx === true;
+    }
+
+    /* ---- Moteur audio (WebAudio, sans fichier) ---- */
+    let __audioCtx = null;
+    function audioCtx(){
+      if(!isSoundEnabled()) return null;
+      try{
+        if(!__audioCtx) __audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if(__audioCtx.state === "suspended") __audioCtx.resume();
+        return __audioCtx;
+      }catch{ return null; }
+    }
+    function beep(freq, dur, type, vol, whenOffset){
+      const ctx = audioCtx();
+      if(!ctx) return;
+      const t0 = ctx.currentTime + (whenOffset || 0);
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = type || "sine";
+      osc.frequency.setValueAtTime(freq, t0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(vol || 0.10, t0 + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + (dur || 0.12));
+      osc.connect(g); g.connect(ctx.destination);
+      osc.start(t0); osc.stop(t0 + (dur || 0.12) + 0.02);
+    }
+    function playSound(kind){
+      if(!isSoundEnabled()) return;
+      if(kind === "click") beep(320, 0.06, "triangle", 0.05);
+      else if(kind === "tick") beep(760, 0.045, "square", 0.035);
+      else if(kind === "win"){
+        beep(523, 0.12, "triangle", 0.09, 0);
+        beep(659, 0.12, "triangle", 0.09, 0.10);
+        beep(784, 0.20, "triangle", 0.10, 0.20);
+      }
+      else if(kind === "unlock"){
+        beep(880, 0.10, "sine", 0.09, 0);
+        beep(1175, 0.22, "sine", 0.09, 0.09);
+      }
+    }
+
+    const customColorInput = document.getElementById("custom-color");
+
+    function renderExtraOptions(){
+      const t = currentTheme();
+      swatchEls.forEach(s => s.classList.toggle("selected", s.dataset.theme === t));
+      if(customColorInput){
+        const stored = loadOptions().customColor;
+        if(stored) customColorInput.value = stored;
+      }
+      if(slotSwitchEl){
+        const on = isSlotAnimEnabled();
+        slotSwitchEl.classList.toggle("on", on);
+        slotSwitchEl.setAttribute("aria-checked", on ? "true" : "false");
+      }
+      if(soundSwitchEl){
+        const on = isSoundEnabled();
+        soundSwitchEl.classList.toggle("on", on);
+        soundSwitchEl.setAttribute("aria-checked", on ? "true" : "false");
+      }
+    }
+
+    if(soundSwitchEl){
+      const toggleSound = ()=>{
+        setOption("soundFx", !isSoundEnabled());
+        renderExtraOptions();
+        if(isSoundEnabled()) playSound("win");
+        toast(isSoundEnabled() ? "Effets sonores : activés ✅" : "Effets sonores : désactivés");
+      };
+      soundSwitchEl.addEventListener("click", toggleSound);
+      soundSwitchEl.addEventListener("keydown", (e)=>{
+        if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleSound(); }
+      });
+    }
+
+    swatchEls.forEach(s=>{
+      if(s.dataset.theme === "custom") return;
+      s.addEventListener("click", ()=>{
+        setOption("theme", s.dataset.theme);
+        applyTheme(s.dataset.theme);
+        renderExtraOptions();
+        toast("Thème appliqué ✅");
+      });
+    });
+
+    if(customColorInput){
+      const applyCustom = ()=>{
+        setOption("customColor", customColorInput.value);
+        setOption("theme", "custom");
+        applyTheme("custom");
+        renderExtraOptions();
+      };
+      customColorInput.addEventListener("input", applyCustom);
+      customColorInput.addEventListener("change", ()=>{ applyCustom(); toast("Couleur personnalisée appliquée ✅"); });
+    }
+
+    if(slotSwitchEl){
+      const toggleSlotAnim = ()=>{
+        setOption("slotAnim", !isSlotAnimEnabled());
+        renderExtraOptions();
+        toast(isSlotAnimEnabled() ? "Animation de tirage : activée ✅" : "Animation de tirage : désactivée");
+      };
+      slotSwitchEl.addEventListener("click", toggleSlotAnim);
+      slotSwitchEl.addEventListener("keydown", (e)=>{
+        if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleSlotAnim(); }
+      });
+    }
+
+    /* ---- À regarder plus tard ---- */
+    const WL_KEY = "yt_watchlater_v1";
+
+    function loadWatchLater(){
+      try{
+        const raw = localStorage.getItem(WL_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch{ return []; }
+    }
+    function saveWatchLater(list){
+      try{ localStorage.setItem(WL_KEY, JSON.stringify(list.slice(0, 60))); }catch{}
+    }
+    function addWatchLater(id, title){
+      if(!id) return;
+      const list = loadWatchLater();
+      if(list.some(x => x.id === id)){
+        toast("Déjà dans ta liste 👍");
+        return;
+      }
+      list.unshift({ id, title: String(title || "").trim(), t: Date.now() });
+      saveWatchLater(list);
+      toast("Ajoutée à « À regarder plus tard » ✅");
+      renderHomeDashboard();
+    }
+    function removeWatchLater(id){
+      saveWatchLater(loadWatchLater().filter(x => x.id !== id));
+      renderHomeDashboard();
+    }
+
+    /* ---- Dashboard accueil ---- */
+    function renderHomeDashboard(){
+      const statWatched = document.getElementById("stat-watched");
+      if(!statWatched) return;
+
+      const wl = loadWatchLater();
+      animateCount(statWatched, loadGlobalHistory().length);
+      animateCount(document.getElementById("stat-favs"), loadFavorites().length);
+      animateCount(document.getElementById("stat-later"), wl.length);
+
+      const chip = document.getElementById("surprise-favs");
+      if(chip) chip.classList.toggle("active", !!loadOptions().surpriseFavs);
+
+      const block = document.getElementById("watch-later-block");
+      const row = document.getElementById("watch-later-row");
+      row.innerHTML = "";
+      block.classList.toggle("hidden", wl.length === 0);
+
+      for(const item of wl){
+        const card = document.createElement("div");
+        card.className = "wl-card";
+
+        const img = document.createElement("img");
+        img.className = "wl-thumb";
+        img.loading = "lazy";
+        img.alt = "";
+        img.src = `https://i.ytimg.com/vi/${item.id}/mqdefault.jpg`;
+
+        const t = document.createElement("div");
+        t.className = "wl-title";
+        t.textContent = item.title || "Vidéo YouTube";
+
+        const rm = document.createElement("div");
+        rm.className = "wl-remove";
+        rm.textContent = "✕";
+        rm.title = "Retirer de la liste";
+        rm.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          removeWatchLater(item.id);
+          toast("Retirée de la liste");
+        });
+
+        card.addEventListener("click", ()=>{
+          removeWatchLater(item.id);
+          if(isEmbedEnabled()) playInModal(item.id, item.title || "Vidéo");
+          else openYouTubePreferApp(item.id);
+        });
+
+        card.appendChild(img);
+        card.appendChild(t);
+        card.appendChild(rm);
+        row.appendChild(card);
+      }
+
+      renderDailyAndStreak();
+    }
+
+    /* ============================================================
+       SÉRIE (streak) + DÉFI DU JOUR
+       ============================================================ */
+    const STREAK_KEY = "yt_streak_v1";     // { count, last:"YYYY-MM-DD" }
+    const DAILY_KEY  = "yt_daily_v1";      // { date:"YYYY-MM-DD", done:bool }
+
+    function dayStr(d){
+      const x = d || new Date();
+      return `${x.getFullYear()}-${pad2(x.getMonth()+1)}-${pad2(x.getDate())}`;
+    }
+    function loadStreak(){
+      try{ return JSON.parse(localStorage.getItem(STREAK_KEY)) || { count:0, last:"" }; }
+      catch{ return { count:0, last:"" }; }
+    }
+    function saveStreak(s){ try{ localStorage.setItem(STREAK_KEY, JSON.stringify(s)); }catch{} }
+
+    function registerStreakToday(){
+      const today = dayStr();
+      const s = loadStreak();
+      if(s.last === today) return s.count;
+      const yest = dayStr(new Date(Date.now() - 86400000));
+      s.count = (s.last === yest) ? (s.count || 0) + 1 : 1;
+      s.last = today;
+      saveStreak(s);
+      return s.count;
+    }
+    function currentStreak(){
+      const s = loadStreak();
+      const today = dayStr();
+      const yest = dayStr(new Date(Date.now() - 86400000));
+      if(s.last === today || s.last === yest) return s.count || 0;
+      return 0;
+    }
+
+    /* Défi du jour : chaîne déterministe selon la date */
+    function dailyEntry(){
+      const t = dayStr();
+      let h = 0;
+      for(let i=0;i<t.length;i++){ h = (h * 31 + t.charCodeAt(i)) >>> 0; }
+      return ENTRIES[h % ENTRIES.length];
+    }
+    function loadDaily(){
+      try{ return JSON.parse(localStorage.getItem(DAILY_KEY)) || {}; }catch{ return {}; }
+    }
+    function isDailyDone(){
+      const d = loadDaily();
+      return d.date === dayStr() && d.done === true;
+    }
+    function markDailyDone(){
+      try{ localStorage.setItem(DAILY_KEY, JSON.stringify({ date: dayStr(), done: true })); }catch{}
+    }
+
+    function renderDailyAndStreak(){
+      const streakEl = document.getElementById("streak-days");
+      if(streakEl) streakEl.textContent = currentStreak();
+
+      const entry = dailyEntry();
+      const nameEl = document.getElementById("daily-name");
+      if(nameEl) nameEl.textContent = entry.title;
+
+      const done = isDailyDone();
+      const goBtn = document.getElementById("daily-go");
+      const doneEl = document.getElementById("daily-done");
+      if(goBtn) goBtn.classList.toggle("hidden", done);
+      if(doneEl) doneEl.classList.toggle("hidden", !done);
+    }
+
+    async function launchDailyChallenge(){
+      if(isPicking) return;
+      const entry = dailyEntry();
+      markDailyDone();
+      if(isSlotAnimEnabled()) await runSlotAnimation(entry, ENTRIES);
+      launchEntry(entry);
+      renderDailyAndStreak();
+    }
+
+    const dailyCardEl = document.getElementById("daily-card");
+    if(dailyCardEl){
+      dailyCardEl.addEventListener("click", ()=>{ playSound("click"); launchDailyChallenge(); });
+    }
+
+    /* ============================================================
+       SUCCÈS / BADGES
+       ============================================================ */
+    const ACH_KEY = "yt_achievements_v1";
+
+    const ACHIEVEMENTS = [
+      { id:"first",    icon:"🎬", name:"Premier tirage",   desc:"Lance ta 1ʳᵉ vidéo",          test:s=> s.total >= 1 },
+      { id:"ten",      icon:"🍿", name:"Marathonien",      desc:"10 vidéos tirées",            test:s=> s.total >= 10 },
+      { id:"fifty",    icon:"🔥", name:"Accro",            desc:"50 vidéos tirées",            test:s=> s.total >= 50 },
+      { id:"hundred",  icon:"💯", name:"Centurion",        desc:"100 vidéos tirées",           test:s=> s.total >= 100 },
+      { id:"explore5", icon:"🧭", name:"Explorateur",      desc:"5 chaînes différentes",       test:s=> s.explored >= 5 },
+      { id:"exploreall",icon:"🌍",name:"Globe-trotteur",   desc:"Toutes les chaînes",          test:s=> s.explored >= s.channels },
+      { id:"fav",      icon:"⭐", name:"Coup de cœur",      desc:"1ᵉʳ favori ajouté",           test:s=> s.favs >= 1 },
+      { id:"fav5",     icon:"💛", name:"Fidèle",           desc:"5 favoris",                   test:s=> s.favs >= 5 },
+      { id:"streak3",  icon:"📅", name:"Régulier",         desc:"Série de 3 jours",            test:s=> s.streak >= 3 },
+      { id:"streak7",  icon:"🗓️", name:"Increvable",       desc:"Série de 7 jours",            test:s=> s.streak >= 7 },
+      { id:"later",    icon:"🔖", name:"Pour plus tard",   desc:"1 vidéo mise de côté",        test:s=> s.later >= 1 },
+      { id:"daily",    icon:"🎯", name:"Défi relevé",      desc:"1 défi du jour terminé",      test:s=> s.dailyDone }
+    ];
+
+    function loadAchievements(){
+      try{ const a = JSON.parse(localStorage.getItem(ACH_KEY)); return Array.isArray(a) ? a : []; }
+      catch{ return []; }
+    }
+    function saveAchievements(a){ try{ localStorage.setItem(ACH_KEY, JSON.stringify(a)); }catch{} }
+
+    function achStats(){
+      const hist = loadGlobalHistory();
+      const explored = new Set(hist.map(x=>x?.chKey).filter(Boolean)).size;
+      return {
+        total: hist.length,
+        explored,
+        channels: CHANNELS_ALL.length,
+        favs: loadFavorites().length,
+        later: loadWatchLater().length,
+        streak: currentStreak(),
+        dailyDone: isDailyDone()
+      };
+    }
+
+    function achToast(a){
+      const el = document.createElement("div");
+      el.className = "toast toast-ach";
+      el.innerHTML =
+        `<span class="ta-ic">${a.icon}</span>`+
+        `<span><span class="ta-t1">Succès débloqué</span><span class="ta-t2">${a.name}</span></span>`;
+      toastWrap.appendChild(el);
+      setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(8px)"; }, 2600);
+      setTimeout(()=>{ el.remove(); }, 3000);
+    }
+
+    function checkAchievements(silent){
+      const unlocked = new Set(loadAchievements());
+      const s = achStats();
+      const newly = [];
+      for(const a of ACHIEVEMENTS){
+        if(!unlocked.has(a.id) && a.test(s)){
+          unlocked.add(a.id);
+          newly.push(a);
+        }
+      }
+      if(newly.length){
+        saveAchievements(Array.from(unlocked));
+        if(!silent){
+          newly.forEach((a, i)=>{
+            setTimeout(()=>{ achToast(a); playSound("unlock"); }, i * 650);
+          });
+        }
+      }
+      return newly;
+    }
+
+    function renderAchievements(){
+      const grid = document.getElementById("ach-grid");
+      if(!grid) return;
+      const unlocked = new Set(loadAchievements());
+      grid.innerHTML = "";
+      for(const a of ACHIEVEMENTS){
+        const on = unlocked.has(a.id);
+        const cell = document.createElement("div");
+        cell.className = "ach " + (on ? "unlocked" : "locked");
+        cell.innerHTML =
+          `<div class="ach-ic">${a.icon}</div>`+
+          `<div class="ach-tx"><div class="ach-nm">${on ? a.name : "???"}</div>`+
+          `<div class="ach-ds">${a.desc}</div></div>`;
+        grid.appendChild(cell);
+      }
+      const fill = document.getElementById("ach-prog-fill");
+      const lbl = document.getElementById("ach-prog-lbl");
+      const pct = Math.round(unlocked.size / ACHIEVEMENTS.length * 100);
+      if(fill) requestAnimationFrame(()=>{ fill.style.width = pct + "%"; });
+      if(lbl) lbl.textContent = `${unlocked.size} / ${ACHIEVEMENTS.length} succès débloqués`;
+    }
+
+    /* Appelé à chaque lancement de vidéo */
+    function onVideoLaunched(){
+      registerStreakToday();
+      checkAchievements(false);
+      renderDailyAndStreak();
+    }
+
+    /* ============================================================
+       COMPTEURS ANIMÉS
+       ============================================================ */
+    function animateCount(el, to){
+      if(!el) return;
+      const from = parseInt(el.dataset.val || "0", 10) || 0;
+      to = to | 0;
+      if(from === to){ el.textContent = to; el.dataset.val = to; return; }
+      const dur = 550, t0 = performance.now();
+      const tick = (now)=>{
+        const p = Math.min(1, (now - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(from + (to - from) * eased);
+        if(p < 1) requestAnimationFrame(tick);
+        else el.dataset.val = to;
+      };
+      requestAnimationFrame(tick);
+    }
+
+    /* ============================================================
+       PALETTE DE COMMANDES (⌘K / Ctrl+K)
+       ============================================================ */
+    const cmdkOverlay = document.getElementById("cmdk-overlay");
+    const cmdkInput = document.getElementById("cmdk-input");
+    const cmdkList = document.getElementById("cmdk-list");
+    let cmdkResults = [];
+    let cmdkActive = 0;
+
+    function openCmdk(){
+      if(!cmdkOverlay) return;
+      cmdkOverlay.classList.add("show");
+      cmdkOverlay.setAttribute("aria-hidden", "false");
+      cmdkInput.value = "";
+      renderCmdk("");
+      setTimeout(()=> cmdkInput.focus(), 40);
+    }
+    function closeCmdk(){
+      cmdkOverlay.classList.remove("show");
+      cmdkOverlay.setAttribute("aria-hidden", "true");
+    }
+    function renderCmdk(q){
+      const query = String(q || "").trim().toLowerCase();
+      cmdkResults = query
+        ? ENTRIES.filter(e => e.title.toLowerCase().includes(query))
+        : ENTRIES.slice();
+      cmdkActive = 0;
+      cmdkList.innerHTML = "";
+
+      if(!cmdkResults.length){
+        cmdkList.innerHTML = `<div class="cmdk-empty">Aucune chaîne pour « ${q} »</div>`;
+        return;
+      }
+      cmdkResults.forEach((e, i)=>{
+        const item = document.createElement("div");
+        item.className = "cmdk-item" + (i === 0 ? " active" : "");
+        item.dataset.i = i;
+
+        const ava = loadCachedAvatar(e.avatarChannelId);
+        if(ava){
+          const img = document.createElement("img");
+          img.className = "cmdk-ava"; img.src = ava; img.alt = "";
+          item.appendChild(img);
+        }else{
+          const fb = document.createElement("div");
+          fb.className = "cmdk-fb"; fb.textContent = e.title[0].toUpperCase();
+          item.appendChild(fb);
+        }
+
+        const tx = document.createElement("div");
+        tx.className = "cmdk-tx";
+        tx.innerHTML = `<div class="cmdk-nm"></div><div class="cmdk-sub">Vidéo au hasard</div>`;
+        tx.querySelector(".cmdk-nm").textContent = e.title;
+        item.appendChild(tx);
+
+        const go = document.createElement("div");
+        go.className = "cmdk-go";
+        go.textContent = "↵";
+        item.appendChild(go);
+
+        item.addEventListener("click", ()=> cmdkLaunch(i));
+        item.addEventListener("mousemove", ()=> setCmdkActive(i));
+        cmdkList.appendChild(item);
+      });
+    }
+    function setCmdkActive(i){
+      cmdkActive = i;
+      cmdkList.querySelectorAll(".cmdk-item").forEach((el, idx)=>{
+        el.classList.toggle("active", idx === i);
+      });
+    }
+    async function cmdkLaunch(i){
+      const entry = cmdkResults[i];
+      if(!entry) return;
+      closeCmdk();
+      playSound("click");
+      if(isSlotAnimEnabled()) await runSlotAnimation(entry, ENTRIES);
+      launchEntry(entry);
+    }
+    if(cmdkInput){
+      cmdkInput.addEventListener("input", ()=> renderCmdk(cmdkInput.value));
+      cmdkInput.addEventListener("keydown", (e)=>{
+        if(e.key === "ArrowDown"){ e.preventDefault(); setCmdkActive(Math.min(cmdkResults.length-1, cmdkActive+1)); scrollCmdkIntoView(); }
+        else if(e.key === "ArrowUp"){ e.preventDefault(); setCmdkActive(Math.max(0, cmdkActive-1)); scrollCmdkIntoView(); }
+        else if(e.key === "Enter"){ e.preventDefault(); cmdkLaunch(cmdkActive); }
+        else if(e.key === "Escape"){ e.preventDefault(); closeCmdk(); }
+      });
+    }
+    function scrollCmdkIntoView(){
+      const el = cmdkList.querySelector(".cmdk-item.active");
+      if(el) el.scrollIntoView({ block:"nearest" });
+    }
+    if(cmdkOverlay){
+      cmdkOverlay.addEventListener("click", (e)=>{ if(e.target === cmdkOverlay) closeCmdk(); });
+    }
+
+    /* ============================================================
+       MODE DUEL (⚔️)
+       ============================================================ */
+    const duelOverlay = document.getElementById("duel-overlay");
+    const duelBtn = document.getElementById("duel-btn");
+    let duelPair = [null, null];
+
+    function fillDuelSide(side, entry){
+      const ava = document.getElementById(`duel-${side}-ava`);
+      const fb = document.getElementById(`duel-${side}-fb`);
+      const nm = document.getElementById(`duel-${side}-nm`);
+      const url = loadCachedAvatar(entry.avatarChannelId);
+      if(url){ ava.src = url; ava.classList.remove("hidden"); fb.classList.add("hidden"); }
+      else{ ava.classList.add("hidden"); fb.textContent = entry.title[0].toUpperCase(); fb.classList.remove("hidden"); }
+      nm.textContent = entry.title;
+    }
+    function rollDuel(){
+      let pool = ENTRIES;
+      if(loadOptions().surpriseFavs){
+        const favs = loadFavorites();
+        const fp = ENTRIES.filter(e => favs.includes(e.entryId));
+        if(fp.length >= 2) pool = fp;
+      }
+      const a = Math.floor(Math.random() * pool.length);
+      let b = Math.floor(Math.random() * pool.length);
+      if(pool.length > 1){ while(b === a) b = Math.floor(Math.random() * pool.length); }
+      duelPair = [pool[a], pool[b]];
+      fillDuelSide("a", duelPair[0]);
+      fillDuelSide("b", duelPair[1]);
+    }
+    function openDuel(){
+      if(!duelOverlay) return;
+      rollDuel();
+      duelOverlay.classList.add("show");
+      duelOverlay.setAttribute("aria-hidden", "false");
+    }
+    function closeDuel(){
+      duelOverlay.classList.remove("show");
+      duelOverlay.setAttribute("aria-hidden", "true");
+    }
+    async function pickDuel(idx){
+      const entry = duelPair[idx];
+      if(!entry) return;
+      closeDuel();
+      playSound("win");
+      if(isSlotAnimEnabled()) await runSlotAnimation(entry, ENTRIES);
+      launchEntry(entry);
+    }
+    if(duelBtn) duelBtn.addEventListener("click", ()=>{ playSound("click"); openDuel(); });
+    document.getElementById("duel-a")?.addEventListener("click", ()=> pickDuel(0));
+    document.getElementById("duel-b")?.addEventListener("click", ()=> pickDuel(1));
+    document.getElementById("duel-reroll")?.addEventListener("click", ()=>{ playSound("tick"); rollDuel(); });
+    document.getElementById("duel-close")?.addEventListener("click", closeDuel);
+    if(duelOverlay) duelOverlay.addEventListener("click", (e)=>{ if(e.target === duelOverlay) closeDuel(); });
+
+    /* ============================================================
+       HEATMAP D'ACTIVITÉ (15 semaines)
+       ============================================================ */
+    function renderHeatmap(){
+      const grid = document.getElementById("heat-grid");
+      if(!grid) return;
+      const hist = loadGlobalHistory();
+
+      const perDay = new Map();
+      for(const it of hist){
+        if(!it?.t) continue;
+        const d = new Date(it.t); d.setHours(0,0,0,0);
+        const key = d.getTime();
+        perDay.set(key, (perDay.get(key) || 0) + 1);
+      }
+
+      const WEEKS = 15;
+      const today = new Date(); today.setHours(0,0,0,0);
+      // reculer jusqu'au début de semaine (lundi)
+      const start = new Date(today);
+      const dow = (start.getDay() + 6) % 7; // lundi=0
+      start.setDate(start.getDate() - dow - (WEEKS - 1) * 7);
+
+      grid.innerHTML = "";
+      for(let w = 0; w < WEEKS; w++){
+        for(let d = 0; d < 7; d++){
+          const day = new Date(start);
+          day.setDate(start.getDate() + w * 7 + d);
+          const cell = document.createElement("div");
+          cell.className = "heat-cell";
+          if(day > today){ cell.style.visibility = "hidden"; grid.appendChild(cell); continue; }
+          const n = perDay.get(day.getTime()) || 0;
+          let lvl = 0;
+          if(n >= 1) lvl = 1;
+          if(n >= 3) lvl = 2;
+          if(n >= 6) lvl = 3;
+          if(n >= 10) lvl = 4;
+          if(lvl) cell.classList.add("l" + lvl);
+          cell.title = `${day.toLocaleDateString("fr-FR")} — ${n} vidéo(s)`;
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+    /* ---- Roulette de tirage (slot machine) ---- */
+    const slotOverlayEl = document.getElementById("slot-overlay");
+    const slotStageEl = document.getElementById("slot-stage");
+    const slotAvaEl = document.getElementById("slot-ava");
+    const slotFbEl = document.getElementById("slot-fb");
+    const slotNameEl = document.getElementById("slot-name");
+    let slotSkip = false;
+
+    slotOverlayEl.addEventListener("click", ()=>{ slotSkip = true; });
+
+    function slotShow(entry){
+      const url = loadCachedAvatar(entry.avatarChannelId);
+      if(url){
+        slotAvaEl.src = url;
+        slotAvaEl.classList.remove("hidden");
+        slotFbEl.classList.add("hidden");
+      }else{
+        slotAvaEl.classList.add("hidden");
+        slotFbEl.textContent = (entry.title || "?")[0].toUpperCase();
+        slotFbEl.classList.remove("hidden");
+      }
+      slotNameEl.textContent = entry.title;
+      slotStageEl.classList.remove("tick");
+      void slotStageEl.offsetWidth;
+      slotStageEl.classList.add("tick");
+    }
+
+    function confettiBurst(host){
+      for(let i=0; i<22; i++){
+        const s = document.createElement("span");
+        s.className = "confetti";
+        s.style.background = `hsl(${Math.floor(Math.random()*360)}, 90%, 62%)`;
+        host.appendChild(s);
+        const ang = Math.random() * Math.PI * 2;
+        const dist = 70 + Math.random() * 115;
+        const x = Math.cos(ang) * dist;
+        const y = Math.sin(ang) * dist - 30;
+        const rot = Math.random() * 720 - 360;
+        const anim = s.animate([
+          { transform: "translate(-50%,-50%) rotate(0deg)", opacity: 1 },
+          { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${rot}deg)`, opacity: 0 }
+        ], { duration: 700 + Math.random() * 500, easing: "cubic-bezier(.2,.8,.3,1)" });
+        anim.onfinish = ()=> s.remove();
+      }
+    }
+
+    function runSlotAnimation(chosen, pool){
+      return new Promise((resolve)=>{
+        slotSkip = false;
+        slotOverlayEl.classList.remove("reveal");
+        slotOverlayEl.classList.add("show");
+
+        const delays = [70,70,80,85,95,105,120,140,165,195,235,285,350,430];
+        let i = 0;
+
+        const finish = ()=>{
+          slotShow(chosen);
+          slotOverlayEl.classList.add("reveal");
+          confettiBurst(slotStageEl);
+          playSound("win");
+          try{ navigator.vibrate && navigator.vibrate([15,30,25]); }catch{}
+          setTimeout(()=>{
+            slotOverlayEl.classList.remove("show","reveal");
+            resolve();
+          }, 1050);
+        };
+
+        const step = ()=>{
+          if(slotSkip || i >= delays.length){ finish(); return; }
+          const e = pool[Math.floor(Math.random() * pool.length)] || chosen;
+          slotShow(e);
+          playSound("tick");
+          setTimeout(step, delays[i++]);
+        };
+        step();
+      });
+    }
+
+    /* ---- Surprise totale ---- */
+    const surpriseBtn = document.getElementById("surprise-btn");
+    const surpriseFavsChip = document.getElementById("surprise-favs");
+
+    if(surpriseFavsChip){
+      surpriseFavsChip.addEventListener("click", ()=>{
+        const on = !loadOptions().surpriseFavs;
+        setOption("surpriseFavs", on);
+        surpriseFavsChip.classList.toggle("active", on);
+        toast(on ? "Surprise limitée à tes favoris ⭐" : "Surprise sur toutes les chaînes 🎲");
+      });
+    }
+
+    if(surpriseBtn){
+      surpriseBtn.addEventListener("click", async ()=>{
+        if(isPicking) return;
+        playSound("click");
+        let pool = ENTRIES;
+        if(loadOptions().surpriseFavs){
+          const favs = loadFavorites();
+          const fp = ENTRIES.filter(e => favs.includes(e.entryId));
+          if(fp.length) pool = fp;
+          else toast("Aucun favori — tirage sur toutes les chaînes");
+        }
+        const entry = pool[Math.floor(Math.random() * pool.length)];
+        if(isSlotAnimEnabled()) await runSlotAnimation(entry, pool);
+        launchEntry(entry);
+      });
+    }
+
+    /* ---- Page Statistiques ---- */
+    function renderStatsPage(){
+      const hist = loadGlobalHistory();
+      const total = hist.length;
+      const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+      const week = hist.filter(x => (x?.t || 0) >= weekAgo).length;
+
+      const counts = new Map();
+      for(const it of hist){
+        if(it?.chKey) counts.set(it.chKey, (counts.get(it.chKey) || 0) + 1);
+      }
+
+      animateCount(document.getElementById("stats-total"), total);
+      animateCount(document.getElementById("stats-week"), week);
+      document.getElementById("stats-explored").textContent = `${counts.size}/${CHANNELS_ALL.length}`;
+
+      const sorted = Array.from(counts.entries()).sort((a,b)=> b[1] - a[1]);
+      const topName = sorted.length ? (channelByKey(sorted[0][0])?.name || sorted[0][0]) : "—";
+      document.getElementById("stats-top").textContent = topName;
+
+      const barsEl = document.getElementById("stats-bars");
+      barsEl.innerHTML = "";
+
+      if(!sorted.length){
+        const empty = document.createElement("div");
+        empty.className = "stats-empty";
+        empty.textContent = "Aucune donnée pour l’instant — lance ta première vidéo random 🎲";
+        barsEl.appendChild(empty);
+      }else{
+        const max = sorted[0][1];
+        for(const [key, n] of sorted.slice(0, 10)){
+          const ch = channelByKey(key);
+          const name = ch?.name || key;
+
+          const rowEl = document.createElement("div");
+          rowEl.className = "sbar-row";
+
+          const avaUrl = ch ? loadCachedAvatar(ch.id) : "";
+          if(avaUrl){
+            const ava = document.createElement("img");
+            ava.className = "sbar-ava";
+            ava.alt = "";
+            ava.src = avaUrl;
+            rowEl.appendChild(ava);
+          }else{
+            const fb = document.createElement("div");
+            fb.className = "sbar-fb";
+            fb.textContent = name[0].toUpperCase();
+            rowEl.appendChild(fb);
+          }
+
+          const mid = document.createElement("div");
+          mid.className = "sbar-mid";
+          const nm = document.createElement("div");
+          nm.className = "sbar-name";
+          nm.textContent = name;
+          const track = document.createElement("div");
+          track.className = "sbar-track";
+          const fill = document.createElement("div");
+          fill.className = "sbar-fill";
+          fill.style.width = "0%";
+          track.appendChild(fill);
+          mid.appendChild(nm);
+          mid.appendChild(track);
+          rowEl.appendChild(mid);
+
+          const cnt = document.createElement("div");
+          cnt.className = "sbar-count";
+          cnt.textContent = n;
+          rowEl.appendChild(cnt);
+
+          barsEl.appendChild(rowEl);
+
+          requestAnimationFrame(()=>{
+            requestAnimationFrame(()=>{
+              fill.style.width = Math.max(6, Math.round(n / max * 100)) + "%";
+            });
+          });
+        }
+      }
+
+      /* Activité 7 jours */
+      const daysEl = document.getElementById("stats-days");
+      daysEl.innerHTML = "";
+      const dayCounts = [];
+      for(let i=6; i>=0; i--){
+        const d = new Date();
+        d.setHours(0,0,0,0);
+        d.setDate(d.getDate() - i);
+        const start = d.getTime(), end = start + 86400000;
+        const n = hist.filter(x => (x?.t || 0) >= start && x.t < end).length;
+        dayCounts.push({ label: d.toLocaleDateString("fr-FR", { weekday:"short" }).replace(".",""), n });
+      }
+      const dmax = Math.max(1, ...dayCounts.map(d => d.n));
+      for(const d of dayCounts){
+        const col = document.createElement("div");
+        col.className = "day-col";
+
+        const val = document.createElement("div");
+        val.className = "day-val";
+        val.textContent = d.n;
+
+        const bar = document.createElement("div");
+        bar.className = "day-bar" + (d.n === 0 ? " zero" : "");
+        bar.style.height = (6 + Math.round(d.n / dmax * 62)) + "px";
+
+        const lbl = document.createElement("div");
+        lbl.className = "day-lbl";
+        lbl.textContent = d.label;
+
+        col.appendChild(val);
+        col.appendChild(bar);
+        col.appendChild(lbl);
+        daysEl.appendChild(col);
+      }
+
+      renderHeatmap();
+      renderAchievements();
+    }
+
+    /* ============================================================
+       EXPORT / IMPORT des données
+       ============================================================ */
+    function collectAppData(){
+      const out = {};
+      for(let i=0; i<localStorage.length; i++){
+        const k = localStorage.key(i);
+        if(k && k.startsWith("yt_")) out[k] = localStorage.getItem(k);
+      }
+      return { app:"RandomTube", version:1, exportedAt:new Date().toISOString(), data:out };
+    }
+    const exportBtn = document.getElementById("data-export");
+    if(exportBtn){
+      exportBtn.addEventListener("click", ()=>{
+        try{
+          const blob = new Blob([JSON.stringify(collectAppData(), null, 2)], { type:"application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `randomtube-sauvegarde-${dayStr()}.json`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(()=> URL.revokeObjectURL(url), 1000);
+          toast("Sauvegarde exportée ✅");
+        }catch{ toast("Export impossible"); }
+      });
+    }
+    const importBtn = document.getElementById("data-import");
+    const importInput = document.getElementById("data-import-file");
+    if(importBtn && importInput){
+      importBtn.addEventListener("click", ()=> importInput.click());
+      importInput.addEventListener("change", (e)=>{
+        const file = e.target.files && e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = ()=>{
+          try{
+            const parsed = JSON.parse(reader.result);
+            const data = parsed && parsed.data ? parsed.data : parsed;
+            if(!data || typeof data !== "object") throw new Error("format");
+            let n = 0;
+            for(const k in data){
+              if(k.startsWith("yt_")){ localStorage.setItem(k, data[k]); n++; }
+            }
+            toast(`Import réussi : ${n} entrées ✅`);
+            applyTheme(currentTheme());
+            renderOptionsUI();
+            renderChannels();
+            renderFavorites();
+            renderHomeDashboard();
+            checkAchievements(true);
+          }catch{
+            toast("Fichier invalide ⚠️");
+          }
+          importInput.value = "";
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    /* ============================================================
+       ONBOARDING (première visite)
+       ============================================================ */
+    const ONB_KEY = "yt_onboarded_v1";
+    const onbOverlay = document.getElementById("onb-overlay");
+    const onbStart = document.getElementById("onb-start");
+    function maybeShowOnboarding(){
+      let seen = false;
+      try{ seen = localStorage.getItem(ONB_KEY) === "1"; }catch{}
+      if(seen || !onbOverlay) return;
+      onbOverlay.classList.add("show");
+      onbOverlay.setAttribute("aria-hidden","false");
+    }
+    if(onbStart){
+      onbStart.addEventListener("click", ()=>{
+        try{ localStorage.setItem(ONB_KEY, "1"); }catch{}
+        onbOverlay.classList.remove("show");
+        onbOverlay.setAttribute("aria-hidden","true");
+        playSound("win");
+      });
+    }
+
+    /* ============================================================
+       RACCOURCIS CLAVIER
+       ============================================================ */
+    document.addEventListener("keydown", (e)=>{
+      // ⌘K / Ctrl+K : palette de commandes (global)
+      if((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")){
+        e.preventDefault();
+        if(cmdkOverlay && cmdkOverlay.classList.contains("show")) closeCmdk();
+        else openCmdk();
+        return;
+      }
+      if(e.ctrlKey || e.metaKey || e.altKey) return;
+      const tag = (e.target && e.target.tagName || "").toLowerCase();
+      if(tag === "input" || tag === "textarea" || tag === "select") return;
+      if(cmdkOverlay && cmdkOverlay.classList.contains("show")) return;
+      if(duelOverlay && duelOverlay.classList.contains("show")){ if(e.key === "Escape") closeDuel(); return; }
+      if(playerModal.classList.contains("show")) return;
+      if(onbOverlay && onbOverlay.classList.contains("show")) return;
+
+      const k = e.key;
+      if(k === "s" || k === "S"){ e.preventDefault(); surpriseBtn && surpriseBtn.click(); }
+      else if(k === "k" || k === "K"){ e.preventDefault(); openCmdk(); }
+      else if(k === "d" || k === "D"){ e.preventDefault(); openDuel(); }
+      else if(k === "/"){ e.preventDefault(); showPage("page-channels"); setTimeout(()=> channelsSearchEl && channelsSearchEl.focus(), 60); }
+      else if(k === "?"){ e.preventDefault(); showPage("page-help"); }
+      else if(k === "1"){ showPage("page-home"); }
+      else if(k === "2"){ showPage("page-channels"); }
+      else if(k === "3"){ showPage("page-favs"); }
+      else if(k === "4"){ showPage("page-history"); }
+      else if(k === "5"){ showPage("page-options"); }
+    });
+
+    /* ---- Boutons lecteur : Plus tard + Partager ---- */
+    const playerBtnLater = document.getElementById("player-later");
+    const playerBtnShare = document.getElementById("player-share");
+
+    playerBtnLater.addEventListener("click", ()=>{
+      if(!currentVideoId) return;
+      addWatchLater(currentVideoId, playerTitleEl.textContent || "");
+    });
+
+    playerBtnShare.addEventListener("click", async ()=>{
+      if(!currentVideoId) return;
+      const url = `https://www.youtube.com/watch?v=${currentVideoId}`;
+      if(navigator.share){
+        try{
+          await navigator.share({ title: playerTitleEl.textContent || "Vidéo YouTube", url });
+          return;
+        }catch(e){
+          if(e && e.name === "AbortError") return;
+        }
+      }
+      try{
+        await navigator.clipboard.writeText(url);
+        toast("Lien copié ✅");
+      }catch{
+        toast("Impossible de copier le lien");
+      }
+    });
+
     /* ========= BOOT ========= */
     (function boot(){
+      applyTheme(currentTheme());
       renderOptionsUI();
       renderChannels();
       renderFavorites();
+      renderHomeDashboard();
       buildChannelSelect();
+
+      const heroCount = document.getElementById("hero-count");
+      if(heroCount) heroCount.textContent = ENTRIES.length;
+
+      checkAchievements(true);
+      renderDailyAndStreak();
+      maybeShowOnboarding();
 
       if(isEmbedEnabled()){
         setTimeout(()=> ensureYouTubeIframeApi(true), 250);
       }
 
       if(IS_FILE){
-        toast("Mode local (file://) : lecteur intégré désactivé (erreur 153).");
+        setTimeout(()=> toast("Mode local (file://) : lecteur intégré désactivé (erreur 153)."), 400);
       }
     })();
 
