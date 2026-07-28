@@ -2156,6 +2156,229 @@
       .slot-card, .overlay-card{ background: linear-gradient(180deg, rgba(32,28,40,0.98), rgba(18,15,24,0.98)) !important; }
       .overlay, .player-modal, .slot-overlay{ -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
     }
+
+    /* ============================================================
+       RANDOMTUBE QUEST — système de jeu (Aventure)
+       ============================================================ */
+    .tabbar{ width: min(600px, 96vw); }
+    .tab-btn svg{ width:20px; height:20px; }
+
+    /* Bandeau profil / XP */
+    .q-hero{
+      border:1px solid var(--stroke);
+      border-radius: var(--r-lg);
+      background: var(--grad-accent-soft), linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      padding:16px; margin-bottom:14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .q-hero-top{ display:flex; align-items:center; gap:14px; }
+    .q-ava-wrap{ position:relative; flex:0 0 auto; }
+    .q-ava{
+      width:64px; height:64px; border-radius:20px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:32px; background: var(--surface-2);
+      border:2px solid var(--stroke-2);
+    }
+    .q-ava.frame-gold{ border-color: var(--gold); box-shadow:0 0 0 2px rgb(255 207 92 / 35%), 0 0 22px rgb(255 207 92 / 30%); }
+    .q-ava.frame-neon{ border-color: rgb(var(--a2)); box-shadow:0 0 0 2px rgb(var(--a2) / 40%), 0 0 22px rgb(var(--a2) / 45%); }
+    .q-ava.frame-emerald{ border-color: var(--green); box-shadow:0 0 0 2px rgb(74 222 158 / 35%), 0 0 20px rgb(74 222 158 / 30%); }
+    .q-ava.frame-royal{ border-color:#c9b3ff; box-shadow:0 0 0 2px rgb(201 179 255 / 40%), 0 0 22px rgb(167 108 250 / 45%); }
+    .q-ava.frame-flame{ border-color:#ff8a3c; box-shadow:0 0 0 2px rgb(255 138 60 / 45%), 0 0 24px rgb(255 90 40 / 45%); }
+    .q-lvl-badge{
+      position:absolute; bottom:-6px; right:-6px;
+      min-width:26px; height:26px; padding:0 6px; border-radius:999px;
+      background: var(--grad-accent); color:#fff; font-weight:800; font-size:12px;
+      display:flex; align-items:center; justify-content:center;
+      border:2px solid var(--bg1); box-shadow: var(--shadow-accent);
+    }
+    .q-hero-id{ min-width:0; flex:1; }
+    .q-name{ font-family:var(--font-display); font-weight:700; font-size:18px; display:flex; align-items:center; gap:8px; }
+    .q-name .edit{ cursor:pointer; opacity:.6; font-size:13px; }
+    .q-title-eq{ font-size:12.5px; color:var(--gold); font-weight:700; margin-top:2px; }
+    .q-shards{
+      flex:0 0 auto; display:flex; align-items:center; gap:6px;
+      padding:7px 12px; border-radius:999px; background: rgba(0,0,0,.3);
+      border:1px solid var(--stroke-2); font-weight:800; color:var(--gold); font-size:14px;
+    }
+    .q-xpbar-wrap{ margin-top:14px; }
+    .q-xpbar-lbl{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+    .q-xpbar{ height:12px; border-radius:999px; background: rgba(0,0,0,.35); overflow:hidden; border:1px solid var(--stroke); }
+    .q-xpbar-fill{ height:100%; width:0%; border-radius:999px; background: var(--grad-accent); transition: width .8s cubic-bezier(.2,.8,.3,1); box-shadow: 0 0 12px rgb(var(--a2)/50%); }
+    .q-hero-mini{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .q-mini{ flex:1 1 0; min-width:70px; text-align:center; padding:8px 6px; border-radius:var(--r-sm); background: var(--surface); border:1px solid var(--stroke); }
+    .q-mini b{ display:block; font-size:16px; font-weight:800; }
+    .q-mini span{ font-size:10.5px; color:var(--muted); }
+
+    /* Sous-navigation Aventure */
+    .q-subnav{ display:flex; gap:6px; overflow-x:auto; padding:4px 2px 10px; margin:0 -2px; scrollbar-width:none; }
+    .q-subnav::-webkit-scrollbar{ display:none; }
+    .q-sub-btn{
+      flex:0 0 auto; padding:8px 14px; border-radius:999px;
+      border:1px solid var(--stroke-2); background: var(--surface);
+      color:var(--muted); font-weight:700; font-size:12.5px; cursor:pointer;
+      display:flex; align-items:center; gap:6px; white-space:nowrap;
+      transition: all .18s ease;
+    }
+    .q-sub-btn:hover{ color:var(--text); }
+    .q-sub-btn.active{ background: var(--grad-accent); color:#fff; border-color:transparent; box-shadow: var(--shadow-accent); }
+    .q-panel{ display:none; animation: qFade .3s ease; }
+    .q-panel.active{ display:block; }
+    @keyframes qFade{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform:none; } }
+
+    .q-sec-title{ font-family:var(--font-display); font-weight:700; font-size:15px; margin:4px 0 10px; display:flex; align-items:center; gap:8px; }
+    .q-sec-sub{ font-size:12.5px; color:var(--muted); margin:-4px 0 12px; }
+    .q-reset-note{ font-size:11.5px; color:var(--muted-2); margin-top:8px; }
+
+    /* Cartes génériques de jeu */
+    .q-card{
+      border:1px solid var(--stroke); border-radius:var(--r-md);
+      background: var(--surface); padding:13px; margin-bottom:10px;
+    }
+    .q-card.done{ border-color: rgb(74 222 158 / 45%); background: rgb(74 222 158 / 8%); }
+    .q-row{ display:flex; align-items:center; gap:12px; }
+    .q-card-ic{ font-size:22px; flex:0 0 auto; width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; background: var(--surface-2); }
+    .q-card-main{ flex:1; min-width:0; }
+    .q-card-nm{ font-weight:700; font-size:14px; }
+    .q-card-ds{ font-size:12px; color:var(--muted); margin-top:2px; }
+    .q-prog{ height:8px; border-radius:999px; background: rgba(0,0,0,.3); overflow:hidden; margin-top:8px; border:1px solid var(--stroke); }
+    .q-prog-fill{ height:100%; width:0%; background: var(--grad-accent); border-radius:999px; transition: width .6s ease; }
+    .q-prog-txt{ font-size:11px; color:var(--muted); margin-top:4px; display:flex; justify-content:space-between; }
+    .q-reward{ font-size:11.5px; font-weight:700; color:var(--gold); display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+    .q-badge-done{ color: var(--green); font-weight:800; font-size:12px; }
+    .q-claim{
+      flex:0 0 auto; padding:8px 14px; border-radius:999px; border:none;
+      background: var(--grad-accent); color:#fff; font-weight:800; font-size:12.5px; cursor:pointer;
+      box-shadow: var(--shadow-accent);
+    }
+    .q-claim:disabled{ opacity:.4; cursor:default; box-shadow:none; }
+
+    .q-btn{
+      padding:9px 16px; border-radius:999px; border:1px solid var(--stroke-2);
+      background: var(--surface-2); color:var(--text); font-weight:700; font-size:12.5px; cursor:pointer;
+      display:inline-flex; align-items:center; gap:6px; transition: all .16s ease;
+    }
+    .q-btn:hover{ background: var(--surface-3); }
+    .q-btn.primary{ background: var(--grad-accent); color:#fff; border-color:transparent; box-shadow:var(--shadow-accent); }
+    .q-btn.danger{ color:#ff9a9a; border-color: rgb(255 90 90 / 40%); }
+    .q-btn:disabled{ opacity:.45; cursor:default; }
+    .q-btn-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+
+    /* Grilles */
+    .q-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:10px; }
+    .q-grid-3{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
+    .q-grid-2{ display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; }
+
+    /* Boutique / inventaire item */
+    .q-item{
+      border:1px solid var(--stroke); border-radius:var(--r-md); background: var(--surface);
+      padding:12px; text-align:center; position:relative; transition: all .18s ease;
+    }
+    .q-item.equipped{ border-color: rgb(var(--a2)); box-shadow: 0 0 0 1px rgb(var(--a2)/40%), var(--shadow-accent); }
+    .q-item.locked{ opacity:.72; }
+    .q-item-ic{ font-size:30px; margin-bottom:6px; }
+    .q-item-nm{ font-weight:700; font-size:13px; }
+    .q-item-ds{ font-size:11px; color:var(--muted); margin-top:2px; min-height:26px; }
+    .q-item-cost{ font-size:12px; font-weight:800; color:var(--gold); margin-top:6px; }
+    .q-item .q-btn{ margin-top:8px; width:100%; justify-content:center; }
+    .q-swatch-dots{ display:flex; gap:4px; justify-content:center; margin:6px 0; }
+    .q-swatch-dots span{ width:14px; height:14px; border-radius:50%; }
+    .q-tag{ position:absolute; top:8px; right:8px; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:999px; text-transform:uppercase; letter-spacing:.04em; }
+    .q-tag.common{ background: rgba(180,190,210,.25); color:#cdd6e6; }
+    .q-tag.rare{ background: rgba(93,167,255,.22); color:#9cc6ff; }
+    .q-tag.epic{ background: rgba(167,108,250,.24); color:#cbb0ff; }
+    .q-tag.legendary{ background: rgba(255,207,92,.22); color:#ffdf8f; }
+
+    /* Collection */
+    .q-collect{ aspect-ratio: 3/4; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:10px; border-radius:var(--r-md); border:1px solid var(--stroke); background: var(--surface); position:relative; overflow:hidden; }
+    .q-collect.unknown{ filter: grayscale(1) brightness(.5); }
+    .q-collect.tier1{ border-color: rgb(93 167 255 / 45%); }
+    .q-collect.tier2{ border-color: rgb(167 108 250 / 45%); }
+    .q-collect.tier3{ border-color: rgb(255 207 92 / 55%); box-shadow: inset 0 0 30px rgb(255 207 92 / 12%); }
+    .q-collect img{ width:48px; height:48px; border-radius:50%; object-fit:cover; }
+    .q-collect-fb{ width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; background: var(--surface-2); font-weight:800; font-size:18px; }
+    .q-collect-nm{ font-size:11.5px; font-weight:700; text-align:center; line-height:1.15; }
+    .q-collect-st{ font-size:10px; color:var(--muted); }
+    .q-collect .q-collect-star{ position:absolute; top:6px; right:8px; font-size:12px; }
+
+    /* Mastery */
+    .q-mastery-rank{ font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; background: var(--surface-2); border:1px solid var(--stroke-2); }
+
+    /* Modales de jeu (level up, chest, wheel, event, recap, tournament) */
+    .q-modal{
+      position:fixed; inset:0; z-index:120; display:none;
+      align-items:center; justify-content:center; padding:20px;
+      background: rgba(4,4,8,.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .q-modal.show{ display:flex; }
+    .q-modal-card{
+      width: min(440px, 96vw); max-height: 88vh; overflow-y:auto;
+      border:1px solid var(--stroke-2); border-radius: var(--r-xl);
+      background: linear-gradient(180deg, rgba(32,28,42,0.98), rgba(18,15,26,0.98));
+      box-shadow: var(--shadow-lg); padding:24px; text-align:center; position:relative;
+      animation: qPop .4s cubic-bezier(.2,1.2,.35,1);
+    }
+    @keyframes qPop{ from{ opacity:0; transform: scale(.85) translateY(10px);} to{ opacity:1; transform:none; } }
+    .q-modal-eyebrow{ font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:700; }
+    .q-modal-h{ font-family:var(--font-display); font-size:24px; font-weight:800; margin:6px 0 2px; }
+    .q-modal-big{ font-size:64px; margin:10px 0; line-height:1; }
+    .q-modal-sub{ color:var(--muted); font-size:14px; margin-bottom:14px; }
+    .q-modal-close{ position:absolute; top:12px; right:14px; cursor:pointer; opacity:.6; font-size:20px; background:none; border:none; color:var(--text); }
+    .q-reward-line{ display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; margin:6px 0; border-radius:var(--r-md); background: var(--surface); border:1px solid var(--stroke); font-weight:700; }
+
+    /* Coffre */
+    .q-chest{ font-size:80px; display:inline-block; cursor:pointer; }
+    .q-chest.shake{ animation: qShake .5s ease infinite; }
+    @keyframes qShake{ 0%,100%{ transform: rotate(0);} 25%{ transform: rotate(-7deg) scale(1.03);} 75%{ transform: rotate(7deg) scale(1.03);} }
+
+    /* Roue */
+    .q-wheel-wrap{ position:relative; width:240px; height:240px; margin:12px auto; }
+    .q-wheel{ width:100%; height:100%; border-radius:50%; border:6px solid var(--stroke-2); transition: transform 4.2s cubic-bezier(.15,.9,.25,1); box-shadow: var(--shadow-lg); }
+    .q-wheel-ptr{ position:absolute; top:-6px; left:50%; transform: translateX(-50%); font-size:26px; z-index:2; filter: drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+    .q-wheel-center{ position:absolute; top:50%; left:50%; transform: translate(-50%,-50%); width:42px; height:42px; border-radius:50%; background: var(--grad-accent); border:3px solid var(--bg1); }
+
+    /* Cartes à choisir (event / choix parmi 3) */
+    .q-choice-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin:14px 0; }
+    .q-choice{ padding:18px 8px; border-radius:var(--r-md); border:1px solid var(--stroke-2); background: var(--surface-2); cursor:pointer; transition: all .18s ease; }
+    .q-choice:hover{ transform: translateY(-4px); border-color: rgb(var(--a2)); box-shadow: var(--shadow-accent); }
+    .q-choice-ic{ font-size:34px; }
+    .q-choice-nm{ font-size:11.5px; font-weight:700; margin-top:6px; }
+
+    /* Tournoi bracket */
+    .q-bracket{ display:flex; gap:14px; overflow-x:auto; padding-bottom:8px; }
+    .q-round{ display:flex; flex-direction:column; justify-content:space-around; gap:10px; min-width:150px; }
+    .q-round-lbl{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; text-align:center; margin-bottom:2px; }
+    .q-match{ border:1px solid var(--stroke); border-radius:var(--r-sm); background: var(--surface); overflow:hidden; }
+    .q-slot{ display:flex; align-items:center; gap:8px; padding:8px 10px; cursor:pointer; font-size:12.5px; font-weight:600; }
+    .q-slot:first-child{ border-bottom:1px solid var(--stroke); }
+    .q-slot:hover{ background: var(--surface-2); }
+    .q-slot.win{ background: rgb(74 222 158 / 12%); color:#8ff0c0; font-weight:800; }
+    .q-slot.pending{ color: var(--muted-2); cursor:default; }
+    .q-slot .q-slot-ava{ width:22px; height:22px; border-radius:50%; object-fit:cover; }
+
+    /* XP log */
+    .q-log-item{ display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--stroke); font-size:12.5px; }
+    .q-log-item:last-child{ border-bottom:none; }
+    .q-log-item .amt{ color:var(--green); font-weight:800; }
+    .q-log-item .amt.neg{ color:#ff9a9a; }
+
+    /* Boss */
+    .q-boss{ text-align:center; padding:18px; border-radius:var(--r-lg); border:1px solid rgb(255 90 90 / 35%); background: radial-gradient(circle at 50% 0%, rgb(255 60 60 / 12%), transparent 70%), var(--surface); margin-bottom:12px; }
+    .q-boss-face{ font-size:56px; }
+    .q-boss-hp{ height:16px; border-radius:999px; background: rgba(0,0,0,.4); overflow:hidden; border:1px solid var(--stroke-2); margin:10px 0 4px; }
+    .q-boss-hp-fill{ height:100%; background: linear-gradient(90deg,#ff5a5a,#ff2e63); border-radius:999px; transition: width .8s ease; }
+
+    /* Notifications groupées / gains XP flottants */
+    .toast-xp .ta-t1{ color: var(--gold); }
+    .q-float-xp{ position:fixed; z-index:130; pointer-events:none; font-weight:900; font-size:20px; color: var(--gold); text-shadow:0 2px 8px rgba(0,0,0,.6); }
+
+    .q-empty{ text-align:center; color:var(--muted); padding:24px 10px; font-size:13px; }
+    .q-locked-cond{ font-size:11px; color:var(--muted-2); margin-top:4px; }
+
+    @media (max-width:520px){
+      .q-choice-grid{ grid-template-columns: repeat(3, 1fr); }
+      .q-grid-3{ grid-template-columns: repeat(2, 1fr); }
+      .q-modal-h{ font-size:21px; }
+    }
   </style>
 </head>
 
@@ -2517,6 +2740,30 @@
       </div>
     </section>
 
+    <!-- ======== PAGE AVENTURE (RandomTube Quest) ======== -->
+    <section id="page-adventure" class="page">
+      <div class="menu-card">
+        <div id="q-hero" class="q-hero"><!-- rendu par JS --></div>
+        <div id="q-subnav" class="q-subnav"><!-- rendu par JS --></div>
+        <div id="q-panels">
+          <div class="q-panel active" data-panel="profil"></div>
+          <div class="q-panel" data-panel="missions"></div>
+          <div class="q-panel" data-panel="expeditions"></div>
+          <div class="q-panel" data-panel="coffres"></div>
+          <div class="q-panel" data-panel="roue"></div>
+          <div class="q-panel" data-panel="boutique"></div>
+          <div class="q-panel" data-panel="inventaire"></div>
+          <div class="q-panel" data-panel="collection"></div>
+          <div class="q-panel" data-panel="boss"></div>
+          <div class="q-panel" data-panel="tournoi"></div>
+          <div class="q-panel" data-panel="modes"></div>
+          <div class="q-panel" data-panel="records"></div>
+          <div class="q-panel" data-panel="bilan"></div>
+        </div>
+        <div class="footer">RandomTube Quest — tout est gratuit &amp; local</div>
+      </div>
+    </section>
+
   </div><!-- /app -->
 
   <!-- TAB BAR -->
@@ -2524,6 +2771,10 @@
     <button class="tab-btn active" data-go="page-home" type="button">
       <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3l9-8z"/></svg>
       <span>Accueil</span>
+    </button>
+    <button class="tab-btn" data-go="page-adventure" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H21l-5.3 4 2 6.6L12 15.9 6.3 19.5l2-6.6L3 8.9h6.6z"/></svg>
+      <span>Aventure</span>
     </button>
     <button class="tab-btn" data-go="page-channels" type="button">
       <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11zm-8 0c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.95 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
@@ -2607,6 +2858,78 @@
         <span><span class="kbd">↵</span> lancer</span>
         <span><span class="kbd">⌘</span><span class="kbd">K</span> ouvrir</span>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== MODALES RANDOMTUBE QUEST ===== -->
+  <div id="q-levelup" class="q-modal" aria-hidden="true">
+    <div class="q-modal-card" role="dialog" aria-modal="true" aria-label="Montée de niveau">
+      <div class="q-modal-eyebrow">Niveau supérieur</div>
+      <div class="q-modal-big">⬆️</div>
+      <div class="q-modal-h">Niveau <span id="q-lu-lvl">2</span> !</div>
+      <div class="q-modal-sub" id="q-lu-sub">Tu progresses dans RandomTube Quest.</div>
+      <div id="q-lu-rewards"></div>
+      <button class="q-btn primary" id="q-lu-ok" type="button" style="margin-top:8px;">Continuer</button>
+    </div>
+  </div>
+
+  <div id="q-chest-modal" class="q-modal" aria-hidden="true">
+    <div class="q-modal-card" role="dialog" aria-modal="true" aria-label="Ouverture d’un coffre">
+      <button class="q-modal-close" data-qclose="q-chest-modal" type="button" aria-label="Fermer">✕</button>
+      <div class="q-modal-eyebrow" id="q-chest-rarity">Coffre commun</div>
+      <div id="q-chest-icon" class="q-chest">🎁</div>
+      <div class="q-modal-sub" id="q-chest-hint">Touche le coffre pour l’ouvrir</div>
+      <div id="q-chest-result"></div>
+      <button class="q-btn primary" id="q-chest-ok" type="button" style="margin-top:8px; display:none;">Super !</button>
+    </div>
+  </div>
+
+  <div id="q-wheel-modal" class="q-modal" aria-hidden="true">
+    <div class="q-modal-card" role="dialog" aria-modal="true" aria-label="Roue quotidienne">
+      <button class="q-modal-close" data-qclose="q-wheel-modal" type="button" aria-label="Fermer">✕</button>
+      <div class="q-modal-eyebrow">Roue quotidienne</div>
+      <div class="q-modal-h" style="font-size:19px;">Tourne la roue du hasard 🍀</div>
+      <div class="q-wheel-wrap">
+        <div class="q-wheel-ptr">▼</div>
+        <div id="q-wheel" class="q-wheel"></div>
+        <div class="q-wheel-center"></div>
+      </div>
+      <div id="q-wheel-result" class="q-modal-sub"></div>
+      <button class="q-btn primary" id="q-wheel-spin" type="button">Lancer la roue</button>
+    </div>
+  </div>
+
+  <div id="q-event-modal" class="q-modal" aria-hidden="true">
+    <div class="q-modal-card" role="dialog" aria-modal="true" aria-label="Événement">
+      <button class="q-modal-close" data-qclose="q-event-modal" type="button" aria-label="Fermer">✕</button>
+      <div class="q-modal-eyebrow">Événement aléatoire</div>
+      <div class="q-modal-big" id="q-event-ic">✨</div>
+      <div class="q-modal-h" id="q-event-h">Événement</div>
+      <div class="q-modal-sub" id="q-event-sub"></div>
+      <div id="q-event-body"></div>
+      <button class="q-btn primary" id="q-event-ok" type="button" style="margin-top:8px;">OK</button>
+    </div>
+  </div>
+
+  <div id="q-recap-modal" class="q-modal" aria-hidden="true">
+    <div class="q-modal-card" role="dialog" aria-modal="true" aria-label="Bilan hebdomadaire">
+      <button class="q-modal-close" data-qclose="q-recap-modal" type="button" aria-label="Fermer">✕</button>
+      <div class="q-modal-eyebrow">Bilan de la semaine</div>
+      <div class="q-modal-h" style="font-size:20px;">📊 Ta semaine RandomTube</div>
+      <div id="q-recap-body" style="text-align:left; margin-top:12px;"></div>
+      <button class="q-btn primary" data-qclose="q-recap-modal" type="button" style="margin-top:12px;">Fermer</button>
+    </div>
+  </div>
+
+  <div id="q-name-modal" class="q-modal" aria-hidden="true">
+    <div class="q-modal-card" role="dialog" aria-modal="true" aria-label="Modifier le profil">
+      <button class="q-modal-close" data-qclose="q-name-modal" type="button" aria-label="Fermer">✕</button>
+      <div class="q-modal-eyebrow">Profil local</div>
+      <div class="q-modal-h" style="font-size:19px;">Personnalise ton profil</div>
+      <input id="q-name-input" type="text" maxlength="20" placeholder="Ton pseudo…" style="width:100%; margin:12px 0; padding:11px 14px; border-radius:12px; border:1px solid var(--stroke-2); background:rgba(0,0,0,.3); color:var(--text); font-size:15px; text-align:center;">
+      <div class="q-modal-sub" style="margin-bottom:6px;">Choisis un avatar</div>
+      <div id="q-avatar-grid" class="q-grid" style="grid-template-columns: repeat(6, 1fr); gap:6px;"></div>
+      <button class="q-btn primary" id="q-name-save" type="button" style="margin-top:14px;">Enregistrer</button>
     </div>
   </div>
 
@@ -2700,6 +3023,7 @@
       if(id === "page-history") renderHistoryPage();
       if(id === "page-options") renderOptionsUI();
       if(id === "page-stats") renderStatsPage();
+      if(id === "page-adventure"){ try{ Game.renderAdventure(); }catch(e){ console.error(e); } }
     }
 
     document.addEventListener("click", (e)=>{
@@ -3514,7 +3838,10 @@
         currentChosenCh = chosenCh;
 
         const built = await buildPoolForChannel(chosenCh, false);
+        const seenBefore = loadSeenList(chosenCh);
+        const wasNewChannel = seenBefore.length === 0;
         const vid = pickFromPool(chosenCh, built.poolIds);
+        const wasNewVideo = seenBefore.indexOf(vid) === -1;
         removeFromCache(chosenCh, vid);
 
         const meta = built?.metaMap?.[vid];
@@ -3524,6 +3851,7 @@
         else openYouTubePreferApp(vid);
 
         onVideoLaunched();
+        try{ Game.trackVideoLaunch({ ch: chosenCh, entry, videoId: vid, isNewVideo: wasNewVideo, isNewChannel: wasNewChannel, mode: opts.gameMode }); }catch(e){ console.error(e); }
         renderChannels();
         renderFavorites();
         renderHomeDashboard();
@@ -4482,6 +4810,7 @@
       }
       list.unshift({ id, title: String(title || "").trim(), t: Date.now() });
       saveWatchLater(list);
+      try{ Game.trackWatchLater(); }catch(e){}
       toast("Ajoutée à « À regarder plus tard » ✅");
       renderHomeDashboard();
     }
@@ -4618,6 +4947,7 @@
       if(isPicking) return;
       const entry = dailyEntry();
       markDailyDone();
+      try{ Game.onDailyChallengeDone(); }catch(e){}
       if(isSlotAnimEnabled()) await runSlotAnimation(entry, ENTRIES);
       launchEntry(entry);
       renderDailyAndStreak();
@@ -4691,6 +5021,7 @@
       }
       if(newly.length){
         saveAchievements(Array.from(unlocked));
+        try{ Game.onAchievementsUnlocked(newly); }catch(e){}
         if(!silent){
           newly.forEach((a, i)=>{
             setTimeout(()=>{ achToast(a); playSound("unlock"); }, i * 650);
@@ -4889,6 +5220,7 @@
       if(!entry) return;
       closeDuel();
       playSound("win");
+      try{ Game.trackDuel(); }catch(e){}
       if(isSlotAnimEnabled()) await runSlotAnimation(entry, ENTRIES);
       launchEntry(entry);
     }
@@ -5223,6 +5555,7 @@
             renderFavorites();
             renderHomeDashboard();
             checkAchievements(true);
+            try{ Game.reload(); }catch(e){}
           }catch{
             toast("Fichier invalide ⚠️");
           }
@@ -5279,11 +5612,13 @@
       else if(k === "d" || k === "D"){ e.preventDefault(); openDuel(); }
       else if(k === "/"){ e.preventDefault(); showPage("page-channels"); setTimeout(()=> channelsSearchEl && channelsSearchEl.focus(), 60); }
       else if(k === "?"){ e.preventDefault(); showPage("page-help"); }
+      else if(k === "a" || k === "A"){ e.preventDefault(); showPage("page-adventure"); }
       else if(k === "1"){ showPage("page-home"); }
-      else if(k === "2"){ showPage("page-channels"); }
-      else if(k === "3"){ showPage("page-favs"); }
-      else if(k === "4"){ showPage("page-history"); }
-      else if(k === "5"){ showPage("page-options"); }
+      else if(k === "2"){ showPage("page-adventure"); }
+      else if(k === "3"){ showPage("page-channels"); }
+      else if(k === "4"){ showPage("page-favs"); }
+      else if(k === "5"){ showPage("page-history"); }
+      else if(k === "6"){ showPage("page-options"); }
     });
 
     /* ---- Boutons lecteur : Plus tard + Partager ---- */
@@ -5314,6 +5649,1379 @@
       }
     });
 
+    /* ============================================================
+       ██ RANDOMTUBE QUEST ██  — moteur de jeu (XP, missions, etc.)
+       Socle : stockage versionné → événements → XP/niveaux →
+       monnaie → profil → maîtrises → missions → récompenses.
+       Tout est local (localStorage), gratuit, clés préfixées yt_.
+       ============================================================ */
+    const Game = (function(){
+      "use strict";
+
+      /* ---------- 1. STOCKAGE VERSIONNÉ ---------- */
+      const GAME_KEY = "yt_game_v1";
+      const SCHEMA = 2;
+
+      function defaultState(){
+        return {
+          schema: SCHEMA,
+          createdAt: Date.now(),
+          profile: { name: "Joueur", avatar: "🎲" },
+          xp: 0,
+          shards: 0,
+          equipped: { title:"t_newbie", frame:"f_none", dice:"d_classic", anim:"a_default", sound:"s_default", trophy:null },
+          owned: { titles:["t_newbie"], frames:["f_none"], dice:["d_classic"], anims:["a_default"], sounds:["s_default"],
+                   themes:["crimson","sunset","violet","ocean","emerald","gold"], trophies:[] },
+          daily:  { date:"", ids:[], claimed:[] },
+          weekly: { week:"", ids:[], claimed:[] },
+          dayTrack:  { date:"", videos:0, channels:[], duels:0, mystery:0, watchLater:0, expeditions:0, xpGained:0, masteryUps:0, sessionStart:0, sessionMax:0 },
+          weekTrack: { week:"", videos:0, channels:[], duels:0, expeditions:0, dailyMissions:0, masteryRanks:0, achievements:0 },
+          expedition: { active:null, completedIds:[] },
+          chests: [],
+          wheel: { date:"", reward:null, spun:false },
+          boss: { week:"", claimed:false },
+          tournament: null,
+          records: { bestStreak:0, videosDay:0, channelsDay:0, sessionMs:0, expeditionSteps:0, duelsDay:0, topMasteryCount:0, topMasteryKey:"", xpDay:0 },
+          events: { lastTs:0, doubleUntil:0, rerollTokens:0, streakShields:0 },
+          xpLog: [],
+          dedupe: [],
+          recap: { lastWeekShown:"", snapshot:null },
+          ui: { panel:"profil" }
+        };
+      }
+
+      let GS = defaultState();
+
+      function save(){ try{ localStorage.setItem(GAME_KEY, JSON.stringify(GS)); }catch(e){} }
+      function load(){
+        try{
+          const raw = localStorage.getItem(GAME_KEY);
+          if(!raw){ GS = defaultState(); return; }
+          const parsed = JSON.parse(raw);
+          GS = migrate(parsed);
+        }catch(e){ GS = defaultState(); }
+      }
+      function migrate(s){
+        const base = defaultState();
+        if(!s || typeof s !== "object") return base;
+        // fusion profonde tolérante (préserve les données existantes)
+        const out = { ...base, ...s };
+        for(const k of ["profile","equipped","owned","daily","weekly","dayTrack","weekTrack","expedition","wheel","boss","records","events","recap","ui"]){
+          out[k] = { ...base[k], ...(s[k]||{}) };
+        }
+        for(const k of ["titles","frames","dice","anims","sounds","themes","trophies"]){
+          out.owned[k] = Array.from(new Set([...(base.owned[k]||[]), ...((s.owned&&s.owned[k])||[])]));
+        }
+        out.chests = Array.isArray(s.chests) ? s.chests : [];
+        out.xpLog = Array.isArray(s.xpLog) ? s.xpLog.slice(-40) : [];
+        out.dedupe = Array.isArray(s.dedupe) ? s.dedupe : [];
+        out.tournament = s.tournament || null;
+        out.schema = SCHEMA;
+        return out;
+      }
+
+      /* ---------- 2. ANTI-DOUBLON / ANTI-TRICHE ---------- */
+      function granted(id){ return GS.dedupe.indexOf(id) !== -1; }
+      function claimOnce(id){
+        if(granted(id)) return false;
+        GS.dedupe.push(id);
+        if(GS.dedupe.length > 4000) GS.dedupe = GS.dedupe.slice(-3000);
+        return true;
+      }
+      const _throttle = {};
+      function throttled(key, ms){
+        const now = Date.now();
+        if(_throttle[key] && now - _throttle[key] < ms) return false;
+        _throttle[key] = now; return true;
+      }
+
+      /* ---------- utils ---------- */
+      function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c])); }
+      function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+      function seedFromStr(s){ let h=2166136261>>>0; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+      function pickN(arr, n, rng){ const a=arr.slice(), out=[]; while(out.length<n && a.length){ out.push(a.splice(Math.floor(rng()*a.length),1)[0]); } return out; }
+      function isoWeek(dd){
+        const d = new Date(Date.UTC(dd.getFullYear(), dd.getMonth(), dd.getDate()));
+        const day = (d.getUTCDay()+6)%7;
+        d.setUTCDate(d.getUTCDate()-day+3);
+        const first = new Date(Date.UTC(d.getUTCFullYear(),0,4));
+        const week = 1 + Math.round(((d-first)/86400000 - 3 + ((first.getUTCDay()+6)%7))/7);
+        return `${d.getUTCFullYear()}-W${String(week).padStart(2,"0")}`;
+      }
+      function weekStr(){ return isoWeek(new Date()); }
+      function nextMonday(){
+        const d = new Date(); d.setHours(0,0,0,0);
+        const add = (8 - (d.getDay()||7)) % 7 || 7;
+        d.setDate(d.getDate()+add); return d;
+      }
+      function fmtLeft(ms){
+        if(ms<=0) return "bientôt";
+        const h = Math.floor(ms/3600000), d = Math.floor(h/24);
+        if(d>0) return `${d}j ${h%24}h`;
+        const m = Math.floor((ms%3600000)/60000);
+        return h>0 ? `${h}h ${m}m` : `${m}m`;
+      }
+
+      /* ---------- 3. XP & NIVEAUX ---------- */
+      const XP = { video:10, channel:50, daily:40, missionDaily:30, missionWeekly:120, expedition:150, duel:8, mastery:60, ach:25 };
+      function xpForLevel(l){ return Math.round(80 + (l-1)*55 + Math.pow(l,1.7)*10); }
+      function levelInfo(){
+        let lvl=1, rem=GS.xp;
+        while(rem >= xpForLevel(lvl)){ rem -= xpForLevel(lvl); lvl++; if(lvl>999) break; }
+        const need = xpForLevel(lvl);
+        return { level:lvl, xpInLevel:Math.floor(rem), xpNeeded:need, pct: Math.min(100, Math.round(rem/need*100)) };
+      }
+
+      let _xpAccum = 0, _xpTimer = null;
+      function flushXpToast(){
+        if(_xpAccum<=0) return;
+        const amt = _xpAccum; _xpAccum = 0;
+        const el = document.createElement("div");
+        el.className = "toast toast-ach toast-xp";
+        el.innerHTML = `<span class="ta-ic">✨</span><span><span class="ta-t1">Expérience</span><span class="ta-t2">＋${amt} XP</span></span>`;
+        toastWrap.appendChild(el);
+        setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(8px)"; }, 2200);
+        setTimeout(()=>{ el.remove(); }, 2600);
+      }
+      function addXp(amount, why, silent){
+        if(!amount) return;
+        if(GS.events.doubleUntil && Date.now() < GS.events.doubleUntil){ amount = amount*2; why = (why||"")+" (x2)"; }
+        amount = Math.round(amount);
+        const before = levelInfo().level;
+        GS.xp += amount;
+        GS.dayTrack.xpGained = (GS.dayTrack.xpGained||0) + amount;
+        GS.xpLog.unshift({ t:Date.now(), amt:amount, why:why||"XP" });
+        GS.xpLog = GS.xpLog.slice(0,40);
+        const after = levelInfo().level;
+        if(after > before){ for(let l=before+1; l<=after; l++) onLevelUp(l); }
+        if(!silent){ _xpAccum += amount; clearTimeout(_xpTimer); _xpTimer = setTimeout(flushXpToast, 850); }
+        save();
+        renderHero();
+        return amount;
+      }
+      function addShards(amount, why){
+        if(!amount) return;
+        GS.shards = Math.max(0, GS.shards + Math.round(amount));
+        if(why) GS.xpLog.unshift({ t:Date.now(), amt:amount, why:why, shard:true });
+        GS.xpLog = GS.xpLog.slice(0,40);
+        save(); renderHero();
+      }
+
+      function onLevelUp(level){
+        if(!claimOnce("level_"+level)) return;
+        const gained = 20 + level*5;
+        GS.shards += gained;
+        let bonusTxt = `＋${gained} ✦ Éclats`;
+        if(level % 10 === 0){ grantChest("epic", "lvl"+level); bonusTxt += " · Coffre épique 🎁"; }
+        else if(level % 5 === 0){ grantChest("rare", "lvl"+level); bonusTxt += " · Coffre rare 🎁"; }
+        if(level >= 10) grantCosmetic("trophies","tr_lvl10", true);
+        showLevelUp(level, bonusTxt);
+        try{ playSound("win"); }catch(e){}
+      }
+
+      /* ---------- 4/5. MISSIONS (quotidiennes + hebdo) ---------- */
+      const DAILY_POOL = [
+        { id:"d_v3",   icon:"🎬", label:"Découvre 3 vidéos",              metric:"videos",         goal:3 },
+        { id:"d_v5",   icon:"🍿", label:"Découvre 5 vidéos",              metric:"videos",         goal:5 },
+        { id:"d_c3",   icon:"📺", label:"Utilise 3 chaînes différentes",  metric:"channels",       goal:3 },
+        { id:"d_daily",icon:"🎯", label:"Termine le défi du jour",        metric:"dailyChallenge", goal:1 },
+        { id:"d_duel2",icon:"⚔️", label:"Fais 2 Duels",                   metric:"duels",          goal:2 },
+        { id:"d_myst", icon:"❓", label:"Utilise le mode Mystère",        metric:"mystery",        goal:1 },
+        { id:"d_wl",   icon:"🔖", label:"Mets 1 vidéo « à regarder »",    metric:"watchLater",     goal:1 },
+        { id:"d_exp",  icon:"🧭", label:"Termine une petite Expédition",  metric:"expeditions",    goal:1 }
+      ];
+      const WEEKLY_POOL = [
+        { id:"w_v20",  icon:"🎬", label:"Découvre 20 vidéos",         metric:"videos",       goal:20 },
+        { id:"w_c10",  icon:"📺", label:"Utilise 10 chaînes",         metric:"channels",     goal:10 },
+        { id:"w_exp3", icon:"🧭", label:"Termine 3 Expéditions",      metric:"expeditions",  goal:3 },
+        { id:"w_dm5",  icon:"✅", label:"Accomplis 5 missions/jour",  metric:"dailyMissions",goal:5 },
+        { id:"w_duel10",icon:"⚔️",label:"Fais 10 Duels",             metric:"duels",        goal:10 },
+        { id:"w_m2",   icon:"👑", label:"Gagne 2 rangs de maîtrise",  metric:"masteryRanks", goal:2 }
+      ];
+
+      function ensureDay(){
+        const today = dayStr();
+        if(GS.dayTrack.date !== today){
+          GS.dayTrack = { date:today, videos:0, channels:[], duels:0, mystery:0, watchLater:0, expeditions:0, xpGained:0, masteryUps:0, sessionStart:Date.now(), sessionMax:0 };
+        }
+        if(GS.daily.date !== today){
+          const rng = mulberry32(seedFromStr("daily-"+today));
+          GS.daily = { date:today, ids: pickN(DAILY_POOL, 3, rng).map(m=>m.id), claimed:[] };
+        }
+      }
+      function ensureWeek(){
+        const wk = weekStr();
+        if(GS.weekTrack.week !== wk){
+          if(GS.weekTrack.week){ // clôture semaine précédente → bilan
+            GS.recap.snapshot = { week:GS.weekTrack.week, ...GS.weekTrack };
+          }
+          GS.weekTrack = { week:wk, videos:0, channels:[], duels:0, expeditions:0, dailyMissions:0, masteryRanks:0, achievements:0 };
+        }
+        if(GS.weekly.week !== wk){
+          const rng = mulberry32(seedFromStr("weekly-"+wk));
+          GS.weekly = { week:wk, ids: pickN(WEEKLY_POOL, 5, rng).map(m=>m.id), claimed:[] };
+        }
+        if(GS.boss.week !== wk){ GS.boss = { week:wk, claimed:false }; }
+        if(GS.wheel.date !== dayStr()){ GS.wheel = { date:dayStr(), reward:null, spun:false }; }
+      }
+
+      function dailyMetrics(){
+        return {
+          videos: GS.dayTrack.videos,
+          channels: GS.dayTrack.channels.length,
+          duels: GS.dayTrack.duels,
+          mystery: GS.dayTrack.mystery,
+          watchLater: GS.dayTrack.watchLater,
+          expeditions: GS.dayTrack.expeditions,
+          dailyChallenge: (typeof isDailyDone === "function" && isDailyDone()) ? 1 : 0
+        };
+      }
+      function weeklyMetrics(){
+        return {
+          videos: GS.weekTrack.videos,
+          channels: GS.weekTrack.channels.length,
+          duels: GS.weekTrack.duels,
+          expeditions: GS.weekTrack.expeditions,
+          dailyMissions: GS.weekTrack.dailyMissions,
+          masteryRanks: GS.weekTrack.masteryRanks
+        };
+      }
+      function checkMissions(){
+        ensureDay(); ensureWeek();
+        const dm = dailyMetrics();
+        for(const id of GS.daily.ids){
+          const t = DAILY_POOL.find(x=>x.id===id); if(!t) continue;
+          if((dm[t.metric]||0) >= t.goal && GS.daily.claimed.indexOf(id)===-1){
+            if(claimOnce(`md_${GS.daily.date}_${id}`)){
+              GS.daily.claimed.push(id);
+              GS.weekTrack.dailyMissions++;
+              addShards(10, "Mission du jour");
+              addXp(XP.missionDaily, "Mission: "+t.label);
+              try{ toast(`Mission accomplie : ${t.label} ✅`); }catch(e){}
+            }
+          }
+        }
+        const wm = weeklyMetrics();
+        for(const id of GS.weekly.ids){
+          const t = WEEKLY_POOL.find(x=>x.id===id); if(!t) continue;
+          if((wm[t.metric]||0) >= t.goal && GS.weekly.claimed.indexOf(id)===-1){
+            if(claimOnce(`mw_${GS.weekly.week}_${id}`)){
+              GS.weekly.claimed.push(id);
+              addShards(45, "Mission hebdo");
+              addXp(XP.missionWeekly, "Hebdo: "+t.label);
+              try{ toast(`Mission hebdo accomplie : ${t.label} 🎉`); }catch(e){}
+            }
+          }
+        }
+        save();
+      }
+
+      /* ---------- 6. MAÎTRISE DES CHAÎNES ---------- */
+      const RANKS = [
+        { name:"Curieux",   min:0,   icon:"🌱" },
+        { name:"Spectateur",min:5,   icon:"👀" },
+        { name:"Habitué",   min:15,  icon:"🎬" },
+        { name:"Expert",    min:35,  icon:"⭐" },
+        { name:"Maître",    min:70,  icon:"👑" },
+        { name:"Légende",   min:120, icon:"🏆" }
+      ];
+      function masteryCount(ch){ try{ return seenCountFor(ch); }catch(e){ return 0; } }
+      function rankIndexFor(count){ let idx=0; for(let i=0;i<RANKS.length;i++){ if(count>=RANKS[i].min) idx=i; } return idx; }
+      function grantMasteryRanks(ch){
+        const idx = rankIndexFor(masteryCount(ch));
+        for(let i=1;i<=idx;i++){
+          if(claimOnce(`mrank_${ch.key}_${i}`)){
+            GS.weekTrack.masteryRanks++;
+            GS.dayTrack.masteryUps++;
+            addShards(15, "Rang de maîtrise");
+            addXp(XP.mastery, `Maîtrise ${RANKS[i].name} — ${ch.name}`);
+            try{ toast(`${RANKS[i].icon} ${ch.name} : rang ${RANKS[i].name} !`); }catch(e){}
+            if(i===RANKS.length-1) grantCosmetic("trophies","tr_master", true);
+          }
+        }
+      }
+      function totalMastery(){ let s=0; for(const ch of CHANNELS_ALL){ s += masteryCount(ch); } return s; }
+      function topMastery(){
+        let best=null, bc=-1;
+        for(const ch of CHANNELS_ALL){ const c=masteryCount(ch); if(c>bc){ bc=c; best=ch; } }
+        return { ch:best, count:Math.max(0,bc) };
+      }
+
+      /* ---------- 16. RECORDS ---------- */
+      function updateRecords(){
+        const r = GS.records;
+        let st = 0; try{ st = currentStreak(); }catch(e){}
+        r.bestStreak = Math.max(r.bestStreak, st);
+        r.videosDay = Math.max(r.videosDay, GS.dayTrack.videos);
+        r.channelsDay = Math.max(r.channelsDay, GS.dayTrack.channels.length);
+        r.duelsDay = Math.max(r.duelsDay, GS.dayTrack.duels);
+        r.xpDay = Math.max(r.xpDay, GS.dayTrack.xpGained);
+        if(GS.dayTrack.sessionStart){
+          const ses = Date.now() - GS.dayTrack.sessionStart;
+          GS.dayTrack.sessionMax = Math.max(GS.dayTrack.sessionMax||0, ses);
+          r.sessionMs = Math.max(r.sessionMs, GS.dayTrack.sessionMax);
+        }
+        const tm = topMastery();
+        if(tm.count > r.topMasteryCount){ r.topMasteryCount = tm.count; r.topMasteryKey = tm.ch ? tm.ch.key : ""; }
+      }
+
+      /* ---------- SUIVI CENTRALISÉ DES ÉVÉNEMENTS ---------- */
+      function trackVideoLaunch(o){
+        try{
+          ensureDay(); ensureWeek();
+          const ch = o.ch;
+          if(!ch) return;
+          if(GS.dayTrack.channels.indexOf(ch.key)===-1) GS.dayTrack.channels.push(ch.key);
+          if(GS.weekTrack.channels.indexOf(ch.key)===-1) GS.weekTrack.channels.push(ch.key);
+          if(o.isNewVideo){
+            GS.dayTrack.videos++; GS.weekTrack.videos++;
+            addXp(XP.video, "Nouvelle vidéo");
+            grantMasteryRanks(ch);
+          }
+          if(o.isNewChannel && claimOnce(`ch_${ch.key}`)){
+            addXp(XP.channel, "Nouvelle chaîne : "+ch.name);
+            addShards(20, "Nouvelle chaîne");
+          }
+          if(o.mode === "mystery"){ GS.dayTrack.mystery++; }
+          // expédition en cours : avancer si elle attend un lancement
+          if(GS.expedition.active && GS.expedition.active.awaiting){ advanceExpedition(); }
+          updateRecords();
+          checkMissions();
+          save();
+          renderHero();
+          if(isAdventureOpen()) render(GS.ui.panel);
+          setTimeout(()=>{ maybeTriggerEvent(); }, 900);
+        }catch(e){ console.error("trackVideoLaunch", e); }
+      }
+      function trackDuel(){
+        try{
+          ensureDay(); ensureWeek();
+          GS.dayTrack.duels++; GS.weekTrack.duels++;
+          if(throttled("duelxp", 3500)) addXp(XP.duel, "Duel");
+          updateRecords(); checkMissions(); save(); renderHero();
+        }catch(e){}
+      }
+      function onDailyChallengeDone(){
+        try{
+          ensureDay();
+          if(claimOnce(`daily_${dayStr()}`)) addXp(XP.daily, "Défi du jour");
+          checkMissions();
+        }catch(e){}
+      }
+      function trackWatchLater(){
+        try{ ensureDay(); GS.dayTrack.watchLater++; checkMissions(); save(); }catch(e){}
+      }
+      function onAchievementsUnlocked(newly){
+        try{
+          if(!Array.isArray(newly)) return;
+          ensureWeek();
+          for(const a of newly){
+            if(claimOnce(`ach_${a.id}`)){ addXp(XP.ach, "Succès : "+a.name); addShards(15,"Succès"); GS.weekTrack.achievements++; }
+          }
+          save();
+          if(isAdventureOpen()) render(GS.ui.panel);
+        }catch(e){}
+      }
+
+      /* ---------- COSMÉTIQUES (catalogue) ---------- */
+      const COSMETICS = {
+        titles: [
+          { id:"t_newbie",  icon:"🌱", name:"Nouveau venu",       cost:0,    rarity:"common", src:"start" },
+          { id:"t_curious", icon:"👀", name:"Curieux du hasard",  cost:120,  rarity:"common" },
+          { id:"t_explorer",icon:"🧭", name:"Explorateur",        cost:350,  rarity:"rare" },
+          { id:"t_marathon",icon:"🍿", name:"Marathonien",        cost:600,  rarity:"rare" },
+          { id:"t_chaos",   icon:"🌀", name:"Maître du chaos",    cost:900,  rarity:"epic" },
+          { id:"t_legend",  icon:"🏆", name:"Légende du hasard",  cost:1600, rarity:"legendary" }
+        ],
+        frames: [
+          { id:"f_none",   icon:"⬜", name:"Aucun cadre", cls:"",             cost:0,    rarity:"common", src:"start" },
+          { id:"f_emerald",icon:"🟢", name:"Émeraude",    cls:"frame-emerald",cost:280,  rarity:"rare" },
+          { id:"f_neon",   icon:"💗", name:"Néon",        cls:"frame-neon",   cost:380,  rarity:"rare" },
+          { id:"f_gold",   icon:"🟡", name:"Doré",        cls:"frame-gold",   cost:550,  rarity:"epic" },
+          { id:"f_royal",  icon:"🟣", name:"Royal",       cls:"frame-royal",  cost:750,  rarity:"epic" },
+          { id:"f_flame",  icon:"🔥", name:"Flammes",     cls:"frame-flame",  cost:1300, rarity:"legendary" }
+        ],
+        dice: [
+          { id:"d_classic",icon:"🎲", name:"Dé classique", cost:0,   rarity:"common", src:"start" },
+          { id:"d_gem",    icon:"💎", name:"Dé gemme",     cost:220, rarity:"rare" },
+          { id:"d_fire",   icon:"🔥", name:"Dé de feu",    cost:220, rarity:"rare" },
+          { id:"d_star",   icon:"⭐", name:"Dé étoile",    cost:220, rarity:"rare" },
+          { id:"d_alien",  icon:"👽", name:"Dé alien",     cost:450, rarity:"epic" },
+          { id:"d_crown",  icon:"👑", name:"Dé royal",     cost:1000,rarity:"legendary" }
+        ],
+        anims: [
+          { id:"a_default", icon:"🎰", name:"Tirage standard", cost:0,   rarity:"common", src:"start" },
+          { id:"a_confetti",icon:"🎉", name:"Confettis+",      cost:300, rarity:"rare" },
+          { id:"a_neon",    icon:"💫", name:"Néon",            cost:300, rarity:"rare" }
+        ],
+        sounds: [
+          { id:"s_default", icon:"🔉", name:"Sons classiques", cost:0,   rarity:"common", src:"start" },
+          { id:"s_arcade",  icon:"🕹️", name:"Ambiance arcade", cost:300, rarity:"rare" },
+          { id:"s_zen",     icon:"🧘", name:"Ambiance zen",    cost:300, rarity:"rare" }
+        ],
+        themes: [
+          { id:"crimson", icon:"🔴", name:"Crimson", cost:0, rarity:"common", theme:"crimson", dots:["#ff4b3e","#ff2e63","#d61f57"] },
+          { id:"sunset",  icon:"🟠", name:"Sunset",  cost:0, rarity:"common", theme:"sunset",  dots:["#ff7a18","#ff3d54","#e0245e"] },
+          { id:"violet",  icon:"🟣", name:"Violet",  cost:0, rarity:"common", theme:"violet",  dots:["#a76cfa","#d946ef","#7c3aed"] },
+          { id:"ocean",   icon:"🔵", name:"Ocean",   cost:0, rarity:"common", theme:"ocean",   dots:["#38bdf8","#6366f1","#3b4ede"] },
+          { id:"emerald", icon:"🟢", name:"Emerald", cost:0, rarity:"common", theme:"emerald", dots:["#34d399","#10b981","#059669"] },
+          { id:"gold",    icon:"🟡", name:"Gold",    cost:0, rarity:"common", theme:"gold",    dots:["#fbbf24","#f97316","#ea580c"] }
+        ],
+        trophies: [
+          { id:"tr_first_exp", icon:"🥾", name:"Premier explorateur", cond:"Termine 1 Expédition" },
+          { id:"tr_boss",      icon:"🐲", name:"Chasseur de Monstre", cond:"Bats le Monstre du Scroll" },
+          { id:"tr_champ",     icon:"🏆", name:"Champion du tournoi", cond:"Remporte un tournoi" },
+          { id:"tr_master",    icon:"👑", name:"Maître absolu",       cond:"Atteins le rang Légende" },
+          { id:"tr_lvl10",     icon:"🎖️", name:"Vétéran",             cond:"Atteins le niveau 10" }
+        ]
+      };
+      function findCos(cat, id){ return (COSMETICS[cat]||[]).find(x=>x.id===id); }
+      function owns(cat, id){ return (GS.owned[cat]||[]).indexOf(id)!==-1; }
+      function frameClassFor(id){ const f=findCos("frames",id); return f?f.cls:""; }
+      function titleNameFor(id){ const t=findCos("titles",id); return t?t.name:""; }
+      function diceIconFor(id){ const d=findCos("dice",id); return d?d.icon:"🎲"; }
+
+      function grantCosmetic(cat, id, silent){
+        if(!GS.owned[cat]) GS.owned[cat]=[];
+        if(owns(cat,id)) return false;
+        GS.owned[cat].push(id); save();
+        const c = findCos(cat,id);
+        if(!silent && c){ try{ toast(`Nouveau : ${c.icon||"🎁"} ${c.name} débloqué !`); }catch(e){} }
+        return true;
+      }
+      function buyCosmetic(cat, id){
+        const c = findCos(cat,id); if(!c) return;
+        if(owns(cat,id)){ equip(cat,id); return; }
+        if(GS.shards < (c.cost||0)){ try{ toast("Pas assez d’Éclats ✦"); }catch(e){} return; }
+        GS.shards -= (c.cost||0);
+        grantCosmetic(cat,id,true);
+        equip(cat,id);
+        try{ toast(`${c.name} acheté ✅`); playSound("unlock"); }catch(e){}
+        save(); renderHero();
+      }
+      function equip(cat, id){
+        if(!owns(cat,id)) return;
+        if(cat==="themes"){ try{ setOption("theme", findCos("themes",id).theme); applyTheme(findCos("themes",id).theme); if(typeof renderExtraOptions==="function") renderExtraOptions(); }catch(e){} }
+        else {
+          const map = { titles:"title", frames:"frame", dice:"dice", anims:"anim", sounds:"sound", trophies:"trophy" };
+          GS.equipped[map[cat]] = id;
+        }
+        applyCosmetics(); save(); renderHero();
+        if(isAdventureOpen()) render(GS.ui.panel);
+      }
+      function applyCosmetics(){
+        try{
+          const dice = document.querySelector(".surprise-dice");
+          if(dice) dice.textContent = diceIconFor(GS.equipped.dice);
+        }catch(e){}
+      }
+
+      /* ---------- 9. PROFIL (avatars) ---------- */
+      const AVATARS = ["🎲","🍿","🎬","🚀","🐱","🦊","🐼","🐸","👾","🤖","👑","🔥","⚡","🌈","🎧","🎮","🦄","🧙","🥷","🦁","🐙","🌟"];
+
+      /* ---------- helpers UI ---------- */
+      function isAdventureOpen(){ const p=document.getElementById("page-adventure"); return !!(p && p.classList.contains("active")); }
+      function panelEl(name){ return document.querySelector(`#q-panels .q-panel[data-panel="${name}"]`); }
+      function openModal(id){ const m=document.getElementById(id); if(m){ m.classList.add("show"); m.setAttribute("aria-hidden","false"); } }
+      function closeModal(id){ const m=document.getElementById(id); if(m){ m.classList.remove("show"); m.setAttribute("aria-hidden","true"); } }
+      function anyModalOpen(){
+        if(document.querySelector(".q-modal.show")) return true;
+        try{ if(playerModal.classList.contains("show")) return true; }catch(e){}
+        try{ if(document.getElementById("slot-overlay").classList.contains("show")) return true; }catch(e){}
+        try{ if(document.getElementById("duel-overlay").classList.contains("show")) return true; }catch(e){}
+        return false;
+      }
+      function randInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+      function discoveredVideos(){ let s=0; for(const ch of CHANNELS_ALL) s+=masteryCount(ch); return s; }
+      function discoveredChannels(){ let n=0; for(const ch of CHANNELS_ALL){ if(masteryCount(ch)>0) n++; } return n; }
+      function bar(cur, goal){ const p=Math.min(100,Math.round(cur/Math.max(1,goal)*100)); return `<div class="q-prog"><div class="q-prog-fill" style="width:${p}%"></div></div><div class="q-prog-txt"><span>${Math.min(cur,goal)} / ${goal}</span><span>${p}%</span></div>`; }
+      function rarityName(r){ return ({common:"commun",rare:"rare",epic:"épique",legendary:"légendaire"})[r]||"commun"; }
+      function avatarFor(ch){ try{ return ch?loadCachedAvatar(ch.id):""; }catch(e){ return ""; } }
+
+      /* ---------- 7. COFFRES ---------- */
+      const CHEST_TABLES = {
+        common:   { xp:[15,30],  sh:[10,25],  cosChance:.22, rar:"common" },
+        rare:     { xp:[30,60],  sh:[25,55],  cosChance:.40, rar:"rare" },
+        epic:     { xp:[60,120], sh:[50,110], cosChance:.62, rar:"epic" },
+        legendary:{ xp:[150,260],sh:[120,240],cosChance:.85, rar:"legendary" }
+      };
+      function unownedCosmetics(rarityFilter){
+        const out=[];
+        for(const cat of ["titles","frames","dice","anims","sounds"]){
+          for(const c of COSMETICS[cat]){
+            if(c.src==="start" || owns(cat,c.id)) continue;
+            if(rarityFilter && c.rarity!==rarityFilter) continue;
+            out.push({ cat, id:c.id, c });
+          }
+        }
+        return out;
+      }
+      function rollChestReward(rarity){
+        const T = CHEST_TABLES[rarity] || CHEST_TABLES.common;
+        const parts = [
+          { type:"xp", amount: randInt(T.xp[0], T.xp[1]) },
+          { type:"shards", amount: randInt(T.sh[0], T.sh[1]) }
+        ];
+        if(Math.random() < T.cosChance){
+          let pool = unownedCosmetics(T.rar);
+          if(!pool.length) pool = unownedCosmetics(null);
+          if(pool.length){ const p = pool[randInt(0,pool.length-1)]; parts.push({ type:"cosmetic", cat:p.cat, id:p.id }); }
+          else parts.push({ type:"shards", amount: randInt(25,50) });
+        } else if(Math.random() < 0.3){
+          parts.push({ type: Math.random()<0.5 ? "reroll" : "shield", amount:1 });
+        }
+        return parts;
+      }
+      function grantChest(rarity){
+        const id = `${rarity}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,7)}`;
+        GS.chests.push({ id, rarity, reward: rollChestReward(rarity), opened:false, t:Date.now() });
+        save();
+        if(isAdventureOpen() && GS.ui.panel==="coffres") render("coffres");
+        return id;
+      }
+      let _openingChest = null;
+      function openChestFlow(id){
+        const chest = GS.chests.find(c=>c.id===id);
+        if(!chest){ toast("Coffre introuvable"); return; }
+        if(chest.opened){ toast("Coffre déjà ouvert"); return; }
+        _openingChest = chest;
+        const ic = document.getElementById("q-chest-icon");
+        document.getElementById("q-chest-rarity").textContent = "Coffre " + rarityName(chest.rarity);
+        document.getElementById("q-chest-hint").style.display = "";
+        document.getElementById("q-chest-result").innerHTML = "";
+        document.getElementById("q-chest-ok").style.display = "none";
+        ic.textContent = chest.rarity==="legendary" ? "🎇" : "🎁";
+        ic.classList.add("shake");
+        openModal("q-chest-modal");
+      }
+      function revealChest(){
+        const chest = _openingChest; if(!chest || chest.opened) return;
+        document.getElementById("q-chest-icon").classList.remove("shake");
+        document.getElementById("q-chest-icon").textContent = "✨";
+        document.getElementById("q-chest-hint").style.display = "none";
+        let html = "";
+        if(claimOnce(`chest_${chest.id}`)){
+          for(const p of chest.reward){ html += `<div class="q-reward-line">🎁 ${applyRewardPart(p, true)}</div>`; }
+          chest.opened = true; save();
+        }
+        document.getElementById("q-chest-result").innerHTML = html;
+        document.getElementById("q-chest-ok").style.display = "";
+        try{ playSound("win"); confettiBurst(document.querySelector("#q-chest-modal .q-modal-card")); }catch(e){}
+        renderHero();
+      }
+
+      /* ---------- récompenses génériques ---------- */
+      function applyRewardPart(p, silent){
+        if(p.type==="xp"){ addXp(p.amount, "Récompense", silent); return `＋${p.amount} XP`; }
+        if(p.type==="shards"){ addShards(p.amount, "Récompense"); return `＋${p.amount} ✦ Éclats`; }
+        if(p.type==="reroll"){ GS.events.rerollTokens=(GS.events.rerollTokens||0)+(p.amount||1); save(); return `＋${p.amount||1} 🎟️ Relance`; }
+        if(p.type==="shield"){ GS.events.streakShields=(GS.events.streakShields||0)+(p.amount||1); save(); return `＋${p.amount||1} 🛡️ Protection de série`; }
+        if(p.type==="chest"){ grantChest(p.rarity); return `Coffre ${rarityName(p.rarity)} 🎁`; }
+        if(p.type==="cosmetic"){ const c=findCos(p.cat,p.id); grantCosmetic(p.cat,p.id,true); return `${c?c.icon:"🎁"} ${c?c.name:"Cosmétique"}`; }
+        if(p.type==="missionBonus"){ return applyMissionBonus(); }
+        return "";
+      }
+      function applyMissionBonus(){
+        ensureDay();
+        for(const id of GS.daily.ids){
+          if(GS.daily.claimed.indexOf(id)===-1){
+            const t = DAILY_POOL.find(x=>x.id===id);
+            if(claimOnce(`md_${GS.daily.date}_${id}`)){
+              GS.daily.claimed.push(id); GS.weekTrack.dailyMissions++;
+              addShards(10,"Bonus mission"); addXp(XP.missionDaily,"Bonus mission");
+              save(); return `Mission « ${t?t.label:''} » validée ✅`;
+            }
+          }
+        }
+        addShards(20,"Bonus"); return "＋20 ✦ Éclats";
+      }
+
+      /* ---------- 12. ROUE QUOTIDIENNE ---------- */
+      const WHEEL = [
+        { label:"+40 XP",  color:"#5da7ff", part:{type:"xp",amount:40} },
+        { label:"+60 ✦",   color:"#ffcf5c", part:{type:"shards",amount:60} },
+        { label:"Coffre",  color:"#a76cfa", part:{type:"chest",rarity:"rare"} },
+        { label:"Relance", color:"#4ade9e", part:{type:"reroll",amount:1} },
+        { label:"+25 ✦",   color:"#ff7a18", part:{type:"shards",amount:25} },
+        { label:"Mission", color:"#ff2e63", part:{type:"missionBonus"} },
+        { label:"+80 XP",  color:"#38bdf8", part:{type:"xp",amount:80} },
+        { label:"Rare !",  color:"#f472b6", part:{type:"cosmetic-rare"} }
+      ];
+      let _wheelRot = 0, _wheelSpinning = false;
+      function wheelBg(){
+        const n = WHEEL.length, step = 100/n;
+        const stops = WHEEL.map((s,i)=>`${s.color} ${(i*step).toFixed(2)}% ${((i+1)*step).toFixed(2)}%`).join(",");
+        return `conic-gradient(${stops})`;
+      }
+      function resolveWheelPart(part){
+        if(part.type==="cosmetic-rare"){
+          let pool = unownedCosmetics("rare"); if(!pool.length) pool = unownedCosmetics("epic"); if(!pool.length) pool = unownedCosmetics(null);
+          if(pool.length){ const p=pool[randInt(0,pool.length-1)]; return {type:"cosmetic",cat:p.cat,id:p.id}; }
+          return {type:"shards",amount:60};
+        }
+        return part;
+      }
+      function openWheel(){
+        ensureWeek();
+        const w = document.getElementById("q-wheel");
+        if(w) w.style.background = wheelBg();
+        document.getElementById("q-wheel-result").textContent = "";
+        const spinBtn = document.getElementById("q-wheel-spin");
+        spinBtn.disabled = GS.wheel.spun;
+        spinBtn.textContent = GS.wheel.spun ? "Déjà tournée aujourd’hui" : "Lancer la roue";
+        openModal("q-wheel-modal");
+      }
+      function spinWheel(){
+        if(_wheelSpinning) return;
+        ensureWeek();
+        if(GS.wheel.spun){ toast("Reviens demain pour retourner la roue 🍀"); return; }
+        const idx = randInt(0, WHEEL.length-1);
+        const resolved = resolveWheelPart(WHEEL[idx].part);
+        GS.wheel.spun = true; GS.wheel.reward = resolved; save(); // sauvegardé AVANT l'animation
+        _wheelSpinning = true;
+        document.getElementById("q-wheel-spin").disabled = true;
+        const seg = 360/WHEEL.length;
+        _wheelRot += 360*5 + (360 - (idx*seg + seg/2));
+        const w = document.getElementById("q-wheel");
+        w.style.transform = `rotate(${_wheelRot}deg)`;
+        const finish = ()=>{
+          _wheelSpinning = false;
+          let txt = "";
+          if(claimOnce(`wheel_${GS.wheel.date}`)){ txt = applyRewardPart(resolved, true); }
+          document.getElementById("q-wheel-result").innerHTML = `🍀 Tu gagnes : <b>${txt||"—"}</b>`;
+          document.getElementById("q-wheel-spin").textContent = "Reviens demain";
+          try{ playSound("win"); confettiBurst(document.querySelector("#q-wheel-modal .q-modal-card")); }catch(e){}
+          renderHero();
+          if(isAdventureOpen() && GS.ui.panel==="roue") render("roue");
+        };
+        let done=false; const on=()=>{ if(done) return; done=true; w.removeEventListener("transitionend", on); finish(); };
+        w.addEventListener("transitionend", on);
+        setTimeout(on, 4600);
+      }
+
+      /* ---------- 11. ÉVÉNEMENTS ALÉATOIRES ---------- */
+      let _eventOk = null, _eventCards = null;
+      function openEvent(cfg){
+        document.getElementById("q-event-ic").textContent = cfg.ic||"✨";
+        document.getElementById("q-event-h").textContent = cfg.h||"Événement";
+        document.getElementById("q-event-sub").textContent = cfg.sub||"";
+        document.getElementById("q-event-body").innerHTML = cfg.body||"";
+        const ok = document.getElementById("q-event-ok");
+        ok.textContent = cfg.okLabel||"OK";
+        ok.style.display = cfg.hideOk ? "none" : "";
+        _eventOk = cfg.onOk || null;
+        openModal("q-event-modal");
+      }
+      function maybeTriggerEvent(){
+        try{
+          if(anyModalOpen()) return;
+          const now = Date.now();
+          if(now - (GS.events.lastTs||0) < 6*60000) return;
+          if(Math.random() > 0.22) return;
+          GS.events.lastTs = now; save();
+          triggerRandomEvent();
+        }catch(e){}
+      }
+      function triggerRandomEvent(){
+        const types = ["double","cards","duel","mystery","nostalgia","reroll","chest","bonus"];
+        const type = types[randInt(0,types.length-1)];
+        if(type==="double"){
+          GS.events.doubleUntil = Date.now()+5*60000; save();
+          openEvent({ ic:"⚡", h:"Double XP !", sub:"Toutes tes récompenses XP sont doublées pendant 5 minutes." });
+        } else if(type==="cards"){
+          _eventCards = [ rollEventCard(), rollEventCard(), rollEventCard() ];
+          const body = `<div class="q-choice-grid">`+_eventCards.map((c,i)=>`<div class="q-choice" data-ev-card="${i}"><div class="q-choice-ic">🎴</div><div class="q-choice-nm">Carte ${i+1}</div></div>`).join("")+`</div>`;
+          openEvent({ ic:"🎴", h:"Choisis une carte", sub:"Une récompense se cache derrière chacune.", body, hideOk:true });
+        } else if(type==="duel"){
+          openEvent({ ic:"⚔️", h:"Duel éclair !", sub:"Un Duel surprise t’attend.", okLabel:"Lancer le Duel", onOk:()=>{ closeModal("q-event-modal"); try{ openDuel(); }catch(e){} } });
+        } else if(type==="mystery"){
+          openEvent({ ic:"❓", h:"Vidéo mystère", sub:"Une vidéo totalement au hasard, sans savoir laquelle.", okLabel:"Découvrir", onOk:()=>{ closeModal("q-event-modal"); launchGame(randomEntry(), "mystery"); } });
+        } else if(type==="nostalgia"){
+          openEvent({ ic:"📼", h:"Portail nostalgique", sub:"Replonge dans une vieille vidéo d’une chaîne culte.", okLabel:"Ouvrir le portail", onOk:()=>{ closeModal("q-event-modal"); launchGame(nostalgiaEntry(), "nostalgie"); } });
+        } else if(type==="reroll"){
+          GS.events.rerollTokens=(GS.events.rerollTokens||0)+1; save();
+          openEvent({ ic:"🎟️", h:"Relance gratuite", sub:"Tu gagnes 1 jeton de relance !" });
+          renderHero();
+        } else if(type==="chest"){
+          const r = Math.random()<0.5 ? "rare" : "common"; grantChest(r);
+          openEvent({ ic:"🎁", h:"Coffre surprise", sub:`Un coffre ${rarityName(r)} a été ajouté à ton onglet Coffres !` });
+        } else {
+          addShards(30,"Objectif bonus");
+          openEvent({ ic:"🎯", h:"Objectif bonus", sub:"Bien joué ! ＋30 ✦ Éclats offerts." });
+        }
+      }
+      function rollEventCard(){
+        const roll = Math.random();
+        if(roll<0.4) return { type:"shards", amount: randInt(20,60) };
+        if(roll<0.75) return { type:"xp", amount: randInt(30,80) };
+        if(roll<0.9) return { type:"reroll", amount:1 };
+        return { type:"chest", rarity:"rare" };
+      }
+
+      /* ---------- 6/15. LANCEMENTS DE JEU (modes + expéditions) ---------- */
+      function randomEntry(){ return ENTRIES[randInt(0,ENTRIES.length-1)]; }
+      function favEntry(){
+        let favs=[]; try{ favs=loadFavorites(); }catch(e){}
+        const fp = ENTRIES.filter(e=>favs.indexOf(e.entryId)!==-1);
+        return fp.length ? fp[randInt(0,fp.length-1)] : randomEntry();
+      }
+      function discoveryEntry(){
+        let best=null, bc=Infinity;
+        for(const e of ENTRIES){
+          const ch = e.type==="group_random" ? e.group[0] : e.channel;
+          const c = masteryCount(ch);
+          if(c<bc){ bc=c; best=e; }
+        }
+        return best || randomEntry();
+      }
+      function nostalgiaEntry(){
+        const sorted = ENTRIES.slice().sort((a,b)=>{
+          const ca=a.type==="group_random"?a.group[0]:a.channel, cb=b.type==="group_random"?b.group[0]:b.channel;
+          return (cb.yearsBack||0)-(ca.yearsBack||0);
+        });
+        const half = sorted.slice(0, Math.max(3, Math.ceil(sorted.length/2)));
+        return half[randInt(0,half.length-1)];
+      }
+      function launchGame(entry, mode){
+        if(!entry) return;
+        try{
+          if(mode!=="mystery" && isSlotAnimEnabled()){
+            runSlotAnimation(entry, ENTRIES).then(()=> launchEntry(entry, { gameMode:mode }));
+          } else {
+            launchEntry(entry, { gameMode:mode });
+          }
+        }catch(e){ try{ launchEntry(entry, { gameMode:mode }); }catch(_){} }
+      }
+      const MODES = [
+        { id:"zero",      icon:"🤖", name:"Zéro décision", desc:"On choisit tout pour toi : une chaîne, une vidéo, direct." },
+        { id:"mystere",   icon:"❓", name:"Mystère",       desc:"La chaîne reste cachée jusqu’au lancement de la vidéo." },
+        { id:"trois",     icon:"🃏", name:"Choix parmi trois", desc:"Trois chaînes proposées, tu choisis ton camp." },
+        { id:"marathon",  icon:"🏃", name:"Marathon",      desc:"Enchaîne les vidéos pour battre tes records de session." },
+        { id:"decouverte",icon:"🧭", name:"Découverte",    desc:"Priorité aux chaînes que tu maîtrises le moins." },
+        { id:"nostalgie", icon:"📼", name:"Nostalgie",     desc:"Cap sur les chaînes et vidéos les plus anciennes." },
+        { id:"favoris",   icon:"⭐", name:"Favoris",       desc:"Tirage limité à tes chaînes favorites." },
+        { id:"chaos",     icon:"🌀", name:"Chaos",         desc:"Le hasard total, aucune règle, aucune pitié." },
+        { id:"expedition",icon:"🗺️", name:"Expédition",    desc:"Des parcours à étapes avec des récompenses au bout." }
+      ];
+      function runMode(id){
+        if(id==="expedition"){ setPanel("expeditions"); return; }
+        if(id==="trois"){
+          const three = pickN(ENTRIES, 3, Math.random);
+          const body = `<div class="q-choice-grid">`+three.map((e,i)=>{
+            const ch=e.type==="group_random"?e.group[0]:e.channel; const av=avatarFor(ch);
+            const ic = av?`<img src="${av}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">`:`<div class="q-choice-ic">${esc(e.title[0])}</div>`;
+            return `<div class="q-choice" data-mode3="${i}">${ic}<div class="q-choice-nm">${esc(e.title)}</div></div>`;
+          }).join("")+`</div>`;
+          _mode3 = three;
+          openEvent({ ic:"🃏", h:"Choix parmi trois", sub:"Quelle chaîne tu regardes ?", body, hideOk:true });
+          return;
+        }
+        let entry;
+        if(id==="favoris") entry = favEntry();
+        else if(id==="decouverte") entry = discoveryEntry();
+        else if(id==="nostalgie") entry = nostalgiaEntry();
+        else entry = randomEntry();
+        const mode = (id==="mystere") ? "mystery" : id;
+        launchGame(entry, mode);
+      }
+      let _mode3 = null;
+
+      const EXP_TEMPLATES = [
+        { id:"exp_discovery", name:"Découverte", icon:"🧭", diff:"Facile",    steps:4, pick:"discovery", reward:{ shards:40 } },
+        { id:"exp_nostalgia", name:"Nostalgie",  icon:"📼", diff:"Facile",    steps:3, pick:"nostalgia", reward:{ shards:35 } },
+        { id:"exp_chaos",     name:"Chaos",      icon:"🌀", diff:"Moyenne",   steps:5, pick:"chaos",     reward:{ shards:55 } },
+        { id:"exp_favoris",   name:"Favoris",    icon:"⭐", diff:"Facile",    steps:3, pick:"fav",       reward:{ shards:35 } },
+        { id:"exp_duel",      name:"Duel",       icon:"⚔️", diff:"Moyenne",   steps:3, pick:"duel",      reward:{ shards:50 } },
+        { id:"exp_marathon",  name:"Marathon",   icon:"🏃", diff:"Difficile", steps:8, pick:"chaos",     reward:{ shards:90, chest:"rare" } },
+        { id:"exp_mystery",   name:"Mystère",    icon:"❓", diff:"Moyenne",   steps:4, pick:"mystery",   reward:{ shards:60 } }
+      ];
+      function expTemplate(id){ return EXP_TEMPLATES.find(t=>t.id===id); }
+      function startExpedition(id){
+        if(GS.expedition.active){ toast("Termine ou abandonne l’Expédition en cours d’abord."); return; }
+        const t = expTemplate(id); if(!t) return;
+        GS.expedition.active = { templateId:id, step:0, total:t.steps, awaiting:false, instanceId: Date.now().toString(36)+Math.random().toString(36).slice(2,6) };
+        save(); toast(`Expédition « ${t.name} » lancée 🧭`); render("expeditions");
+      }
+      function abandonExpedition(){
+        GS.expedition.active = null; save(); toast("Expédition abandonnée."); render("expeditions");
+      }
+      function doExpeditionStep(){
+        const a = GS.expedition.active; if(!a) return;
+        const t = expTemplate(a.templateId); if(!t) return;
+        a.awaiting = true; save();
+        if(t.pick==="duel"){ try{ openDuel(); }catch(e){} return; }
+        let entry;
+        if(t.pick==="fav") entry = favEntry();
+        else if(t.pick==="discovery") entry = discoveryEntry();
+        else if(t.pick==="nostalgia") entry = nostalgiaEntry();
+        else entry = randomEntry();
+        const mode = (t.pick==="mystery") ? "mystery" : "expedition";
+        launchGame(entry, mode);
+      }
+      function advanceExpedition(){
+        const a = GS.expedition.active; if(!a) return;
+        a.awaiting = false; a.step++;
+        if(a.step >= a.total) completeExpedition();
+        save();
+        if(isAdventureOpen()) render(GS.ui.panel);
+      }
+      function completeExpedition(){
+        const a = GS.expedition.active; if(!a) return;
+        const t = expTemplate(a.templateId);
+        if(claimOnce(`exp_${a.instanceId}`)){
+          ensureDay(); ensureWeek();
+          GS.dayTrack.expeditions++; GS.weekTrack.expeditions++;
+          GS.expedition.completedIds.push(a.instanceId);
+          GS.records.expeditionSteps = Math.max(GS.records.expeditionSteps, t.total);
+          addXp(XP.expedition, "Expédition : "+t.name);
+          if(t.reward.shards) addShards(t.reward.shards, "Expédition");
+          if(t.reward.chest) grantChest(t.reward.chest);
+          grantCosmetic("trophies","tr_first_exp", true);
+          try{ toast(`🏁 Expédition « ${t.name} » terminée !`); playSound("win"); }catch(e){}
+          checkMissions();
+        }
+        GS.expedition.active = null;
+        save();
+      }
+
+      /* ---------- 13. BOSS HEBDO — Le Monstre du Scroll ---------- */
+      function bossObjectives(){
+        const wm = weeklyMetrics();
+        return [
+          { label:"Découvre 15 vidéos", cur:wm.videos, goal:15 },
+          { label:"Utilise 6 chaînes",  cur:wm.channels, goal:6 },
+          { label:"Fais 4 Duels",       cur:wm.duels, goal:4 },
+          { label:"Termine 1 Expédition",cur:wm.expeditions, goal:1 }
+        ];
+      }
+      function bossDone(){ return bossObjectives().every(o=>o.cur>=o.goal); }
+      function claimBoss(){
+        ensureWeek();
+        if(!bossDone()){ toast("Termine tous les objectifs d’abord !"); return; }
+        if(GS.boss.claimed){ toast("Monstre déjà vaincu cette semaine."); return; }
+        if(claimOnce(`boss_${GS.boss.week}`)){
+          GS.boss.claimed = true;
+          addXp(300, "Monstre du Scroll vaincu");
+          addShards(200, "Boss hebdo");
+          grantChest("epic");
+          grantCosmetic("trophies","tr_boss", true);
+          save();
+          openEvent({ ic:"🐲", h:"Monstre vaincu !", sub:"Tu as terrassé le Monstre du Scroll : ＋300 XP, ＋200 ✦, un coffre épique et un trophée !" });
+          try{ playSound("win"); confettiBurst(document.querySelector("#q-event-modal .q-modal-card")); }catch(e){}
+          renderHero(); render("boss");
+        }
+      }
+
+      /* ---------- 14. TOURNOI DE DUELS ---------- */
+      function createTournament(size){
+        const chosen = pickN(ENTRIES, size, Math.random);
+        const round0 = [];
+        for(let i=0;i<size;i+=2){ round0.push({ a:chosen[i].entryId, b:chosen[i+1].entryId, winner:null }); }
+        const rounds = [round0];
+        let count = size/2;
+        while(count>=1){
+          const r=[]; for(let i=0;i<count;i++) r.push({ a:null, b:null, winner:null });
+          rounds.push(r); count = count/2;
+        }
+        GS.tournament = { size, rounds, champion:null };
+        save(); render("tournoi");
+      }
+      function entryById(id){ return ENTRIES.find(e=>e.entryId===id); }
+      function pickTournament(r, m, slot){
+        const T = GS.tournament; if(!T) return;
+        const match = T.rounds[r][m];
+        const winnerId = slot==="a" ? match.a : match.b;
+        if(!winnerId || match.winner) return;
+        match.winner = winnerId;
+        try{ trackDuel(); }catch(e){}
+        const nextR = r+1;
+        if(T.rounds[nextR]){
+          const nm = Math.floor(m/2);
+          if(m%2===0) T.rounds[nextR][nm].a = winnerId; else T.rounds[nextR][nm].b = winnerId;
+        } else {
+          T.champion = winnerId;
+          if(claimOnce(`tour_${Date.now().toString(36)}`)){ addXp(200,"Tournoi remporté"); addShards(120,"Tournoi"); grantCosmetic("trophies","tr_champ", true); }
+          const e = entryById(winnerId);
+          openEvent({ ic:"🏆", h:"Champion !", sub:`${e?e.title:""} remporte le tournoi ! ＋200 XP, ＋120 ✦ et un trophée.` });
+          try{ playSound("win"); confettiBurst(document.querySelector("#q-event-modal .q-modal-card")); }catch(e){}
+          renderHero();
+        }
+        save(); render("tournoi");
+      }
+
+      /* ---------- 17. BILAN HEBDOMADAIRE ---------- */
+      function recapBodyHtml(s){
+        if(!s) return `<div class="q-empty">Aucun bilan disponible pour l’instant. Reviens après une semaine d’activité !</div>`;
+        const rows = [
+          ["🎬 Vidéos découvertes", s.videos||0],
+          ["📺 Chaînes explorées", (s.channels?s.channels.length:0)],
+          ["✨ XP gagnée", s.xp||0],
+          ["✅ Missions du jour", s.dailyMissions||0],
+          ["👑 Rangs de maîtrise", s.masteryRanks||0],
+          ["🏆 Succès obtenus", s.achievements||0],
+          ["⚔️ Duels", s.duels||0],
+          ["🧭 Expéditions", s.expeditions||0]
+        ];
+        return `<div class="q-modal-eyebrow" style="text-align:left;">Semaine ${esc(s.week||"")}</div>`+
+          rows.map(r=>`<div class="q-log-item"><span>${r[0]}</span><span class="amt">${r[1]}</span></div>`).join("");
+      }
+      function showRecap(){
+        const s = GS.recap.snapshot;
+        document.getElementById("q-recap-body").innerHTML = recapBodyHtml(s);
+        if(s) GS.recap.lastWeekShown = s.week;
+        save();
+        openModal("q-recap-modal");
+      }
+      function maybeShowRecap(){
+        const s = GS.recap.snapshot;
+        if(s && s.week && s.week !== GS.recap.lastWeekShown){ setTimeout(showRecap, 1200); }
+      }
+
+      /* ============================================================
+         RENDU — bandeau, sous-navigation, panneaux
+         ============================================================ */
+      function showLevelUp(level, bonusTxt){
+        try{
+          document.getElementById("q-lu-lvl").textContent = level;
+          document.getElementById("q-lu-sub").textContent = "Bravo ! Tu progresses dans RandomTube Quest.";
+          document.getElementById("q-lu-rewards").innerHTML = bonusTxt ? `<div class="q-reward-line">🎁 ${bonusTxt}</div>` : "";
+          openModal("q-levelup");
+          confettiBurst(document.querySelector("#q-levelup .q-modal-card"));
+        }catch(e){}
+      }
+
+      function renderHero(){
+        const host = document.getElementById("q-hero"); if(!host) return;
+        const info = levelInfo();
+        const frameCls = frameClassFor(GS.equipped.frame);
+        const title = titleNameFor(GS.equipped.title);
+        let st=0; try{ st=currentStreak(); }catch(e){}
+        host.innerHTML = `
+          <div class="q-hero-top">
+            <div class="q-ava-wrap">
+              <div class="q-ava ${frameCls}">${GS.profile.avatar||"🎲"}</div>
+              <div class="q-lvl-badge">${info.level}</div>
+            </div>
+            <div class="q-hero-id">
+              <div class="q-name">${esc(GS.profile.name)} <span class="edit" id="q-edit-profile" title="Modifier le profil" role="button" tabindex="0">✏️</span></div>
+              <div class="q-title-eq">${title?("— "+esc(title)):"Sans titre"}</div>
+            </div>
+            <div class="q-shards" title="Éclats de hasard (monnaie virtuelle)">✦ <span>${GS.shards}</span></div>
+          </div>
+          <div class="q-xpbar-wrap">
+            <div class="q-xpbar-lbl"><span>Niveau ${info.level}</span><span>${info.xpInLevel} / ${info.xpNeeded} XP</span></div>
+            <div class="q-xpbar"><div class="q-xpbar-fill" style="width:${info.pct}%"></div></div>
+          </div>
+          <div class="q-hero-mini">
+            <div class="q-mini"><b>${discoveredVideos()}</b><span>vidéos</span></div>
+            <div class="q-mini"><b>${discoveredChannels()}</b><span>chaînes</span></div>
+            <div class="q-mini"><b>${totalMastery()}</b><span>maîtrise</span></div>
+            <div class="q-mini"><b>${st}</b><span>série 🔥</span></div>
+          </div>`;
+        const edit = document.getElementById("q-edit-profile");
+        if(edit){ edit.addEventListener("click", openNameModal); edit.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openNameModal(); } }); }
+      }
+
+      const SUBNAV = [
+        ["profil","👤 Profil"], ["missions","🎯 Missions"], ["expeditions","🧭 Expéditions"],
+        ["coffres","🎁 Coffres"], ["roue","🍀 Roue"], ["boutique","🛍️ Boutique"],
+        ["inventaire","🎒 Inventaire"], ["collection","📔 Collection"], ["boss","👹 Boss"],
+        ["tournoi","🏆 Tournoi"], ["modes","🎮 Modes"], ["records","📈 Records"], ["bilan","📊 Bilan"]
+      ];
+      function buildSubnav(){
+        const nav = document.getElementById("q-subnav"); if(!nav || nav.dataset.built) return;
+        nav.innerHTML = SUBNAV.map(([id,label])=>`<button class="q-sub-btn ${id===GS.ui.panel?'active':''}" data-panel="${id}" type="button">${label}</button>`).join("");
+        nav.dataset.built = "1";
+      }
+      function setPanel(panel){ GS.ui.panel = panel; render(panel); const p=panelEl(panel); if(p) p.scrollIntoView({behavior:"smooth",block:"nearest"}); }
+
+      function render(panel){
+        panel = panel || GS.ui.panel || "profil";
+        GS.ui.panel = panel;
+        document.querySelectorAll("#q-subnav .q-sub-btn").forEach(b=> b.classList.toggle("active", b.dataset.panel===panel));
+        document.querySelectorAll("#q-panels .q-panel").forEach(p=> p.classList.toggle("active", p.dataset.panel===panel));
+        const host = panelEl(panel); if(!host) return;
+        const fn = PANELS[panel]; if(fn) fn(host);
+        save();
+      }
+      function renderAdventure(){ load(); ensureDay(); ensureWeek(); buildSubnav(); renderHero(); render(GS.ui.panel); }
+
+      /* ----- Panneau : Profil ----- */
+      function renderProfil(host){
+        const info = levelInfo();
+        const eqTitle = titleNameFor(GS.equipped.title) || "Aucun";
+        const eqFrame = (findCos("frames",GS.equipped.frame)||{}).name || "Aucun";
+        const tm = topMastery();
+        let best=0; try{ best=Math.max(GS.records.bestStreak, currentStreak()); }catch(e){}
+        const trophies = (GS.owned.trophies||[]).length;
+        let logs = GS.xpLog.slice(0,8).map(l=>`<div class="q-log-item"><span>${esc(l.why)}</span><span class="amt ${l.amt<0?'neg':''}">${l.amt>0?'+':''}${l.amt} ${l.shard?'✦':'XP'}</span></div>`).join("");
+        if(!logs) logs = `<div class="q-empty">Lance une vidéo pour gagner ta première XP !</div>`;
+        host.innerHTML = `
+          <div class="q-sec-title">👤 Profil local</div>
+          <div class="q-card">
+            <div class="q-grid-2">
+              <div><div class="q-card-ds">Pseudo</div><div class="q-card-nm">${esc(GS.profile.name)}</div></div>
+              <div><div class="q-card-ds">Niveau</div><div class="q-card-nm">${info.level} — ${info.xpInLevel}/${info.xpNeeded} XP</div></div>
+              <div><div class="q-card-ds">Éclats ✦</div><div class="q-card-nm">${GS.shards}</div></div>
+              <div><div class="q-card-ds">Titre équipé</div><div class="q-card-nm">${esc(eqTitle)}</div></div>
+              <div><div class="q-card-ds">Cadre équipé</div><div class="q-card-nm">${esc(eqFrame)}</div></div>
+              <div><div class="q-card-ds">Trophées</div><div class="q-card-nm">${trophies}</div></div>
+              <div><div class="q-card-ds">Vidéos découvertes</div><div class="q-card-nm">${discoveredVideos()}</div></div>
+              <div><div class="q-card-ds">Chaînes découvertes</div><div class="q-card-nm">${discoveredChannels()}/${CHANNELS_ALL.length}</div></div>
+              <div><div class="q-card-ds">Maîtrise totale</div><div class="q-card-nm">${totalMastery()}</div></div>
+              <div><div class="q-card-ds">Chaîne la plus maîtrisée</div><div class="q-card-nm">${tm.ch?esc(tm.ch.name):"—"} (${tm.count})</div></div>
+              <div><div class="q-card-ds">Série actuelle 🔥</div><div class="q-card-nm">${(function(){try{return currentStreak();}catch(e){return 0;}})()}</div></div>
+              <div><div class="q-card-ds">Meilleure série</div><div class="q-card-nm">${best}</div></div>
+            </div>
+            <div class="q-btn-row">
+              <button class="q-btn primary" data-action="editProfile" type="button">✏️ Modifier le profil</button>
+              <span class="q-btn" title="Jetons de relance">🎟️ ${GS.events.rerollTokens||0}</span>
+              <span class="q-btn" title="Protections de série">🛡️ ${GS.events.streakShields||0}</span>
+            </div>
+          </div>
+          <div class="q-sec-title" style="margin-top:14px;">✨ Gains récents</div>
+          <div class="q-card">${logs}</div>`;
+      }
+
+      /* ----- Panneau : Missions ----- */
+      function missionCard(t, cur, done, reward){
+        return `<div class="q-card ${done?'done':''}"><div class="q-row"><div class="q-card-ic">${t.icon}</div><div class="q-card-main"><div class="q-card-nm">${t.label}</div>${bar(cur,t.goal)}<div class="q-reward">🎁 ${reward}</div></div>${done?'<span class="q-badge-done">✔</span>':''}</div></div>`;
+      }
+      function renderMissions(host){
+        ensureDay(); ensureWeek(); checkMissions();
+        const dm=dailyMetrics(), wm=weeklyMetrics();
+        let h = `<div class="q-sec-title">🎯 Missions du jour</div><div class="q-sec-sub">Réinitialisation dans ${fmtLeft(new Date(new Date().setHours(24,0,0,0))-Date.now())} · validation automatique.</div>`;
+        for(const id of GS.daily.ids){ const t=DAILY_POOL.find(x=>x.id===id); if(!t) continue; const cur=dm[t.metric]||0; const done=GS.daily.claimed.indexOf(id)!==-1||cur>=t.goal; h+=missionCard(t,cur,done,"10 ✦ · 30 XP"); }
+        h += `<div class="q-sec-title" style="margin-top:16px;">🗓️ Missions hebdomadaires</div><div class="q-sec-sub">Réinitialisation dans ${fmtLeft(nextMonday()-Date.now())}.</div>`;
+        for(const id of GS.weekly.ids){ const t=WEEKLY_POOL.find(x=>x.id===id); if(!t) continue; const cur=wm[t.metric]||0; const done=GS.weekly.claimed.indexOf(id)!==-1||cur>=t.goal; h+=missionCard(t,cur,done,"45 ✦ · 120 XP"); }
+        host.innerHTML = h;
+      }
+
+      /* ----- Panneau : Expéditions ----- */
+      function renderExpeditions(host){
+        const a = GS.expedition.active;
+        let h = `<div class="q-sec-title">🧭 Expéditions</div><div class="q-sec-sub">Des parcours à étapes. Les vidéos respectent l’anti-doublon.</div>`;
+        if(a){
+          const t = expTemplate(a.templateId);
+          h += `<div class="q-card done"><div class="q-row"><div class="q-card-ic">${t.icon}</div><div class="q-card-main"><div class="q-card-nm">En cours : ${t.name} <span class="q-mastery-rank">${t.diff}</span></div>${bar(a.step,a.total)}<div class="q-reward">🎁 ${t.reward.shards||0} ✦${t.reward.chest?' · coffre '+rarityName(t.reward.chest):''} · ${XP.expedition} XP</div></div></div>
+            <div class="q-btn-row"><button class="q-btn primary" data-action="expStep" type="button">▶️ Étape ${a.step+1}/${a.total}</button><button class="q-btn danger" data-action="expAbandon" type="button">Abandonner</button></div></div>`;
+        }
+        h += `<div class="q-grid" style="margin-top:6px;">`;
+        for(const t of EXP_TEMPLATES){
+          const disabled = a ? "disabled" : "";
+          h += `<div class="q-item"><div class="q-item-ic">${t.icon}</div><div class="q-item-nm">${t.name}</div><div class="q-item-ds">${t.diff} · ${t.steps} étapes</div><div class="q-item-cost">🎁 ${t.reward.shards||0} ✦${t.reward.chest?' + coffre':''}</div><button class="q-btn primary" data-exp-start="${t.id}" type="button" ${disabled}>${a?'Occupé':'Commencer'}</button></div>`;
+        }
+        h += `</div>`;
+        host.innerHTML = h;
+      }
+
+      /* ----- Panneau : Coffres ----- */
+      function renderCoffres(host){
+        const pending = GS.chests.filter(c=>!c.opened);
+        let h = `<div class="q-sec-title">🎁 Coffres</div><div class="q-sec-sub">La récompense est tirée et sauvegardée avant l’ouverture.</div>`;
+        if(!pending.length){ h += `<div class="q-empty">Aucun coffre à ouvrir. Gagne-en via les niveaux, missions, événements et Expéditions !</div>`; }
+        else {
+          h += `<div class="q-grid">`;
+          for(const c of pending){
+            h += `<div class="q-item"><span class="q-tag ${c.rarity}">${rarityName(c.rarity)}</span><div class="q-item-ic">${c.rarity==="legendary"?"🎇":"🎁"}</div><div class="q-item-nm">Coffre ${rarityName(c.rarity)}</div><div class="q-item-ds">Contenu mystère</div><button class="q-btn primary" data-chest="${c.id}" type="button">Ouvrir</button></div>`;
+          }
+          h += `</div>`;
+        }
+        const opened = GS.chests.filter(c=>c.opened).length;
+        h += `<div class="q-reset-note">Coffres déjà ouverts : ${opened}</div>`;
+        host.innerHTML = h;
+      }
+
+      /* ----- Panneau : Roue ----- */
+      function renderRoue(host){
+        ensureWeek();
+        host.innerHTML = `<div class="q-sec-title">🍀 Roue quotidienne</div><div class="q-sec-sub">Une rotation gratuite par jour. La récompense est enregistrée avant l’animation.</div>
+          <div class="q-card" style="text-align:center;">
+            <div style="font-size:52px;">🍀</div>
+            <div class="q-card-nm">${GS.wheel.spun ? "Déjà tournée aujourd’hui — reviens demain !" : "Ta roue est prête !"}</div>
+            <div class="q-btn-row" style="justify-content:center;"><button class="q-btn primary" data-action="openWheel" type="button">${GS.wheel.spun?"Voir la roue":"Tourner la roue"}</button></div>
+          </div>`;
+      }
+
+      /* ----- Panneau : Boutique ----- */
+      function shopItem(cat, c){
+        const isEq = GS.equipped[({titles:"title",frames:"frame",dice:"dice",anims:"anim",sounds:"sound"})[cat]]===c.id || (cat==="themes" && currentTheme()===c.theme);
+        const ownd = owns(cat,c.id);
+        let extra = "";
+        if(cat==="themes") extra = `<div class="q-swatch-dots">${(c.dots||[]).map(d=>`<span style="background:${d}"></span>`).join("")}</div>`;
+        else extra = `<div class="q-item-ic">${c.icon}</div>`;
+        let btn;
+        if(ownd) btn = isEq ? `<button class="q-btn" disabled type="button">✔ Équipé</button>` : `<button class="q-btn" data-equip="${cat}:${c.id}" type="button">Équiper</button>`;
+        else btn = `<button class="q-btn primary" data-buy="${cat}:${c.id}" type="button">${c.cost} ✦</button>`;
+        return `<div class="q-item ${isEq?'equipped':''} ${ownd?'':'locked'}"><span class="q-tag ${c.rarity||'common'}">${rarityName(c.rarity)}</span>${extra}<div class="q-item-nm">${c.name}</div>${ownd&&!isEq?'<div class="q-item-ds">Débloqué</div>':(ownd?'<div class="q-item-ds">Équipé</div>':`<div class="q-item-cost">${c.cost} ✦</div>`)}${btn}</div>`;
+      }
+      function renderBoutique(host){
+        let h = `<div class="q-sec-title">🛍️ Boutique cosmétique</div><div class="q-sec-sub">Uniquement cosmétique. Les Éclats ✦ ne s’achètent JAMAIS avec de l’argent réel — solde : ${GS.shards} ✦.</div>`;
+        const sections = [["themes","🎨 Thèmes"],["frames","🖼️ Cadres"],["titles","🏷️ Titres"],["dice","🎲 Dés"],["anims","🎰 Animations de tirage"],["sounds","🔊 Sons"]];
+        for(const [cat,label] of sections){
+          h += `<div class="q-sec-title" style="font-size:13px; margin-top:14px;">${label}</div><div class="q-grid">`;
+          for(const c of COSMETICS[cat]) h += shopItem(cat,c);
+          h += `</div>`;
+        }
+        host.innerHTML = h;
+      }
+
+      /* ----- Panneau : Inventaire ----- */
+      function renderInventaire(host){
+        let h = `<div class="q-sec-title">🎒 Inventaire</div><div class="q-sec-sub">Consulte et équipe tes cosmétiques. Les objets verrouillés indiquent leur condition.</div>`;
+        const sections = [["titles","🏷️ Titres"],["frames","🖼️ Cadres"],["dice","🎲 Dés"],["anims","🎰 Animations"],["sounds","🔊 Sons"],["trophies","🏆 Trophées"]];
+        for(const [cat,label] of sections){
+          h += `<div class="q-sec-title" style="font-size:13px; margin-top:14px;">${label}</div><div class="q-grid">`;
+          for(const c of COSMETICS[cat]){
+            const ownd = owns(cat,c.id);
+            if(cat==="trophies"){
+              h += `<div class="q-item ${ownd?'equipped':'locked'}"><div class="q-item-ic">${ownd?c.icon:'🔒'}</div><div class="q-item-nm">${ownd?c.name:'???'}</div><div class="q-item-ds">${ownd?'Obtenu':''}</div>${ownd?'':`<div class="q-locked-cond">${c.cond}</div>`}</div>`;
+              continue;
+            }
+            const map={titles:"title",frames:"frame",dice:"dice",anims:"anim",sounds:"sound"};
+            const isEq = GS.equipped[map[cat]]===c.id;
+            let btn = ownd ? (isEq?`<button class="q-btn" disabled type="button">✔ Équipé</button>`:`<button class="q-btn primary" data-equip="${cat}:${c.id}" type="button">Équiper</button>`) : `<div class="q-locked-cond">Boutique : ${c.cost} ✦</div>`;
+            h += `<div class="q-item ${isEq?'equipped':''} ${ownd?'':'locked'}"><div class="q-item-ic">${ownd?c.icon:'🔒'}</div><div class="q-item-nm">${ownd?c.name:'???'}</div>${btn}</div>`;
+          }
+          h += `</div>`;
+        }
+        host.innerHTML = h;
+      }
+
+      /* ----- Panneau : Collection ----- */
+      function renderCollection(host){
+        let h = `<div class="q-sec-title">📔 Album de collection</div><div class="q-sec-sub">Chaque chaîne devient une carte collector selon ta maîtrise.</div><div class="q-grid">`;
+        for(const ch of CHANNELS_ALL){
+          const c = masteryCount(ch);
+          let cls="unknown", st="Inconnue";
+          if(c>=120){ cls="tier3"; st="Maîtrise max ⭐"; }
+          else if(c>=50){ cls="tier3"; st="50 vidéos+"; }
+          else if(c>=25){ cls="tier2"; st="25 vidéos+"; }
+          else if(c>=5){ cls="tier1"; st="5 vidéos+"; }
+          else if(c>=1){ cls=""; st="Découverte"; }
+          const av = avatarFor(ch);
+          const face = (cls==="unknown") ? `<div class="q-collect-fb">?</div>` : (av?`<img src="${av}" alt="">`:`<div class="q-collect-fb">${esc(ch.name[0])}</div>`);
+          const star = c>=120?'<span class="q-collect-star">⭐</span>':'';
+          h += `<div class="q-collect ${cls}">${star}${face}<div class="q-collect-nm">${cls==="unknown"?"???":esc(ch.name)}</div><div class="q-collect-st">${st}${c>0?" · "+c:""}</div></div>`;
+        }
+        h += `</div>`;
+        // Autres collections
+        let unlockedAch=[]; try{ unlockedAch=loadAchievements(); }catch(e){}
+        const achList = (typeof ACHIEVEMENTS!=="undefined") ? ACHIEVEMENTS : [];
+        h += `<div class="q-sec-title" style="margin-top:16px;">🏅 Succès (${unlockedAch.length}/${achList.length})</div><div class="q-grid-3">`;
+        for(const a of achList){ const on=unlockedAch.indexOf(a.id)!==-1; h += `<div class="q-collect ${on?'tier1':'unknown'}"><div class="q-collect-fb">${on?a.icon:'🔒'}</div><div class="q-collect-nm">${on?esc(a.name):'???'}</div></div>`; }
+        h += `</div>`;
+        const cats=[["trophies","🏆 Trophées"],["titles","🏷️ Titres"],["frames","🖼️ Cadres"]];
+        for(const [cat,label] of cats){
+          h += `<div class="q-sec-title" style="margin-top:16px;">${label}</div><div class="q-grid-3">`;
+          for(const c of COSMETICS[cat]){ const on=owns(cat,c.id); h += `<div class="q-collect ${on?'tier2':'unknown'}"><div class="q-collect-fb">${on?(c.icon||'🎁'):'🔒'}</div><div class="q-collect-nm">${on?esc(c.name):'???'}</div></div>`; }
+          h += `</div>`;
+        }
+        // Récompenses de saison + secrets
+        h += `<div class="q-sec-title" style="margin-top:16px;">🌟 Récompenses de saison</div><div class="q-grid-3">
+          <div class="q-collect ${levelInfo().level>=5?'tier2':'unknown'}"><div class="q-collect-fb">${levelInfo().level>=5?'🎖️':'🔒'}</div><div class="q-collect-nm">${levelInfo().level>=5?'Palier 5':'Niv. 5'}</div></div>
+          <div class="q-collect ${levelInfo().level>=15?'tier3':'unknown'}"><div class="q-collect-fb">${levelInfo().level>=15?'🏵️':'🔒'}</div><div class="q-collect-nm">${levelInfo().level>=15?'Palier 15':'Niv. 15'}</div></div>
+          <div class="q-collect ${(GS.owned.trophies||[]).length>=3?'tier3':'unknown'}"><div class="q-collect-fb">${(GS.owned.trophies||[]).length>=3?'👑':'🔒'}</div><div class="q-collect-nm">${(GS.owned.trophies||[]).length>=3?'Collectionneur':'???'}</div></div>
+        </div>`;
+        const secretOn = GS.events.doubleUntil>0 || (GS.owned.trophies||[]).length>=1;
+        h += `<div class="q-sec-title" style="margin-top:16px;">🔮 Secrets</div><div class="q-grid-3">
+          <div class="q-collect ${secretOn?'tier3':'unknown'}"><div class="q-collect-fb">${secretOn?'🎴':'🔒'}</div><div class="q-collect-nm">${secretOn?'Chasseur d’événements':'???'}</div><div class="q-collect-st">${secretOn?'':'Vis un événement'}</div></div>
+        </div>`;
+        host.innerHTML = h;
+      }
+
+      /* ----- Panneau : Boss ----- */
+      function renderBoss(host){
+        ensureWeek();
+        const objs = bossObjectives();
+        const total = objs.reduce((a,o)=>a+Math.min(o.cur,o.goal),0);
+        const goalSum = objs.reduce((a,o)=>a+o.goal,0);
+        const pct = Math.round(total/goalSum*100);
+        const hp = Math.max(0, 100-pct);
+        const done = bossDone();
+        let h = `<div class="q-boss"><div class="q-boss-face">${GS.boss.claimed?'💀':'👹'}</div>
+          <div class="q-modal-h" style="font-size:18px;">Le Monstre du Scroll</div>
+          <div class="q-sec-sub" style="text-align:center;">Réinitialise dans ${fmtLeft(nextMonday()-Date.now())}</div>
+          <div class="q-boss-hp"><div class="q-boss-hp-fill" style="width:${hp}%"></div></div>
+          <div class="q-prog-txt"><span>Vie du boss</span><span>${hp}%</span></div></div>`;
+        for(const o of objs){ h += `<div class="q-card ${o.cur>=o.goal?'done':''}"><div class="q-card-nm">${o.label}</div>${bar(o.cur,o.goal)}</div>`; }
+        h += `<div class="q-card" style="text-align:center;"><div class="q-reward" style="justify-content:center;">🎁 Récompense : 300 XP · 200 ✦ · coffre épique · trophée</div>
+          <div class="q-btn-row" style="justify-content:center;"><button class="q-btn primary" data-action="claimBoss" type="button" ${(!done||GS.boss.claimed)?'disabled':''}>${GS.boss.claimed?'Vaincu ✔':(done?'Vaincre le Monstre':'Objectifs en cours')}</button></div></div>`;
+        host.innerHTML = h;
+      }
+
+      /* ----- Panneau : Tournoi ----- */
+      function renderTournoi(host){
+        const T = GS.tournament;
+        let h = `<div class="q-sec-title">🏆 Tournoi de Duels</div><div class="q-sec-sub">Choisis ta chaîne préférée à chaque affrontement.</div>`;
+        if(!T){
+          h += `<div class="q-card" style="text-align:center;"><div style="font-size:44px;">🏟️</div><div class="q-card-nm">Crée un tournoi</div><div class="q-btn-row" style="justify-content:center;"><button class="q-btn primary" data-tour-new="8" type="button">8 chaînes</button><button class="q-btn primary" data-tour-new="16" type="button">16 chaînes</button></div></div>`;
+          host.innerHTML = h; return;
+        }
+        const labels = ["8es","Quarts","Demies","Finale","Vainqueur"];
+        const nRounds = T.rounds.length;
+        h += `<div class="q-bracket">`;
+        for(let r=0;r<nRounds;r++){
+          const round = T.rounds[r];
+          const lbl = nRounds===4 ? ["Quarts","Demies","Finale","🏆"][r] : (nRounds===5?["8es","Quarts","Demies","Finale","🏆"][r]:("T"+r));
+          h += `<div class="q-round"><div class="q-round-lbl">${lbl}</div>`;
+          for(let m=0;m<round.length;m++){
+            const mt = round[m];
+            h += `<div class="q-match">${tourSlot(T,r,m,"a",mt)}${tourSlot(T,r,m,"b",mt)}</div>`;
+          }
+          h += `</div>`;
+        }
+        if(T.champion){ const e=entryById(T.champion); h += `<div class="q-round"><div class="q-round-lbl">Champion</div><div class="q-match"><div class="q-slot win">🏆 ${esc(e?e.title:"")}</div></div></div>`; }
+        h += `</div><div class="q-btn-row"><button class="q-btn danger" data-tour-new="8" type="button">Nouveau tournoi (8)</button><button class="q-btn danger" data-tour-new="16" type="button">Nouveau (16)</button></div>`;
+        host.innerHTML = h;
+      }
+      function tourSlot(T,r,m,slot,mt){
+        const id = mt[slot];
+        const e = id?entryById(id):null;
+        const decided = !!mt.winner;
+        const isWin = decided && mt.winner===id;
+        if(!e) return `<div class="q-slot pending">—</div>`;
+        const ch = e.type==="group_random"?e.group[0]:e.channel; const av=avatarFor(ch);
+        const avaHtml = av?`<img class="q-slot-ava" src="${av}" alt="">`:`<span class="q-slot-ava" style="display:inline-flex;align-items:center;justify-content:center;background:var(--surface-2);">${esc(e.title[0])}</span>`;
+        const cls = decided ? (isWin?"win":"pending") : "";
+        const data = decided ? "" : `data-tour-pick="${r}:${m}:${slot}"`;
+        return `<div class="q-slot ${cls}" ${data}>${avaHtml}<span>${esc(e.title)}</span></div>`;
+      }
+
+      /* ----- Panneau : Modes ----- */
+      function renderModes(host){
+        let h = `<div class="q-sec-title">🎮 Modes de jeu</div><div class="q-sec-sub">Chaque mode a ses propres règles.</div><div class="q-grid">`;
+        for(const m of MODES){ h += `<div class="q-item"><div class="q-item-ic">${m.icon}</div><div class="q-item-nm">${m.name}</div><div class="q-item-ds">${m.desc}</div><button class="q-btn primary" data-mode="${m.id}" type="button">Jouer</button></div>`; }
+        h += `</div>`;
+        host.innerHTML = h;
+      }
+
+      /* ----- Panneau : Records ----- */
+      function renderRecords(host){
+        const r = GS.records;
+        let bestStreak=r.bestStreak; try{ bestStreak=Math.max(bestStreak,currentStreak()); }catch(e){}
+        const tk = r.topMasteryKey ? (channelByKey(r.topMasteryKey)||{}).name : "";
+        const rows = [
+          ["🔥 Meilleure série", bestStreak+" j"],
+          ["🎬 Vidéos en une journée", r.videosDay],
+          ["📺 Chaînes en une journée", r.channelsDay],
+          ["⏱️ Plus longue session", fmtLeft(r.sessionMs)],
+          ["🧭 Plus longue Expédition", r.expeditionSteps+" étapes"],
+          ["⚔️ Duels en une journée", r.duelsDay],
+          ["👑 Chaîne la plus maîtrisée", (tk?esc(tk)+" ("+r.topMasteryCount+")":"—")],
+          ["✨ Plus gros gain d’XP/jour", r.xpDay+" XP"]
+        ];
+        host.innerHTML = `<div class="q-sec-title">📈 Records personnels</div><div class="q-card">`+rows.map(x=>`<div class="q-log-item"><span>${x[0]}</span><span class="amt">${x[1]}</span></div>`).join("")+`</div>`;
+      }
+
+      /* ----- Panneau : Bilan ----- */
+      function renderBilan(host){
+        const s = GS.recap.snapshot;
+        host.innerHTML = `<div class="q-sec-title">📊 Bilan hebdomadaire</div><div class="q-sec-sub">Un récapitulatif de la semaine écoulée.</div>
+          <div class="q-card">${recapBodyHtml(s)}</div>
+          ${s?`<div class="q-btn-row"><button class="q-btn primary" data-action="showRecap" type="button">Revoir en grand</button></div>`:""}`;
+      }
+
+      const PANELS = {
+        profil:renderProfil, missions:renderMissions, expeditions:renderExpeditions, coffres:renderCoffres,
+        roue:renderRoue, boutique:renderBoutique, inventaire:renderInventaire, collection:renderCollection,
+        boss:renderBoss, tournoi:renderTournoi, modes:renderModes, records:renderRecords, bilan:renderBilan
+      };
+
+      /* ---------- profil : modale ---------- */
+      function openNameModal(){
+        document.getElementById("q-name-input").value = GS.profile.name;
+        const grid = document.getElementById("q-avatar-grid");
+        grid.innerHTML = AVATARS.map(a=>`<button class="q-btn" data-av="${a}" type="button" style="font-size:20px; padding:8px 0; ${a===GS.profile.avatar?'background:var(--grad-accent);color:#fff;':''}">${a}</button>`).join("");
+        openModal("q-name-modal");
+      }
+
+      /* ============================================================
+         ÉVÉNEMENTS DOM (délégation)
+         ============================================================ */
+      function wire(){
+        const page = document.getElementById("page-adventure");
+        if(page && !page.dataset.wired){
+          page.dataset.wired = "1";
+          page.addEventListener("click", onAdvClick);
+        }
+        // sous-nav
+        const nav = document.getElementById("q-subnav");
+        if(nav && !nav.dataset.wiredNav){ nav.dataset.wiredNav="1"; nav.addEventListener("click", e=>{ const b=e.target.closest("[data-panel]"); if(b) setPanel(b.dataset.panel); }); }
+        // modales : fermetures
+        document.querySelectorAll("[data-qclose]").forEach(b=>{ if(b.dataset.qw) return; b.dataset.qw="1"; b.addEventListener("click", ()=> closeModal(b.dataset.qclose)); });
+        // level up
+        bind("q-lu-ok", ()=> closeModal("q-levelup"));
+        // coffre
+        bind("q-chest-icon", revealChest);
+        bind("q-chest-ok", ()=> closeModal("q-chest-modal"));
+        // roue
+        bind("q-wheel-spin", spinWheel);
+        // event modal
+        bind("q-event-ok", ()=>{ const cb=_eventOk; _eventOk=null; if(cb) cb(); else closeModal("q-event-modal"); });
+        const ev = document.getElementById("q-event-modal");
+        if(ev && !ev.dataset.wired){ ev.dataset.wired="1"; ev.addEventListener("click", e=>{
+          const card=e.target.closest("[data-ev-card]"); if(card && _eventCards){ const i=+card.dataset.evCard; const txt=applyRewardPart(_eventCards[i],true); _eventCards=null; closeModal("q-event-modal"); toast("Tu gagnes : "+txt); renderHero(); return; }
+          const m3=e.target.closest("[data-mode3]"); if(m3 && _mode3){ const i=+m3.dataset.mode3; const entry=_mode3[i]; _mode3=null; closeModal("q-event-modal"); launchGame(entry,"trois"); return; }
+        }); }
+        // profil modale
+        const nameModal = document.getElementById("q-name-modal");
+        if(nameModal && !nameModal.dataset.wired){ nameModal.dataset.wired="1"; nameModal.addEventListener("click", e=>{ const av=e.target.closest("[data-av]"); if(av){ GS.profile.avatar=av.dataset.av; document.querySelectorAll("#q-avatar-grid [data-av]").forEach(x=>x.style.cssText="font-size:20px; padding:8px 0;"); av.style.cssText="font-size:20px; padding:8px 0; background:var(--grad-accent); color:#fff;"; } }); }
+        bind("q-name-save", ()=>{ const v=(document.getElementById("q-name-input").value||"").trim().slice(0,20); GS.profile.name = v || "Joueur"; save(); renderHero(); closeModal("q-name-modal"); if(isAdventureOpen()) render(GS.ui.panel); toast("Profil mis à jour ✅"); });
+      }
+      function bind(id, fn){ const el=document.getElementById(id); if(el && !el.dataset.qb){ el.dataset.qb="1"; el.addEventListener("click", fn); } }
+
+      function onAdvClick(e){
+        const t = e.target;
+        let el;
+        if(el = t.closest("[data-buy]")){ const [c,i]=el.dataset.buy.split(":"); buyCosmetic(c,i); render(GS.ui.panel); return; }
+        if(el = t.closest("[data-equip]")){ const [c,i]=el.dataset.equip.split(":"); equip(c,i); return; }
+        if(el = t.closest("[data-mode]")){ runMode(el.dataset.mode); return; }
+        if(el = t.closest("[data-chest]")){ openChestFlow(el.dataset.chest); return; }
+        if(el = t.closest("[data-exp-start]")){ startExpedition(el.dataset.expStart); return; }
+        if(el = t.closest("[data-tour-new]")){ createTournament(+el.dataset.tourNew); return; }
+        if(el = t.closest("[data-tour-pick]")){ const [r,m,s]=el.dataset.tourPick.split(":"); pickTournament(+r,+m,s); return; }
+        if(el = t.closest("[data-action]")){
+          const a = el.dataset.action;
+          if(a==="editProfile") openNameModal();
+          else if(a==="expStep") doExpeditionStep();
+          else if(a==="expAbandon") abandonExpedition();
+          else if(a==="openWheel") openWheel();
+          else if(a==="claimBoss") claimBoss();
+          else if(a==="showRecap") showRecap();
+          return;
+        }
+      }
+
+      /* ============================================================
+         INITIALISATION
+         ============================================================ */
+      function init(){
+        load();
+        ensureDay(); ensureWeek();
+        if(!GS.dayTrack.sessionStart) GS.dayTrack.sessionStart = Date.now();
+        // reprise d'une roue lancée mais non appliquée (reload en cours d'animation)
+        if(GS.wheel.spun && GS.wheel.reward && !granted(`wheel_${GS.wheel.date}`)){ applyRewardPart(GS.wheel.reward, true); claimOnce(`wheel_${GS.wheel.date}`); }
+        applyCosmetics();
+        wire();
+        buildSubnav();
+        renderHero();
+        checkMissions();
+        updateRecords();
+        save();
+        maybeShowRecap();
+      }
+      function reload(){
+        load(); ensureDay(); ensureWeek(); applyCosmetics(); renderHero();
+        if(isAdventureOpen()) render(GS.ui.panel);
+      }
+
+      return {
+        init, reload, renderAdventure,
+        trackVideoLaunch, trackDuel, onDailyChallengeDone, trackWatchLater, onAchievementsUnlocked
+      };
+    })();
+
     /* ========= BOOT ========= */
     (function boot(){
       applyTheme(currentTheme());
@@ -5328,6 +7036,7 @@
 
       checkAchievements(true);
       renderDailyAndStreak();
+      try{ Game.init(); }catch(e){ console.error("Game.init", e); }
       maybeShowOnboarding();
 
       if(isEmbedEnabled()){
