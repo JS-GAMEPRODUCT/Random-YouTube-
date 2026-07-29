@@ -2379,6 +2379,129 @@
       .q-grid-3{ grid-template-columns: repeat(2, 1fr); }
       .q-modal-h{ font-size:21px; }
     }
+
+    /* ============================================================
+       ACCUEIL V3 — hiérarchie minimaliste & premium
+       ============================================================ */
+    .home-min{ display:flex; flex-direction:column; }
+    .home-min .home-hero{ text-align:center; padding: 10px 6px 20px; }
+    .home-min .home-hero h1{ font-size: 25px; margin:0; }
+    .home-min .home-hero p{ margin:8px 0 0; font-size:14px; color:var(--muted); }
+
+    /* Bouton principal */
+    .cta-btn{
+      display:flex; align-items:center; justify-content:center; gap:12px;
+      width:100%; min-height:64px; padding:18px 22px;
+      border-radius:22px; border:1px solid rgba(255,255,255,0.22);
+      background: var(--grad-accent);
+      color:#fff; cursor:pointer;
+      font-family: var(--font-display); font-weight:700; font-size:18px; letter-spacing:-0.01em;
+      box-shadow: var(--shadow-accent), inset 0 1px 0 rgba(255,255,255,0.32);
+      position:relative; overflow:hidden;
+      transition: transform .16s ease, box-shadow .2s ease, filter .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cta-btn::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,0.28) 50%, transparent 68%);
+      transform: translateX(-130%);
+      animation: shine 6s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .cta-btn:hover{ transform: translateY(-2px); filter: brightness(1.05); }
+    .cta-btn:active{ transform: scale(0.985); }
+    .cta-btn .cta-ic{
+      display:inline-block; margin-left:0;
+      font-size:24px; line-height:1;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+    }
+
+    /* Options secondaires */
+    .cta-opts{ display:flex; gap:8px; margin-top:12px; }
+    .opt-chip{
+      flex:1 1 0; display:flex; align-items:center; justify-content:center; gap:7px;
+      min-height:42px; padding:9px 12px;
+      border-radius:999px; border:1px solid var(--stroke-2);
+      background: var(--surface); color:var(--muted);
+      font-family: var(--font-body); font-weight:700; font-size:12.5px; cursor:pointer;
+      transition: all .18s ease; white-space:nowrap;
+    }
+    .opt-chip:hover{ color:var(--text); background: var(--surface-2); }
+    .opt-chip.active{
+      color:#fff; border-color: rgb(var(--a2) / 60%);
+      background: var(--grad-accent-soft);
+      box-shadow: inset 0 0 0 1px rgb(var(--a2) / 35%), 0 4px 16px rgb(var(--a2) / 18%);
+    }
+
+    /* Défi du jour compact */
+    .daily-mini{
+      display:flex; align-items:center; gap:12px;
+      margin-top:16px; padding:12px 14px;
+      border-radius: var(--r-md); border:1px solid var(--stroke);
+      background: var(--surface); cursor:pointer;
+      transition: background .18s ease, border-color .18s ease;
+    }
+    .daily-mini:hover{ background: var(--surface-2); border-color: var(--stroke-2); }
+    .dm-ic{ display:flex; align-items:center; gap:3px; font-size:20px; flex:0 0 auto; }
+    .dm-ic b{ font-size:13px; color:var(--gold); font-weight:800; }
+    .dm-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+    .dm-lb{ font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); }
+    .dm-nm{ font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .dm-go{
+      flex:0 0 auto; padding:9px 15px; min-height:36px;
+      border:none; border-radius:999px;
+      background: var(--grad-accent); color:#fff;
+      font-weight:800; font-size:12.5px; cursor:pointer;
+      box-shadow: 0 4px 14px rgb(var(--a2) / 30%);
+    }
+    .dm-done{ font-size:18px; flex:0 0 auto; }
+
+    /* Reprendre */
+    .resume-card{
+      display:flex; align-items:center; gap:12px;
+      margin-top:10px; padding:10px 12px;
+      border-radius: var(--r-md); border:1px solid var(--stroke);
+      background: var(--surface);
+    }
+    .resume-thumb{ width:92px; height:52px; border-radius:10px; object-fit:cover; background:rgba(0,0,0,.35); flex:0 0 auto; }
+    .resume-tx{ flex:1; min-width:0; }
+    .resume-t1{ font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .resume-t2{ font-size:11.5px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    /* Ligne de progression compacte */
+    .progress-line{
+      width:100%; margin-top:16px; padding:11px 14px;
+      border:1px dashed var(--stroke-2); border-radius:999px;
+      background:transparent; color:var(--muted);
+      font-family: var(--font-body); font-size:12.5px; font-weight:600;
+      cursor:pointer; transition: all .18s ease;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .progress-line:hover{ color:var(--text); border-color: rgb(var(--a2) / 50%); background: var(--surface); }
+    .progress-line b{ color:var(--text); font-weight:800; }
+
+    /* Bibliothèque */
+    .lib-pane{ margin-top:4px; }
+
+    /* Profil : réutilise le style q-hero */
+    #pr-head .q-hero{ margin-bottom:0; }
+
+    /* Header + accueil compacts sur mobile */
+    @media (max-width:560px){
+      .topbar{ padding:8px 12px; top: calc(8px + env(safe-area-inset-top)); }
+      .brand-mark{ width:38px; height:38px; border-radius:12px; }
+      .brand-mark svg{ width:16px; height:16px; }
+      .brand-title{ font-size:16px; }
+      .brand-chip{ padding:6px 10px; font-size:10.5px; }
+      .app{ padding-top: calc(66px + env(safe-area-inset-top)); }
+      .home-min .home-hero{ padding: 6px 4px 16px; }
+      .home-min .home-hero h1{ font-size:22px; }
+      .home-min .home-hero p{ font-size:13px; }
+      .cta-btn{ min-height:60px; font-size:17px; }
+      .opt-chip{ font-size:12px; padding:9px 8px; }
+      .dm-go{ padding:9px 13px; }
+      .home-min{ padding-bottom:18px; }
+    }
   </style>
 </head>
 
@@ -2409,98 +2532,48 @@
 
   <div class="app">
 
-    <!-- ======== PAGE ACCUEIL (dashboard) ======== -->
+    <!-- ======== PAGE ACCUEIL (minimaliste) ======== -->
     <section id="page-home" class="page active">
-      <div class="menu-card">
+      <div class="menu-card home-min">
         <div class="home-hero">
-          <h1>Prêt pour <span class="grad">ta dose de hasard</span> ?</h1>
-          <p><b><span id="hero-count">24</span> youtubeurs</b>, des milliers de vidéos. Zéro shorts, zéro doublons — appuie sur le bouton et laisse la magie opérer.</p>
+          <h1>Prêt à découvrir <span class="grad">quelque chose</span> ?</h1>
+          <p>Une vidéo au hasard, sans doublon.</p>
         </div>
 
-        <div class="surprise-row">
-          <button id="surprise-btn" class="surprise-btn" type="button" aria-label="Lancer une surprise totale">
-            <span class="surprise-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
-            </span>
-            <span class="surprise-txt">
-              <span class="st1">Surprise totale</span>
-              <span class="st2">Une chaîne au hasard · une vidéo au hasard</span>
-            </span>
-            <span class="surprise-dice" aria-hidden="true">🎲</span>
+        <button id="surprise-btn" class="cta-btn" type="button" aria-label="Lancer une vidéo au hasard">
+          <span class="surprise-dice cta-ic" aria-hidden="true">🎲</span>
+          <span>Lancer une vidéo</span>
+        </button>
+
+        <div class="cta-opts" role="group" aria-label="Options de tirage">
+          <button id="surprise-favs" class="opt-chip" type="button" aria-pressed="false" title="Limiter le tirage à tes chaînes favorites">
+            <span aria-hidden="true">★</span> Favoris uniquement
           </button>
-          <button id="surprise-favs" class="favs-chip" type="button" title="Limiter la surprise à tes favoris">
-            <span class="fc-star">★</span>
-            <span>Favoris</span>
-          </button>
-          <button id="duel-btn" class="duel-btn" type="button" title="Mode Duel : choisis entre deux chaînes">
-            <span class="db-ic">⚔️</span>
-            <span>Duel</span>
+          <button id="mystery-chip" class="opt-chip" type="button" aria-pressed="false" title="La chaîne reste secrète jusqu’au lancement">
+            <span aria-hidden="true">❓</span> Mode mystère
           </button>
         </div>
 
-        <div class="stat-chips">
-          <div class="stat-chip"><b id="stat-watched">0</b><span>vidéos tirées</span></div>
-          <div class="stat-chip"><b id="stat-favs">0</b><span>favoris</span></div>
-          <div class="stat-chip"><b id="stat-later">0</b><span>à regarder</span></div>
+        <div id="daily-card" class="daily-mini" role="button" tabindex="0" aria-label="Défi du jour">
+          <span class="dm-ic" aria-hidden="true">🔥<b id="streak-days">0</b></span>
+          <div class="dm-tx">
+            <span class="dm-lb">Défi du jour</span>
+            <span class="dm-nm" id="daily-name">—</span>
+          </div>
+          <button class="dm-go" id="daily-go" type="button">Commencer</button>
+          <span class="dm-done hidden" id="daily-done" title="Défi relevé aujourd’hui">✅</span>
         </div>
 
-        <div id="daily-card" class="daily-card" role="button" aria-label="Défi du jour">
-          <div class="daily-flame" aria-hidden="true">
-            <span class="fl-emoji">🔥</span>
-            <span class="fl-num" id="streak-days">0</span>
+        <div id="resume-card" class="resume-card hidden" aria-label="Reprendre la dernière vidéo">
+          <img id="resume-thumb" class="resume-thumb" alt="" loading="lazy">
+          <div class="resume-tx">
+            <div class="resume-t1" id="resume-title">—</div>
+            <div class="resume-t2" id="resume-ch">—</div>
           </div>
-          <div class="daily-mid">
-            <div class="daily-eyebrow">Défi du jour</div>
-            <div class="daily-name" id="daily-name">—</div>
-          </div>
-          <button class="daily-go" id="daily-go" type="button">Tenter</button>
-          <span class="daily-done hidden" id="daily-done" title="Défi relevé aujourd’hui">✅</span>
+          <button id="resume-go" class="dm-go" type="button">Reprendre</button>
         </div>
 
-        <div id="watch-later-block" class="wl-block hidden">
-          <div class="latest-title" style="margin-bottom:10px;">À regarder plus tard</div>
-          <div id="watch-later-row" class="wl-row"></div>
-        </div>
-
-        <div class="menu-list">
-
-          <div class="menu-item" data-go="page-stats" role="button" aria-label="Aller vers Statistiques">
-            <div class="menu-left">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M5 9h3v11H5zM10.5 4h3v16h-3zM16 13h3v7h-3z"/>
-                </svg>
-              </div>
-              <div class="menu-text">
-                <div class="t1">Statistiques</div>
-                <div class="t2">Top chaînes, activité de la semaine</div>
-              </div>
-            </div>
-            <div class="chev" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
-            </div>
-          </div>
-
-          <div class="menu-item" data-go="page-help" role="button" aria-label="Aller vers Comment ça marche ?">
-            <div class="menu-left">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
-                </svg>
-              </div>
-              <div class="menu-text">
-                <div class="t1">Comment ça marche ?</div>
-                <div class="t2">Le guide en 30 secondes</div>
-              </div>
-            </div>
-            <div class="chev" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="footer">RandomTube</div>
+        <button id="home-progress" class="progress-line" type="button" title="Voir mon profil"></button>
       </div>
     </section>
 
@@ -2541,57 +2614,121 @@
       </div>
     </section>
 
-    <!-- ======== PAGE FAVORIS ======== -->
-    <section id="page-favs" class="page">
+    <!-- ======== PAGE BIBLIOTHÈQUE (favoris + historique + à regarder) ======== -->
+    <section id="page-library" class="page">
       <div class="menu-card">
-        <div class="home-hero" style="padding-top:2px; padding-bottom:14px;">
-          <h1 style="font-size:19px;">Favoris <span style="color:var(--gold);">★</span></h1>
-          <p style="margin-top:6px;">Tes chaînes épinglées. Combine avec le mode <b>Surprise + Favoris</b> de l’accueil !</p>
+        <div class="home-hero" style="padding-top:2px; padding-bottom:12px;">
+          <h1 style="font-size:19px;">Bibliothèque</h1>
+          <p style="margin-top:6px;">Tes favoris, ton historique et tes vidéos mises de côté.</p>
         </div>
-        <div id="favorites-list" class="scroll"></div>
-        <div id="favorites-empty" class="footer hidden">Aucun favori — appuie sur ★ dans Chaînes.</div>
+
+        <div class="seg-wrap" role="tablist" aria-label="Sections de la bibliothèque">
+          <button id="lib-tab-favs" class="seg-btn active" data-lib="favs" type="button" role="tab" aria-selected="true">★ Favoris</button>
+          <button id="lib-tab-history" class="seg-btn" data-lib="history" type="button" role="tab" aria-selected="false">Historique</button>
+          <button id="lib-tab-later" class="seg-btn" data-lib="later" type="button" role="tab" aria-selected="false">À regarder</button>
+        </div>
+
+        <div id="lib-favs" class="lib-pane">
+          <div id="favorites-list" class="scroll"></div>
+          <div id="favorites-empty" class="footer hidden">Aucun favori — appuie sur ★ dans Chaînes.</div>
+        </div>
+
+        <div id="lib-history" class="lib-pane hidden">
+          <div class="seg-wrap">
+            <button id="hist-mode-global" class="seg-btn active" type="button">Global</button>
+            <button id="hist-mode-channel" class="seg-btn" type="button">Par chaîne</button>
+          </div>
+
+          <div id="hist-channel-picker" class="hidden">
+            <select id="hist-channel-select" class="select"></select>
+          </div>
+
+          <div class="row" style="margin-top:12px; justify-content:flex-start;">
+            <button id="hist-copy" class="small-btn">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copier
+            </button>
+            <button id="hist-clear" class="small-btn">
+              <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+              Supprimer
+            </button>
+          </div>
+
+          <div id="hist-topline" class="history-topline"></div>
+          <div id="history-list" class="history-list"></div>
+        </div>
+
+        <div id="lib-later" class="lib-pane hidden">
+          <div id="watch-later-block" class="wl-block hidden" style="margin-top:8px;">
+            <div class="latest-title" style="margin-bottom:10px;">À regarder plus tard</div>
+            <div id="watch-later-row" class="wl-row"></div>
+          </div>
+          <div id="watch-later-empty" class="footer hidden">Rien pour l’instant — utilise « Plus tard » dans le lecteur.</div>
+        </div>
+
+        <div class="footer">RandomTube — Bibliothèque</div>
       </div>
     </section>
 
-    <!-- ======== PAGE HISTORIQUE ======== -->
-    <section id="page-history" class="page">
+    <!-- ======== PAGE PROFIL (hub) ======== -->
+    <section id="page-profile" class="page">
       <div class="menu-card">
-        <div class="home-hero" style="padding-top:2px; padding-bottom:10px;">
-          <h1 style="font-size:19px;">Historique</h1>
-          <p style="margin-top:6px;">Vue <b>Globale</b> (ordre réel des tirages) ou <b>Par chaîne</b> (filtrer et nettoyer).</p>
+        <div id="pr-head"><!-- rendu par JS --></div>
+
+        <div class="menu-list" style="margin-top:14px;">
+          <div class="menu-item" data-go="page-stats" role="button" aria-label="Aller vers Statistiques et succès">
+            <div class="menu-left">
+              <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h3v11H5zM10.5 4h3v16h-3zM16 13h3v7h-3z"/></svg></div>
+              <div class="menu-text">
+                <div class="t1">Statistiques &amp; succès</div>
+                <div class="t2">Top chaînes, activité, heatmap, badges</div>
+              </div>
+            </div>
+            <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg></div>
+          </div>
+
+          <div class="menu-item" id="pr-go-inventory" role="button" aria-label="Aller vers Inventaire et cosmétiques">
+            <div class="menu-left">
+              <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 7h-4V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM10 5h4v2h-4V5z"/></svg></div>
+              <div class="menu-text">
+                <div class="t1">Inventaire &amp; cosmétiques</div>
+                <div class="t2">Titres, cadres, dés, trophées</div>
+              </div>
+            </div>
+            <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg></div>
+          </div>
+
+          <div class="menu-item" data-go="page-options" role="button" aria-label="Aller vers Options">
+            <div class="menu-left">
+              <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.5.5,0,0,0,.12-.63l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.28,7.28,0,0,0-1.63-.94l-.38-2.65A.5.5,0,0,0,13.79,2H10.21a.5.5,0,0,0-.49.42L9.34,5.07a7.28,7.28,0,0,0-1.63.94l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.63L4.86,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.75,14.59a.5.5,0,0,0-.12.63l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.28,7.28,0,0,0,1.63.94l.38,2.65a.5.5,0,0,0,.49.42h3.58a.5.5,0,0,0,.49-.42l.38-2.65a7.28,7.28,0,0,0,1.63-.94l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.63ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg></div>
+              <div class="menu-text">
+                <div class="t1">Options</div>
+                <div class="t2">Lecteur, thèmes, sons, sauvegarde</div>
+              </div>
+            </div>
+            <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg></div>
+          </div>
+
+          <div class="menu-item" data-go="page-help" role="button" aria-label="Aller vers Comment ça marche ?">
+            <div class="menu-left">
+              <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg></div>
+              <div class="menu-text">
+                <div class="t1">Comment ça marche ?</div>
+                <div class="t2">Le guide en 30 secondes</div>
+              </div>
+            </div>
+            <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"></path></svg></div>
+          </div>
         </div>
 
-        <div class="seg-wrap">
-          <button id="hist-mode-global" class="seg-btn active" type="button">Global</button>
-          <button id="hist-mode-channel" class="seg-btn" type="button">Par chaîne</button>
-        </div>
-
-        <div id="hist-channel-picker" class="hidden">
-          <select id="hist-channel-select" class="select"></select>
-        </div>
-
-        <div class="row" style="margin-top:12px; justify-content:flex-start;">
-          <button id="hist-copy" class="small-btn">
-            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copier
-          </button>
-          <button id="hist-clear" class="small-btn">
-            <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-            Supprimer
-          </button>
-        </div>
-
-        <div id="hist-topline" class="history-topline"></div>
-        <div id="history-list" class="history-list"></div>
-
-        <div class="footer">RandomTube — Historique</div>
+        <div class="footer">RandomTube — Profil</div>
       </div>
     </section>
 
     <!-- ======== PAGE STATISTIQUES ======== -->
     <section id="page-stats" class="page">
       <div class="page-top">
-        <button class="back-btn" data-back="page-home">
+        <button class="back-btn" data-back="page-profile">
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           Retour
         </button>
@@ -2640,11 +2777,15 @@
 
     <!-- ======== PAGE OPTIONS ======== -->
     <section id="page-options" class="page">
+      <div class="page-top">
+        <button class="back-btn" data-back="page-profile">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Retour
+        </button>
+        <div class="page-title">Options</div>
+        <div style="width:92px;"></div>
+      </div>
       <div class="menu-card">
-        <div class="home-hero" style="padding-top:2px; padding-bottom:12px;">
-          <h1 style="font-size:19px;">Options</h1>
-          <p style="margin-top:6px;">Personnalise ton expérience RandomTube.</p>
-        </div>
 
         <div class="opt-row">
           <div class="opt-left">
@@ -2717,7 +2858,7 @@
     <!-- ======== PAGE HELP ======== -->
     <section id="page-help" class="page">
       <div class="page-top">
-        <button class="back-btn" data-back="page-home">
+        <button class="back-btn" data-back="page-profile">
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           Retour
         </button>
@@ -2734,7 +2875,7 @@
           <div class="help-item"><span class="help-num">5</span><span>La page <b>Statistiques</b> montre ton top chaînes et ton activité de la semaine. L’étoile <b>★</b> gère tes favoris.</span></div>
           <div class="help-item"><span class="help-num">6</span><span>Le <b>Défi du jour</b> te propose une chaîne différente chaque jour. Relève-le pour entretenir ta <b>série 🔥</b> et débloquer des <b>Succès</b> (page Statistiques).</span></div>
           <div class="help-item"><span class="help-num">7</span><span><b>Rebuild caches</b> reconstruit les listes de vidéos (48h). <b>Rebuild dernières vidéos</b> force la mise à jour (6h). Dans <b>Options</b> : lecteur intégré, sons, thèmes et sauvegarde des données.</span></div>
-          <div class="help-item"><span class="help-num">8</span><span><b>Mode Duel ⚔️</b> (accueil ou <span class="kbd">D</span>) : deux chaînes s’affrontent, choisis celle que tu regardes. La <b>palette</b> <span class="kbd">⌘</span><span class="kbd">K</span> lance n’importe quelle chaîne en deux touches. Et dans <b>Options</b> : une <b>couleur 100% perso</b> + la <b>heatmap</b> d’activité en bas des stats.</span></div>
+          <div class="help-item"><span class="help-num">8</span><span><b>Mode Duel ⚔️</b> (onglet Aventure → Modes, ou touche <span class="kbd">D</span>) : deux chaînes s’affrontent, choisis celle que tu regardes. La <b>palette</b> <span class="kbd">⌘</span><span class="kbd">K</span> lance n’importe quelle chaîne en deux touches. Et dans <b>Options</b> : une <b>couleur 100% perso</b> + la <b>heatmap</b> d’activité en bas des stats.</span></div>
           <div class="help-item"><span class="help-num">⌨</span><span><b>Raccourcis clavier</b> : <span class="kbd">S</span> surprise · <span class="kbd">D</span> duel · <span class="kbd">K</span> palette · <span class="kbd">/</span> recherche · <span class="kbd">1</span>-<span class="kbd">5</span> onglets · <span class="kbd">?</span> aide · <span class="kbd">Échap</span> fermer.</span></div>
         </div>
       </div>
@@ -2780,17 +2921,13 @@
       <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11zm-8 0c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.95 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
       <span>Chaînes</span>
     </button>
-    <button class="tab-btn" data-go="page-favs" type="button">
-      <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-      <span>Favoris</span>
+    <button class="tab-btn" data-go="page-library" type="button">
+      <svg viewBox="0 0 24 24"><path d="M4 4h4v16H4zM10 4h4v16h-4zM17.5 4.6l4.3 15.4-3.9 1.1-4.3-15.4z"/></svg>
+      <span>Bibliothèque</span>
     </button>
-    <button class="tab-btn" data-go="page-history" type="button">
-      <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 1 0 8.95 10h-2.02A7 7 0 1 1 13 5V2l4 4-4 4V7a5 5 0 1 0 5 6h2a7 7 0 1 1-7-10z"/></svg>
-      <span>Historique</span>
-    </button>
-    <button class="tab-btn" data-go="page-options" type="button">
-      <svg viewBox="0 0 24 24"><path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.5.5,0,0,0,.12-.63l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.28,7.28,0,0,0-1.63-.94l-.38-2.65A.5.5,0,0,0,13.79,2H10.21a.5.5,0,0,0-.49.42L9.34,5.07a7.28,7.28,0,0,0-1.63.94l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.63L4.86,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.75,14.59a.5.5,0,0,0-.12.63l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.28,7.28,0,0,0,1.63.94l.38,2.65a.5.5,0,0,0,.49.42h3.58a.5.5,0,0,0,.49-.42l.38-2.65a7.28,7.28,0,0,0,1.63-.94l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.63ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
-      <span>Options</span>
+    <button class="tab-btn" data-go="page-profile" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+      <span>Profil</span>
     </button>
   </nav>
 
@@ -3011,6 +3148,10 @@
 
     /* ========= NAVIGATION ========= */
     function showPage(id){
+      // anciennes pages regroupées dans la Bibliothèque
+      if(id === "page-favs"){ showPage("page-library"); setLibraryTab("favs"); return; }
+      if(id === "page-history"){ showPage("page-library"); setLibraryTab("history"); return; }
+
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       const el = document.getElementById(id);
       if(el) el.classList.add("active");
@@ -3018,9 +3159,9 @@
         b.classList.toggle("active", b.dataset.go === id);
       });
       if(id === "page-home") renderHomeDashboard();
-      if(id === "page-favs") renderFavorites();
       if(id === "page-channels") renderChannels();
-      if(id === "page-history") renderHistoryPage();
+      if(id === "page-library"){ renderFavorites(); renderHistoryPage(); renderWatchLater(); }
+      if(id === "page-profile") renderProfilePage();
       if(id === "page-options") renderOptionsUI();
       if(id === "page-stats") renderStatsPage();
       if(id === "page-adventure"){ try{ Game.renderAdventure(); }catch(e){ console.error(e); } }
@@ -3847,6 +3988,8 @@
         const meta = built?.metaMap?.[vid];
         const vidTitle = meta?.[0] || `${entry.title} — vidéo random`;
 
+        saveLastPlay(vid, vidTitle, chosenCh.name);
+
         if(embed) playInModal(vid, vidTitle);
         else openYouTubePreferApp(vid);
 
@@ -3855,7 +3998,7 @@
         renderChannels();
         renderFavorites();
         renderHomeDashboard();
-        if(document.getElementById("page-history")?.classList.contains("active")) renderHistoryPage();
+        if(document.getElementById("page-library")?.classList.contains("active")) renderHistoryPage();
 
       }catch(e){
         console.error(e);
@@ -4599,7 +4742,7 @@
         toast("✅ Rebuild terminé.");
         renderChannels();
         renderFavorites();
-        if(document.getElementById("page-history")?.classList.contains("active")) renderHistoryPage();
+        if(document.getElementById("page-library")?.classList.contains("active")) renderHistoryPage();
       }catch(e){
         console.error(e);
         toast("Erreur : " + (e.message || e));
@@ -4820,22 +4963,39 @@
     }
 
     /* ---- Dashboard accueil ---- */
-    function renderHomeDashboard(){
-      const statWatched = document.getElementById("stat-watched");
-      if(!statWatched) return;
+    /* ---- Dernière vidéo lancée (carte « Reprendre ») ---- */
+    const LASTPLAY_KEY = "yt_lastplay_v1";
+    function saveLastPlay(id, title, chName){
+      try{ localStorage.setItem(LASTPLAY_KEY, JSON.stringify({ id, title: String(title||"").trim(), ch: String(chName||"").trim(), t: Date.now() })); }catch{}
+    }
+    function loadLastPlay(){
+      try{
+        const o = JSON.parse(localStorage.getItem(LASTPLAY_KEY));
+        return (o && o.id) ? o : null;
+      }catch{ return null; }
+    }
+    function renderResumeCard(){
+      const card = document.getElementById("resume-card");
+      if(!card) return;
+      const lp = loadLastPlay();
+      card.classList.toggle("hidden", !lp);
+      if(!lp) return;
+      document.getElementById("resume-thumb").src = `https://i.ytimg.com/vi/${lp.id}/mqdefault.jpg`;
+      document.getElementById("resume-title").textContent = lp.title || "Vidéo YouTube";
+      document.getElementById("resume-ch").textContent = lp.ch || "";
+    }
 
-      const wl = loadWatchLater();
-      animateCount(statWatched, loadGlobalHistory().length);
-      animateCount(document.getElementById("stat-favs"), loadFavorites().length);
-      animateCount(document.getElementById("stat-later"), wl.length);
-
-      const chip = document.getElementById("surprise-favs");
-      if(chip) chip.classList.toggle("active", !!loadOptions().surpriseFavs);
-
+    /* ---- À regarder plus tard (rendu Bibliothèque) ---- */
+    function renderWatchLater(){
       const block = document.getElementById("watch-later-block");
       const row = document.getElementById("watch-later-row");
+      const empty = document.getElementById("watch-later-empty");
+      if(!block || !row) return;
+
+      const wl = loadWatchLater();
       row.innerHTML = "";
       block.classList.toggle("hidden", wl.length === 0);
+      if(empty) empty.classList.toggle("hidden", wl.length !== 0);
 
       for(const item of wl){
         const card = document.createElement("div");
@@ -4863,6 +5023,7 @@
 
         card.addEventListener("click", ()=>{
           removeWatchLater(item.id);
+          saveLastPlay(item.id, item.title, "");
           if(isEmbedEnabled()) playInModal(item.id, item.title || "Vidéo");
           else openYouTubePreferApp(item.id);
         });
@@ -4872,9 +5033,117 @@
         card.appendChild(rm);
         row.appendChild(card);
       }
+    }
 
+    /* ---- Dashboard accueil (minimaliste) ---- */
+    function renderHomeDashboard(){
+      // ligne de progression compacte
+      const line = document.getElementById("home-progress");
+      if(line){
+        const vids = loadGlobalHistory().length;
+        const st = currentStreak();
+        let lvl = 1;
+        try{ lvl = Game.summary().level; }catch{}
+        line.innerHTML =
+          `<b>${vids}</b> vidéo${vids>1?"s":""} découverte${vids>1?"s":""}`+
+          ` · Série de <b>${st}</b> jour${st>1?"s":""}`+
+          ` · Niveau <b>${lvl}</b>`;
+      }
+
+      const opts = loadOptions();
+      const chip = document.getElementById("surprise-favs");
+      if(chip){ chip.classList.toggle("active", !!opts.surpriseFavs); chip.setAttribute("aria-pressed", opts.surpriseFavs ? "true" : "false"); }
+      const mchip = document.getElementById("mystery-chip");
+      if(mchip){ mchip.classList.toggle("active", !!opts.surpriseMystery); mchip.setAttribute("aria-pressed", opts.surpriseMystery ? "true" : "false"); }
+
+      renderResumeCard();
+      renderWatchLater();
       renderDailyAndStreak();
     }
+
+    /* ---- Bibliothèque : onglets internes ---- */
+    function setLibraryTab(name){
+      ["favs","history","later"].forEach(k=>{
+        const pane = document.getElementById("lib-"+k);
+        const btn = document.querySelector(`#page-library [data-lib="${k}"]`);
+        if(pane) pane.classList.toggle("hidden", k !== name);
+        if(btn){ btn.classList.toggle("active", k === name); btn.setAttribute("aria-selected", k === name ? "true" : "false"); }
+      });
+    }
+    document.querySelectorAll("#page-library [data-lib]").forEach(b=>{
+      b.addEventListener("click", ()=> setLibraryTab(b.dataset.lib));
+    });
+
+    /* ---- Page Profil (hub) ---- */
+    function renderProfilePage(){
+      const host = document.getElementById("pr-head");
+      if(!host) return;
+      let s = null;
+      try{ s = Game.summary(); }catch{}
+      const vids = loadGlobalHistory().length;
+      const favs = loadFavorites().length;
+      const later = loadWatchLater().length;
+      const st = currentStreak();
+      const name = s ? s.name : "Joueur";
+      const avatar = s ? s.avatar : "🎲";
+      const lvl = s ? s.level : 1;
+      const pct = s ? s.pct : 0;
+      const xpTxt = s ? `${s.xpInLevel} / ${s.xpNeeded} XP` : "";
+      const titleTxt = (s && s.titleName) ? "— " + s.titleName : "";
+      const frameCls = (s && s.frameCls) ? s.frameCls : "";
+      host.innerHTML = `
+        <div class="q-hero">
+          <div class="q-hero-top">
+            <div class="q-ava-wrap">
+              <div class="q-ava ${frameCls}">${avatar}</div>
+              <div class="q-lvl-badge">${lvl}</div>
+            </div>
+            <div class="q-hero-id">
+              <div class="q-name">${name.replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]))}</div>
+              <div class="q-title-eq">${titleTxt.replace(/[&<>]/g,"")}</div>
+            </div>
+            <div class="q-shards" title="Éclats de hasard">✦ <span>${s ? s.shards : 0}</span></div>
+          </div>
+          <div class="q-xpbar-wrap">
+            <div class="q-xpbar-lbl"><span>Niveau ${lvl}</span><span>${xpTxt}</span></div>
+            <div class="q-xpbar"><div class="q-xpbar-fill" style="width:${pct}%"></div></div>
+          </div>
+          <div class="q-hero-mini">
+            <div class="q-mini"><b>${vids}</b><span>vidéos</span></div>
+            <div class="q-mini"><b>${favs}</b><span>favoris</span></div>
+            <div class="q-mini"><b>${later}</b><span>à regarder</span></div>
+            <div class="q-mini"><b>${st}</b><span>série 🔥</span></div>
+          </div>
+        </div>`;
+    }
+
+    /* ---- Liens de l'accueil / du profil ---- */
+    const homeProgressEl = document.getElementById("home-progress");
+    if(homeProgressEl) homeProgressEl.addEventListener("click", ()=> showPage("page-profile"));
+
+    const resumeGoEl = document.getElementById("resume-go");
+    if(resumeGoEl) resumeGoEl.addEventListener("click", ()=>{
+      const lp = loadLastPlay();
+      if(!lp) return;
+      playSound("click");
+      if(isEmbedEnabled()) playInModal(lp.id, lp.title || "Vidéo");
+      else openYouTubePreferApp(lp.id);
+    });
+
+    const prInventoryEl = document.getElementById("pr-go-inventory");
+    if(prInventoryEl) prInventoryEl.addEventListener("click", ()=>{
+      showPage("page-adventure");
+      try{ Game.openPanel("inventaire"); }catch{}
+    });
+
+    const mysteryChipEl = document.getElementById("mystery-chip");
+    if(mysteryChipEl) mysteryChipEl.addEventListener("click", ()=>{
+      const on = !loadOptions().surpriseMystery;
+      setOption("surpriseMystery", on);
+      mysteryChipEl.classList.toggle("active", on);
+      mysteryChipEl.setAttribute("aria-pressed", on ? "true" : "false");
+      toast(on ? "Mode mystère : la chaîne restera secrète ❓" : "Mode mystère désactivé");
+    });
 
     /* ============================================================
        SÉRIE (streak) + DÉFI DU JOUR
@@ -5378,6 +5647,11 @@
           else toast("Aucun favori — tirage sur toutes les chaînes");
         }
         const entry = pool[Math.floor(Math.random() * pool.length)];
+        if(loadOptions().surpriseMystery){
+          // Mode mystère : pas de roulette, la chaîne reste secrète jusqu'à la lecture
+          launchEntry(entry, { gameMode: "mystery" });
+          return;
+        }
         if(isSlotAnimEnabled()) await runSlotAnimation(entry, pool);
         launchEntry(entry);
       });
@@ -5616,8 +5890,8 @@
       else if(k === "1"){ showPage("page-home"); }
       else if(k === "2"){ showPage("page-adventure"); }
       else if(k === "3"){ showPage("page-channels"); }
-      else if(k === "4"){ showPage("page-favs"); }
-      else if(k === "5"){ showPage("page-history"); }
+      else if(k === "4"){ showPage("page-library"); }
+      else if(k === "5"){ showPage("page-profile"); }
       else if(k === "6"){ showPage("page-options"); }
     });
 
@@ -6393,6 +6667,7 @@
         }catch(e){ try{ launchEntry(entry, { gameMode:mode }); }catch(_){} }
       }
       const MODES = [
+        { id:"duel",      icon:"⚔️", name:"Duel",          desc:"Deux chaînes s’affrontent, choisis celle que tu regardes." },
         { id:"zero",      icon:"🤖", name:"Zéro décision", desc:"On choisit tout pour toi : une chaîne, une vidéo, direct." },
         { id:"mystere",   icon:"❓", name:"Mystère",       desc:"La chaîne reste cachée jusqu’au lancement de la vidéo." },
         { id:"trois",     icon:"🃏", name:"Choix parmi trois", desc:"Trois chaînes proposées, tu choisis ton camp." },
@@ -6404,6 +6679,7 @@
         { id:"expedition",icon:"🗺️", name:"Expédition",    desc:"Des parcours à étapes avec des récompenses au bout." }
       ];
       function runMode(id){
+        if(id==="duel"){ try{ openDuel(); }catch(e){} return; }
         if(id==="expedition"){ setPanel("expeditions"); return; }
         if(id==="trois"){
           const three = pickN(ENTRIES, 3, Math.random);
@@ -7016,8 +7292,28 @@
         if(isAdventureOpen()) render(GS.ui.panel);
       }
 
+      function summary(){
+        const info = levelInfo();
+        return {
+          name: GS.profile.name,
+          avatar: GS.profile.avatar,
+          level: info.level,
+          xpInLevel: info.xpInLevel,
+          xpNeeded: info.xpNeeded,
+          pct: info.pct,
+          shards: GS.shards,
+          titleName: titleNameFor(GS.equipped.title),
+          frameCls: frameClassFor(GS.equipped.frame)
+        };
+      }
+      function openPanel(p){ try{ setPanel(p); }catch(e){} }
+
+      // charge l'état réel dès la création du module : les hooks appelés
+      // avant init() (boot) travaillent ainsi sur les vraies données.
+      load();
+
       return {
-        init, reload, renderAdventure,
+        init, reload, renderAdventure, summary, openPanel,
         trackVideoLaunch, trackDuel, onDailyChallengeDone, trackWatchLater, onAchievementsUnlocked
       };
     })();
@@ -7025,18 +7321,15 @@
     /* ========= BOOT ========= */
     (function boot(){
       applyTheme(currentTheme());
+      try{ Game.init(); }catch(e){ console.error("Game.init", e); }
       renderOptionsUI();
       renderChannels();
       renderFavorites();
       renderHomeDashboard();
       buildChannelSelect();
 
-      const heroCount = document.getElementById("hero-count");
-      if(heroCount) heroCount.textContent = ENTRIES.length;
-
       checkAchievements(true);
       renderDailyAndStreak();
-      try{ Game.init(); }catch(e){ console.error("Game.init", e); }
       maybeShowOnboarding();
 
       if(isEmbedEnabled()){
